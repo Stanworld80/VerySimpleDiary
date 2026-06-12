@@ -1,16 +1,14 @@
-# verysimplediary
+# Very Simple Diary
 
-A new Flutter project.
+A local-first, premium Flutter application designed for structured daily journaling.
 
-## Getting Started
+## Key Features
+- **24-Question Daily Grid**: Self-evaluation of sleep, health, movement, emotion, and productivity.
+- **Local-First Architecture**: Drift SQLite database for instant, offline local-only storage.
+- **Firebase Sync**: Asynchronous online synchronization to Google Cloud Firestore.
+- **Agentic Insights**: Designed to run with a local MCP Server to analyze diary records and provide structured Markdown insights.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Environments & CI/CD
+- **Dev**: [stanverysimplediary-dev.web.app](https://stanverysimplediary-dev.web.app)
+- **Staging**: [stanverysimplediary-stg.web.app](https://stanverysimplediary-stg.web.app)
+- **Prod**: [stanverysimplediary.web.app](https://stanverysimplediary.web.app) (Pending GCP quota increase)
