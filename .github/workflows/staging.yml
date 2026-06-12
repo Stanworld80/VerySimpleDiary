@@ -120,4 +120,4 @@ jobs:
 
       - name: 🔥 Firebase Deploy (Staging)
         run: |
-          npx firebase-tools deploy --only hosting,firestore:rules --project very-simple-diary-staging
+          npx firebase-tools deploy --only hosting,firestore:rules --project stanverysimplediary-stg

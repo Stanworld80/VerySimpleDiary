@@ -122,4 +122,4 @@ jobs:
 
       - name: 🔥 Firebase Deploy (Prod)
         run: |
-          npx firebase-tools deploy --only hosting,firestore:rules --project very-simple-diary
+          npx firebase-tools deploy --only hosting,firestore:rules --project stanverysimplediary
