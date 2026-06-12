@@ -364,3 +364,15 @@ Suis rigoureusement les étapes suivantes de manière automatisée (YOLO mode ac
 
 Reste pragmatique, écris du code robuste, et execute les scripts d'initialisation. Une fois terminé, présente un compte-rendu des fichiers générés et des tests exécutés avec succès.
 ```
+
+---
+
+## 10. CONFIGURATION & DÉPLOIEMENT DE PRODUCTION
+
+### 10.1 Initialisation de Firestore
+Le déploiement Firebase nécessite que Cloud Firestore soit activé en mode Natif sur le projet GCP. Les bases de données par défaut ont été créées avec les paramètres suivants :
+- **Mode de base de données** : Firestore Native (`type=firestore-native`)
+- **Région** : `europe-west9` (Paris, France)
+
+Ces configurations s'appliquent aux environnements de Développement (`stanverysimplediary-dev`) et de Staging (`stanverysimplediary-stg`).
+
