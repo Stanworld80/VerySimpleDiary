@@ -1,15 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verysimplediary/main.dart';
+import 'package:verysimplediary/features/auth/repository/auth_repository.dart';
 
 void main() {
   testWidgets('Loads LoginScreen successfully', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MyApp(),
+      ProviderScope(
+        overrides: [
+          authStateProvider.overrideWithValue(const AsyncValue.data(null)),
+        ],
+        child: const MyApp(),
       ),
     );
-    await tester.pump();
     await tester.pumpAndSettle();
 
     // Verify that the login screen header and buttons are rendered.
