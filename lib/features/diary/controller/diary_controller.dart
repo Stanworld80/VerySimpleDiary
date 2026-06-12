@@ -99,6 +99,7 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
 
   Future<void> _init() async {
     final day = await _diaryRepository.getOrCreateDiaryDay(state.date);
+    state = state.copyWith(diaryDay: day);
     
     // Listen to updates for the day
     _diaryRepository.watchDiaryDay(state.date).listen((day) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controller/auth_controller.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/ui/version_footer.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -193,6 +194,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ? const CircularProgressIndicator(color: Colors.white)
                           : const Text('Valider'),
                     ),
+                    const SizedBox(height: 24),
+                    const VersionFooter(),
                   ],
                 ),
               ),

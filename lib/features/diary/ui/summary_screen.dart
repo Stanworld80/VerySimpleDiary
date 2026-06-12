@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controller/diary_controller.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/ui/version_footer.dart';
 
 class SummaryScreen extends ConsumerWidget {
   final String date;
@@ -198,6 +199,8 @@ class SummaryScreen extends ConsumerWidget {
                 backgroundColor: levelColor,
               ),
             ),
+            const SizedBox(height: 24),
+            const VersionFooter(),
           ],
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controller/diary_controller.dart';
 import 'summary_screen.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/ui/version_footer.dart';
 
 class DiaryScreen extends ConsumerWidget {
   const DiaryScreen({super.key});
@@ -12,6 +13,12 @@ class DiaryScreen extends ConsumerWidget {
     final selectedDate = ref.watch(diaryDateProvider);
     final diaryState = ref.watch(diaryControllerProvider(selectedDate));
     final notifier = ref.read(diaryControllerProvider(selectedDate).notifier);
+
+    if (diaryState.diaryDay == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
     final currentQuestion = diaryState.currentQuestion;
 
@@ -217,6 +224,7 @@ class DiaryScreen extends ConsumerWidget {
               ),
             ),
           ),
+          const VersionFooter(),
         ],
       ),
     );
