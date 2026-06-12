@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verysimplediary/main.dart' as app;
 import 'package:verysimplediary/features/auth/repository/auth_repository.dart';
 
@@ -10,19 +9,17 @@ void main() {
 
   group('End-to-End App Flow Test', () {
     testWidgets('Complete user flow (Login -> Question grid -> Summary validation)', (tester) async {
+      // Create an auth repo instance to manage sign-out without relying on BuildContext
+      final authRepo = AuthRepository();
+
+      // Ensure signed out before the test so we land on the login screen
+      if (authRepo.currentUser != null) {
+        await authRepo.signOut();
+      }
+
       // Start the application
       app.main();
       await tester.pumpAndSettle();
-
-      // If we are logged in by default (in local mock mode), let's sign out first to test login
-      final BuildContext context = tester.element(find.byType(app.MyApp));
-      final container = ProviderScope.containerOf(context);
-      final authRepo = container.read(authRepositoryProvider);
-
-      if (authRepo.currentUser != null) {
-        await authRepo.signOut();
-        await tester.pumpAndSettle();
-      }
 
       // 1. Verify we are on the Login Screen
       expect(find.text('Very Simple Diary'), findsOneWidget);
@@ -45,17 +42,11 @@ void main() {
       expect(find.text('1. Santé, Sport & Sommeil'), findsOneWidget);
       expect(find.text('Q 1 / 24'), findsOneWidget);
 
-      // We will loop through the 24 questions.
-      // For each question, we'll select some ratings and hit SUIVANT.
+      // Loop through all 24 questions, tapping a rating then NEXT each time
       for (int q = 1; q <= 24; q++) {
-        // Toggle some ratings to simulate user input
-        // Let's toggle 'matin' to +1 (which is index 3 of ratings [-2, -1, 0, 1, 2])
-        // To do this simply, we find the GestureDetector/InkWell or toggle using the controller directly for speed,
-        // or tap on a circle. Let's tap the circle of 'Matin' for rating '0' (the 3rd rating).
-        // Let's check if we can find the gesture detectors.
+        // Tap the first available GestureDetector to register a rating
         final gestureDetectors = find.byType(GestureDetector);
         if (gestureDetectors.evaluate().isNotEmpty) {
-          // Tap the 5th detector (first row ratings)
           await tester.tap(gestureDetectors.at(5));
           await tester.pump();
         }

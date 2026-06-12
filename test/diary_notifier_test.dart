@@ -121,8 +121,9 @@ void main() {
 
   group('DiaryNotifier Unit Tests', () {
     test('Initial State is loaded correctly', () async {
-      final notifier = container.read(diaryControllerProvider(testDate).notifier);
-      
+      // Trigger initialization by reading the notifier
+      container.read(diaryControllerProvider(testDate).notifier);
+
       // Let initialization complete
       await Future.delayed(Duration.zero);
       

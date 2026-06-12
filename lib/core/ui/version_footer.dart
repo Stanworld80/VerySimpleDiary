@@ -7,23 +7,26 @@ class VersionFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+    const versionText = 'v${AppConfig.version} (${AppConfig.buildNumber})';
+    const deployText = 'Déploiement : ${AppConfig.deployDate}';
+
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.info_outline_rounded,
                 size: 12,
                 color: AppTheme.textSecondary,
               ),
-              const SizedBox(width: 6),
+              SizedBox(width: 6),
               Text(
-                'v${AppConfig.version} (${AppConfig.buildNumber})',
-                style: const TextStyle(
+                versionText,
+                style: TextStyle(
                   fontSize: 11,
                   color: AppTheme.textSecondary,
                   fontWeight: FontWeight.w500,
@@ -32,10 +35,10 @@ class VersionFooter extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4),
           Text(
-            'Déploiement : ${AppConfig.deployDate}',
-            style: const TextStyle(
+            deployText,
+            style: TextStyle(
               fontSize: 10,
               color: Color(0xFF4E5073),
               fontWeight: FontWeight.w400,
