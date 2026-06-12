@@ -120,4 +120,4 @@ jobs:
 
       - name: 🔥 Firebase Deploy (Dev)
         run: |
-          npx firebase-tools deploy --only hosting,firestore:rules --project very-simple-diary-dev
+          npx firebase-tools deploy --only hosting,firestore:rules --project stanverysimplediary-dev
