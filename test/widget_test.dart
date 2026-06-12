@@ -9,6 +9,7 @@ void main() {
         child: MyApp(),
       ),
     );
+    await tester.pump();
     await tester.pumpAndSettle();
 
     // Verify that the login screen header and buttons are rendered.
