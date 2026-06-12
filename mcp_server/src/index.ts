@@ -91,9 +91,9 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
 
 server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
   const uri = new URL(request.params.uri);
-  const match = uri.pathname.match(/^\/daily\/(\d{4}-\d{2}-\d{2})$/);
+  const match = uri.pathname.match(/^\/(\d{4}-\d{2}-\d{2})$/);
   
-  if (uri.protocol !== "diary:" || !match) {
+  if (uri.protocol !== "diary:" || uri.hostname !== "daily" || !match) {
     throw new McpError(ErrorCode.InvalidParams, `Invalid resource URI: ${request.params.uri}`);
   }
 

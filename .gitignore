@@ -49,6 +49,7 @@ app.*.map.json
 
 # MCP Server
 mcp_server/node_modules/
+**/node_modules/
 mcp_server/build/
 /db/
 

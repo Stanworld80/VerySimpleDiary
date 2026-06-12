@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-flutter:
-    name: 🧪 Flutter Test & Lint
+  test-flutter-unit-widget:
+    name: 🧪 Flutter Unit & Widget Test
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout repository
@@ -33,7 +33,7 @@ jobs:
         run: flutter test
 
   test-mcp-server:
-    name: 🤖 MCP Server Build & Test
+    name: 🤖 MCP Server Test
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout repository
@@ -50,13 +50,36 @@ jobs:
         working-directory: mcp_server
         run: npm ci
 
-      - name: 🏗️ Compile TypeScript
+      - name: 🧪 Run MCP Server tests
         working-directory: mcp_server
-        run: npm run build
+        run: npm run test
+
+  test-firestore-rules:
+    name: 🔥 Firestore Security Rules Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Install Firebase Tools CLI
+        run: npm install -g firebase-tools
+
+      - name: 📦 Install dependencies
+        working-directory: test/firestore_rules_test
+        run: npm ci
+
+      - name: 🔥 Run Firestore Emulator and Rules Tests
+        run: |
+          npx firebase emulators:exec --only firestore "npm run test" --project stanverysimplediary-dev
 
   build-android:
     name: 🏗️ Build Android (Dev)
-    needs: [test-flutter]
+    needs: [test-flutter-unit-widget]
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout repository
@@ -92,7 +115,7 @@ jobs:
 
   build-and-deploy-web:
     name: 🌐 Build & Deploy Web (Dev)
-    needs: [test-flutter]
+    needs: [test-flutter-unit-widget, test-mcp-server, test-firestore-rules]
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout repository
@@ -121,3 +144,36 @@ jobs:
       - name: 🔥 Firebase Deploy (Dev)
         run: |
           npx firebase-tools deploy --only hosting,firestore:rules --project stanverysimplediary-dev
+
+  integration-test-e2e:
+    name: 🌐 Web E2E Integration Test
+    needs: [build-and-deploy-web]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🦅 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Install dependencies
+        run: flutter pub get
+
+      - name: ⚙️ Run build_runner
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 🌐 Run Web Integration Test (Headless Chrome)
+        run: |
+          flutter test integration_test/app_e2e_test.dart -d chrome --web-renderer=html
+
+  post-deploy-smoke-test:
+    name: 💨 Post-Deploy Smoke Test
+    needs: [build-and-deploy-web]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💨 Smoke Check Deployed App
+        run: |
+          curl -sSf https://stanverysimplediary-dev.web.app

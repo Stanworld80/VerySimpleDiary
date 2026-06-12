@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node build/index.js",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "test": "npm run build && node --test build/index.test.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.6.0",

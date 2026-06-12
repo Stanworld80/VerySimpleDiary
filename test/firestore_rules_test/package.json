@@ -1,0 +1,17 @@
+{
+  "name": "firestore-rules-test",
+  "version": "1.0.0",
+  "description": "Firestore Security Rules Unit Tests",
+  "main": "firestore.test.js",
+  "type": "module",
+  "scripts": {
+    "test": "mocha --timeout 15000 firestore.test.js"
+  },
+  "dependencies": {
+    "@firebase/rules-unit-testing": "^3.0.1",
+    "firebase-admin": "^11.8.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
+  }
+}
