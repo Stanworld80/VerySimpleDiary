@@ -8,11 +8,12 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          authStateProvider.overrideWithValue(const AsyncValue.data(null)),
+          authStateProvider.overrideWith((ref) => Stream.value(null)),
         ],
         child: const MyApp(),
       ),
     );
+    await tester.pump();
     await tester.pumpAndSettle();
 
     // Verify that the login screen header and buttons are rendered.
