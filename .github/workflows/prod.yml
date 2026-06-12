@@ -1,0 +1,125 @@
+name: CI/CD Prod
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  test-flutter:
+    name: 🧪 Flutter Test & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🦅 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Install dependencies
+        run: flutter pub get
+
+      - name: ⚙️ Run build_runner
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 🔍 Flutter Analyze
+        run: flutter analyze
+
+      - name: 🧪 Run Flutter unit tests
+        run: flutter test
+
+  test-mcp-server:
+    name: 🤖 MCP Server Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: mcp_server/package-lock.json
+
+      - name: 📦 Install dependencies
+        working-directory: mcp_server
+        run: npm ci
+
+      - name: 🏗️ Compile TypeScript
+        working-directory: mcp_server
+        run: npm run build
+
+  build-android:
+    name: 🏗️ Build Android (Prod)
+    needs: [test-flutter]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 🦅 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Install dependencies
+        run: flutter pub get
+
+      - name: ⚙️ Run build_runner
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 🏗️ Build Android APK
+        run: |
+          flutter build apk --release --dart-define=APP_ENV=prod --build-number=${{ github.run_number }}
+
+      - name: 📤 Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk-prod
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  build-and-deploy-web:
+    name: 🌐 Build & Deploy Web (Prod)
+    needs: [test-flutter]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🦅 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Install dependencies
+        run: flutter pub get
+
+      - name: ⚙️ Run build_runner
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: 🌐 Build Flutter Web
+        run: flutter build web --release --dart-define=APP_ENV=prod
+
+      - name: 🔑 Authenticate to Firebase
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}
+
+      - name: 🔥 Firebase Deploy (Prod)
+        run: |
+          npx firebase-tools deploy --only hosting,firestore:rules --project very-simple-diary
