@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  firebase-emulators:
+    image: andreysenov/firebase-tools:latest
+    ports:
+      - "4000:4000" # Emulator Suite UI
+      - "8080:8080" # Firestore Emulator
+      - "9099:9099" # Auth Emulator
+    volumes:
+      - .:/home/node/app
+    working_dir: /home/node/app
+    command: firebase emulators:start --project very-simple-diary-dev
