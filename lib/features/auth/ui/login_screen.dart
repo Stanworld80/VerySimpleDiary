@@ -77,7 +77,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.primary.withOpacity(0.3),
+                              color: AppTheme.primary.withValues(alpha: 0.3),
                               blurRadius: 20,
                               spreadRadius: 2,
                             )
@@ -129,8 +129,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     
                     const SizedBox(height: 24),
                     
-                    Row(
-                      children: const [
+                    const Row(
+                      children: [
                         Expanded(child: Divider(color: Color(0xFF2E3047))),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.0),

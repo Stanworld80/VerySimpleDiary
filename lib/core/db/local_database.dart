@@ -43,7 +43,7 @@ class DiaryResponses extends Table {
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
 
-  LocalDatabase.forTesting(DatabaseConnection connection) : super(connection);
+  LocalDatabase.forTesting(super.connection);
 
   @override
   int get schemaVersion => 1;

@@ -101,8 +101,8 @@ class DiaryScreen extends ConsumerWidget {
                   const SizedBox(height: 32),
                   
                   // Grid Header
-                  Row(
-                    children: const [
+                  const Row(
+                    children: [
                       Expanded(
                         flex: 3,
                         child: Text(
@@ -162,7 +162,7 @@ class DiaryScreen extends ConsumerWidget {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: isSelected
-                                          ? AppTheme.primary.withOpacity(0.2)
+                                          ? AppTheme.primary.withValues(alpha: 0.2)
                                           : Colors.transparent,
                                       border: Border.all(
                                         color: isSelected
@@ -192,7 +192,7 @@ class DiaryScreen extends ConsumerWidget {
                         ],
                       ),
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),

@@ -30,7 +30,6 @@ class AppTheme {
         primary: primary,
         secondary: accent,
         surface: darkSurface,
-        background: darkBg,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
       ),

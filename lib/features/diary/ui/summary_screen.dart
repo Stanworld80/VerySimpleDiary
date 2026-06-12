@@ -59,7 +59,7 @@ class SummaryScreen extends ConsumerWidget {
                   border: Border.all(color: levelColor, width: 4),
                   boxShadow: [
                     BoxShadow(
-                      color: levelColor.withOpacity(0.15),
+                      color: levelColor.withValues(alpha: 0.15),
                       blurRadius: 30,
                       spreadRadius: 5,
                     )
@@ -96,9 +96,9 @@ class SummaryScreen extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                 decoration: BoxDecoration(
-                  color: levelColor.withOpacity(0.15),
+                  color: levelColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: levelColor.withOpacity(0.5)),
+                  border: Border.all(color: levelColor.withValues(alpha: 0.5)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
