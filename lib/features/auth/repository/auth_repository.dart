@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,6 +39,7 @@ class AuthRepository {
 
   AuthRepository() {
     try {
+      Firebase.app();
       _auth = FirebaseAuth.instance;
     } catch (e) {
       debugPrint("Firebase Auth not available. Initializing in Local-Only Mock Mode.");
