@@ -84,7 +84,6 @@ class DiaryRepository {
     String? insight,
   }) async {
     final companion = DiaryDaysCompanion(
-      id: Value(id),
       status: Value(status),
       totalScore: Value(total),
       meanScore: Value(mean),
@@ -93,7 +92,7 @@ class DiaryRepository {
       insightText: Value(insight),
       updatedAt: Value(DateTime.now()),
     );
-    await _db.update(_db.diaryDays).replace(companion);
+    await (_db.update(_db.diaryDays)..where((tbl) => tbl.id.equals(id))).write(companion);
   }
 }
 
