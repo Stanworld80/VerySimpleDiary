@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class MockUser implements User {
   @override
@@ -90,6 +91,24 @@ class AuthRepository {
       await _auth!.signOut();
     } else {
       _mockUser = null;
+      _mockUserStreamController.add(_mockUser);
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    if (_auth != null) {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        await _auth!.signInWithCredential(credential);
+      }
+    } else {
+      _mockUser = MockUser();
       _mockUserStreamController.add(_mockUser);
     }
   }

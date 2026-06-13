@@ -115,7 +115,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                       onPressed: authState.isLoading ? null : () {
-                        // Mock Google Sign-In or Firebase Auth logic
+                        ref.read(authControllerProvider.notifier).loginWithGoogle();
                       },
                       icon: const Icon(Icons.g_mobiledata, size: 28, color: Colors.white),
                       label: const Text(
