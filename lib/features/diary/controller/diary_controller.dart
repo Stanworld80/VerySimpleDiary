@@ -245,6 +245,8 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
       level: scoreResult.level,
       insight: insight,
     );
+
+    state = state.copyWith(currentQuestionIndex: 0);
   }
 }
 
