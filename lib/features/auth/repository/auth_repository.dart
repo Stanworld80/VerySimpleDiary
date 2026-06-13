@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -35,7 +36,8 @@ class MockUser implements User {
 
 class AuthRepository {
   FirebaseAuth? _auth;
-  User? _mockUser;
+  static User? _mockUser = MockUser();
+  static final StreamController<User?> _mockUserStreamController = StreamController<User?>.broadcast();
 
   AuthRepository() {
     try {
@@ -43,8 +45,6 @@ class AuthRepository {
       _auth = FirebaseAuth.instance;
     } catch (e) {
       debugPrint("Firebase Auth not available. Initializing in Local-Only Mock Mode.");
-      // Auto login in mock mode for instant usage
-      _mockUser = MockUser();
     }
   }
 
@@ -52,7 +52,12 @@ class AuthRepository {
     if (_auth != null) {
       return _auth!.authStateChanges();
     }
-    return Stream.value(_mockUser);
+    return _getMockStream();
+  }
+
+  Stream<User?> _getMockStream() async* {
+    yield _mockUser;
+    yield* _mockUserStreamController.stream;
   }
 
   User? get currentUser {
@@ -67,6 +72,7 @@ class AuthRepository {
       await _auth!.signInWithEmailAndPassword(email: email, password: password);
     } else {
       _mockUser = MockUser();
+      _mockUserStreamController.add(_mockUser);
     }
   }
 
@@ -75,6 +81,7 @@ class AuthRepository {
       await _auth!.createUserWithEmailAndPassword(email: email, password: password);
     } else {
       _mockUser = MockUser();
+      _mockUserStreamController.add(_mockUser);
     }
   }
 
@@ -83,6 +90,7 @@ class AuthRepository {
       await _auth!.signOut();
     } else {
       _mockUser = null;
+      _mockUserStreamController.add(_mockUser);
     }
   }
 }
