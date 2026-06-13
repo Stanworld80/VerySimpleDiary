@@ -83,7 +83,7 @@ jobs:
 
       - name: 🔥 Run Firestore Emulator and Rules Tests
         run: |
-          npx firebase emulators:exec --only firestore "npm run test" --project stanverysimplediary
+          npx firebase emulators:exec --only firestore "cd test/firestore_rules_test && npm run test" --project stanverysimplediary
 
   build-android:
     name: 🏗️ Build Android (Prod)
