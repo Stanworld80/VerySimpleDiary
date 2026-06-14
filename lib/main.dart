@@ -4,9 +4,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:yaml/yaml.dart';
 import 'core/theme/app_theme.dart';
+import 'core/network/network_config.dart';
 import 'features/auth/repository/auth_repository.dart';
 import 'features/auth/ui/login_screen.dart';
 import 'features/diary/ui/home_screen.dart';
@@ -34,6 +37,15 @@ void main() async {
 
   try {
     await Firebase.initializeApp();
+    if (NetworkConfig.useEmulators) {
+      try {
+        FirebaseFirestore.instance.useFirestoreEmulator(NetworkConfig.firestoreHost, NetworkConfig.firestorePort);
+        FirebaseAuth.instance.useAuthEmulator(NetworkConfig.authHost, NetworkConfig.authPort);
+        debugPrint("Connected to Firebase Emulators: Firestore (${NetworkConfig.firestoreHost}:${NetworkConfig.firestorePort}), Auth (${NetworkConfig.authHost}:${NetworkConfig.authPort})");
+      } catch (e) {
+        debugPrint("Failed to connect to Firebase Emulators: $e");
+      }
+    }
   } catch (e) {
     debugPrint("Firebase init failed: $e. Running in Local-First Mode.");
   }

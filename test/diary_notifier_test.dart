@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verysimplediary/features/diary/controller/diary_controller.dart';
+import 'package:verysimplediary/features/diary/repository/sync_repository.dart';
 import 'package:verysimplediary/features/diary/repository/diary_repository.dart';
 import 'package:verysimplediary/core/db/local_database.dart';
 
@@ -109,6 +110,17 @@ class MockDiaryRepository implements DiaryRepository {
   }
 }
 
+class MockSyncRepository implements SyncRepository {
+  @override
+  Future<void> syncDay(String date) async {}
+
+  @override
+  Future<void> syncAll() async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 void main() {
   late ProviderContainer container;
   late MockDiaryRepository mockRepository;
@@ -119,6 +131,7 @@ void main() {
     container = ProviderContainer(
       overrides: [
         diaryRepositoryProvider.overrideWithValue(mockRepository),
+        syncRepositoryProvider.overrideWithValue(MockSyncRepository()),
       ],
     );
   });

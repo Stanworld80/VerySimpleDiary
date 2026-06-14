@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'diary_screen.dart';
 import 'explorer_screen.dart';
 import '../controller/diary_controller.dart';
+import '../repository/sync_repository.dart';
 import '../../auth/repository/auth_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/version_footer.dart';
@@ -26,6 +27,11 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Trigger background synchronization at startup/home view loading
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(syncRepositoryProvider).syncAll();
+    });
+
     final now = DateTime.now();
     final todayStr = _getIsoDate(now);
     final formattedDate = _formatDate(now);

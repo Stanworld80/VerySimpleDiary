@@ -38,7 +38,24 @@ void main() {
       await tester.tap(validerButton);
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      // 2. We should now be on the Diary Screen (Question 1)
+      // 2. We should now be on the Home Screen
+      expect(find.text('Explorer les données'), findsOneWidget);
+
+      // Tap on "Journal du jour" button
+      final journalButton = find.byWidgetPredicate(
+        (widget) => widget is ElevatedButton &&
+                    widget.child is Row &&
+                    (widget.child as Row).children.any(
+                      (c) => c is Flexible &&
+                             c.child is Text &&
+                             (c.child as Text).data!.startsWith('Journal du jour'),
+                    ),
+      );
+      expect(journalButton, findsOneWidget);
+      await tester.tap(journalButton);
+      await tester.pumpAndSettle();
+
+      // 3. We should now be on the Diary Screen (Question 1)
       expect(find.text('1. Santé, Sport & Sommeil'), findsOneWidget);
       expect(find.text('Q 1 / 24'), findsOneWidget);
 
@@ -57,7 +74,7 @@ void main() {
         await tester.pumpAndSettle(const Duration(milliseconds: 500));
       }
 
-      // 3. We should now be on the Summary Screen
+      // 4. We should now be on the Summary Screen
       expect(find.text('Récapitulatif Final'), findsOneWidget);
       expect(find.text('Score Total'), findsOneWidget);
       expect(find.text('Médiane'), findsOneWidget);
@@ -68,8 +85,8 @@ void main() {
       await tester.tap(finalizeButton);
       await tester.pumpAndSettle();
 
-      // We should be redirected back to the beginning of the Diary screen
-      expect(find.text('1. Santé, Sport & Sommeil'), findsOneWidget);
+      // We should be redirected back to the Home Screen
+      expect(find.text('Explorer les données'), findsOneWidget);
     });
   });
 }

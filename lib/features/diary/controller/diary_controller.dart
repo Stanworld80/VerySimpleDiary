@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../repository/diary_repository.dart';
+import '../repository/sync_repository.dart';
 import '../score_calculator.dart';
 import '../../../core/db/local_database.dart';
 
@@ -92,8 +94,9 @@ class DiaryState {
 
 class DiaryNotifier extends StateNotifier<DiaryState> {
   final DiaryRepository _diaryRepository;
+  final SyncRepository _syncRepository;
 
-  DiaryNotifier(this._diaryRepository, String date) : super(DiaryState(date: date)) {
+  DiaryNotifier(this._diaryRepository, this._syncRepository, String date) : super(DiaryState(date: date)) {
     _init();
   }
 
@@ -175,6 +178,11 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
       soir: state.currentSelection['soir'] ?? [],
     );
 
+    // Sync draft in background
+    _syncRepository.syncDay(state.date).catchError((e) {
+      debugPrint("Background sync error: $e");
+    });
+
     if (state.currentQuestionIndex < diaryQuestionsList.length - 1) {
       state = state.copyWith(currentQuestionIndex: state.currentQuestionIndex + 1);
       _loadSelectionForCurrentQuestion();
@@ -218,6 +226,11 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
       level: scoreResult.level,
       insight: insight,
     );
+
+    // Sync draft in background
+    _syncRepository.syncDay(state.date).catchError((e) {
+      debugPrint("Background sync error: $e");
+    });
   }
 
   Future<void> finalizeDay() async {
@@ -246,6 +259,11 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
       insight: insight,
     );
 
+    // Sync finalized entry in background
+    _syncRepository.syncDay(state.date).catchError((e) {
+      debugPrint("Background sync error: $e");
+    });
+
     state = state.copyWith(currentQuestionIndex: 0);
   }
 }
@@ -258,7 +276,8 @@ final diaryDateProvider = StateProvider<String>((ref) {
 
 final diaryControllerProvider = StateNotifierProvider.family<DiaryNotifier, DiaryState, String>((ref, date) {
   final repo = ref.watch(diaryRepositoryProvider);
-  return DiaryNotifier(repo, date);
+  final syncRepo = ref.watch(syncRepositoryProvider);
+  return DiaryNotifier(repo, syncRepo, date);
 });
 
 final allDiaryDaysProvider = StreamProvider<List<DiaryDay>>((ref) {
