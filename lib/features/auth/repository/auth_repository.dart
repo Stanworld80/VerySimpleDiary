@@ -39,8 +39,13 @@ class AuthRepository {
   FirebaseAuth? _auth;
   static User? _mockUser = MockUser();
   static final StreamController<User?> _mockUserStreamController = StreamController<User?>.broadcast();
+  static bool forceMock = false;
 
   AuthRepository() {
+    if (forceMock) {
+      debugPrint("Forced Local-Only Mock Mode.");
+      return;
+    }
     try {
       Firebase.app();
       _auth = FirebaseAuth.instance;

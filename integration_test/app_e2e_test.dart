@@ -9,6 +9,9 @@ void main() {
 
   group('End-to-End App Flow Test', () {
     testWidgets('Complete user flow (Login -> Question grid -> Summary validation)', (tester) async {
+      // Force mock mode during integration testing
+      AuthRepository.forceMock = true;
+
       // Create an auth repo instance to manage sign-out without relying on BuildContext
       final authRepo = AuthRepository();
 

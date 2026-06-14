@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart';
 import '../../../core/db/local_database.dart';
+import '../../auth/repository/auth_repository.dart';
 import '../controller/diary_controller.dart';
 import 'diary_repository.dart';
 
@@ -248,6 +249,7 @@ class SyncRepository {
 
 // Providers
 final firestoreProvider = Provider<FirebaseFirestore?>((ref) {
+  if (AuthRepository.forceMock) return null;
   try {
     Firebase.app();
     return FirebaseFirestore.instance;
@@ -257,6 +259,7 @@ final firestoreProvider = Provider<FirebaseFirestore?>((ref) {
 });
 
 final firebaseAuthProvider = Provider<FirebaseAuth?>((ref) {
+  if (AuthRepository.forceMock) return null;
   try {
     Firebase.app();
     return FirebaseAuth.instance;
