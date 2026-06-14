@@ -37,17 +37,21 @@ void main() async {
   }
 
   try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    if (NetworkConfig.useEmulators) {
-      try {
-        FirebaseFirestore.instance.useFirestoreEmulator(NetworkConfig.firestoreHost, NetworkConfig.firestorePort);
-        FirebaseAuth.instance.useAuthEmulator(NetworkConfig.authHost, NetworkConfig.authPort);
-        debugPrint("Connected to Firebase Emulators: Firestore (${NetworkConfig.firestoreHost}:${NetworkConfig.firestorePort}), Auth (${NetworkConfig.authHost}:${NetworkConfig.authPort})");
-      } catch (e) {
-        debugPrint("Failed to connect to Firebase Emulators: $e");
+    if (!AuthRepository.forceMock) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      if (NetworkConfig.useEmulators) {
+        try {
+          FirebaseFirestore.instance.useFirestoreEmulator(NetworkConfig.firestoreHost, NetworkConfig.firestorePort);
+          FirebaseAuth.instance.useAuthEmulator(NetworkConfig.authHost, NetworkConfig.authPort);
+          debugPrint("Connected to Firebase Emulators: Firestore (${NetworkConfig.firestoreHost}:${NetworkConfig.firestorePort}), Auth (${NetworkConfig.authHost}:${NetworkConfig.authPort})");
+        } catch (e) {
+          debugPrint("Failed to connect to Firebase Emulators: $e");
+        }
       }
+    } else {
+      debugPrint("Skipping Firebase initialization because forceMock is true.");
     }
   } catch (e) {
     debugPrint("Firebase init failed: $e. Running in Local-First Mode.");
