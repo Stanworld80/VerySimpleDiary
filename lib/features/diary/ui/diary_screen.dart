@@ -4,6 +4,7 @@ import '../controller/diary_controller.dart';
 import 'summary_screen.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/version_footer.dart';
+import '../../../core/ui/profile_menu_button.dart';
 
 class DiaryScreen extends ConsumerWidget {
   const DiaryScreen({super.key});
@@ -41,15 +42,13 @@ class DiaryScreen extends ConsumerWidget {
               )
             : null,
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Center(
-              child: Text(
-                'Q ${currentQuestion.number} / ${diaryQuestionsList.length}',
-                style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
-              ),
+          Center(
+            child: Text(
+              'Q ${currentQuestion.number} / ${diaryQuestionsList.length}',
+              style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
             ),
-          )
+          ),
+          const ProfileMenuButton(),
         ],
       ),
       body: Column(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controller/diary_controller.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/version_footer.dart';
+import '../../../core/ui/profile_menu_button.dart';
 
 class SummaryScreen extends ConsumerWidget {
   final String date;
@@ -43,7 +44,9 @@ class SummaryScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Récapitulatif Final'),
-        automaticallyImplyLeading: false,
+        actions: const [
+          ProfileMenuButton(),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),

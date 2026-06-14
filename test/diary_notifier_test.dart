@@ -25,6 +25,15 @@ class MockDiaryRepository implements DiaryRepository {
   }
 
   @override
+  Stream<List<DiaryDay>> watchAllDiaryDays() async* {
+    if (currentDay != null) {
+      yield [currentDay!];
+    } else {
+      yield [];
+    }
+  }
+
+  @override
   Future<DiaryDay> getOrCreateDiaryDay(String date) async {
     final day = DiaryDay(
       id: 'mock_day_id',

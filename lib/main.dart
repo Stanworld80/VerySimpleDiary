@@ -9,7 +9,7 @@ import 'package:yaml/yaml.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/repository/auth_repository.dart';
 import 'features/auth/ui/login_screen.dart';
-import 'features/diary/ui/diary_screen.dart';
+import 'features/diary/ui/home_screen.dart';
 import 'features/diary/controller/diary_controller.dart';
 
 void main() async {
@@ -58,7 +58,7 @@ class MyApp extends ConsumerWidget {
       home: authState.when(
         data: (user) {
           if (user != null) {
-            return const DiaryScreen();
+            return const HomeScreen();
           }
           return const LoginScreen();
         },

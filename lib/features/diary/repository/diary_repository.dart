@@ -19,6 +19,15 @@ class DiaryRepository {
         .watch();
   }
 
+  // Watch all diary days ordered by date descending
+  Stream<List<DiaryDay>> watchAllDiaryDays() {
+    return (_db.select(_db.diaryDays)
+          ..orderBy([
+            (tbl) => OrderingTerm(expression: tbl.date, mode: OrderingMode.desc)
+          ]))
+        .watch();
+  }
+
   // Get or Create draft day
   Future<DiaryDay> getOrCreateDiaryDay(String date) async {
     final existing = await (_db.select(_db.diaryDays)..where((tbl) => tbl.date.equals(date)))

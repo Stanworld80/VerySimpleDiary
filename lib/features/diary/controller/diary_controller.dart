@@ -260,3 +260,8 @@ final diaryControllerProvider = StateNotifierProvider.family<DiaryNotifier, Diar
   final repo = ref.watch(diaryRepositoryProvider);
   return DiaryNotifier(repo, date);
 });
+
+final allDiaryDaysProvider = StreamProvider<List<DiaryDay>>((ref) {
+  final repo = ref.watch(diaryRepositoryProvider);
+  return repo.watchAllDiaryDays();
+});
