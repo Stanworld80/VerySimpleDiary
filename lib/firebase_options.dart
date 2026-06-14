@@ -44,4 +44,20 @@ class DefaultFirebaseOptions {
     // Returning null for native platforms to use standard google-services.json / GoogleService-Info.plist configuration
     return null;
   }
+
+  static String? get googleClientId {
+    if (kIsWeb) {
+      const appEnv = String.fromEnvironment('APP_ENV', defaultValue: 'dev');
+      switch (appEnv) {
+        case 'staging':
+          return null; // Add staging client ID here if needed
+        case 'prod':
+          return null;
+        case 'dev':
+        default:
+          return '634048753631-260r2820e8nf8ds8aeud24s22koftd4n.apps.googleusercontent.com';
+      }
+    }
+    return null;
+  }
 }

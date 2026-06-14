@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../../../firebase_options.dart';
 
 class MockUser implements User {
   @override
@@ -102,7 +103,9 @@ class AuthRepository {
 
   Future<void> signInWithGoogle() async {
     if (_auth != null) {
-      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: kIsWeb ? DefaultFirebaseOptions.googleClientId : null,
+      );
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser != null) {
         final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
