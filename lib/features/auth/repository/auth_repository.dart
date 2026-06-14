@@ -120,6 +120,14 @@ class AuthRepository {
       _mockUserStreamController.add(_mockUser);
     }
   }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    if (_auth != null) {
+      await _auth!.sendPasswordResetEmail(email: email);
+    } else {
+      debugPrint("Simulated sending password reset email to: $email");
+    }
+  }
 }
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
