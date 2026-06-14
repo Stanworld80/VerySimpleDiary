@@ -47,7 +47,7 @@ class ProfileMenuButton extends ConsumerWidget {
       color: AppTheme.darkCard,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: const Color(0xFF2E3047), width: 1),
+        side: const BorderSide(color: Color(0xFF2E3047), width: 1),
       ),
       onSelected: (value) async {
         switch (value) {

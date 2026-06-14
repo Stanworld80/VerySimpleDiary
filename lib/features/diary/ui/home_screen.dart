@@ -4,7 +4,6 @@ import 'diary_screen.dart';
 import 'explorer_screen.dart';
 import '../controller/diary_controller.dart';
 import '../repository/sync_repository.dart';
-import '../../auth/repository/auth_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/version_footer.dart';
 import '../../../core/ui/profile_menu_button.dart';
@@ -55,10 +54,10 @@ class HomeScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Top row with Profile menu button
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const ProfileMenuButton(),
+                    ProfileMenuButton(),
                   ],
                 ),
                 
@@ -187,7 +186,7 @@ class HomeScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.analytics_rounded, size: 20, color: Color(0xFF3B82F6)),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12),
                             Text(
                               'Explorer les données',
                               style: TextStyle(

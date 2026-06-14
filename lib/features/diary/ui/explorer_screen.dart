@@ -4,7 +4,6 @@ import '../controller/diary_controller.dart';
 import 'summary_screen.dart';
 import 'diary_screen.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/db/local_database.dart';
 import '../../../core/ui/profile_menu_button.dart';
 
 class ExplorerScreen extends ConsumerStatefulWidget {
