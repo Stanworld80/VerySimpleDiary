@@ -14,6 +14,7 @@ import 'features/auth/repository/auth_repository.dart';
 import 'features/auth/ui/login_screen.dart';
 import 'features/diary/ui/home_screen.dart';
 import 'features/diary/controller/diary_controller.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +37,9 @@ void main() async {
   }
 
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     if (NetworkConfig.useEmulators) {
       try {
         FirebaseFirestore.instance.useFirestoreEmulator(NetworkConfig.firestoreHost, NetworkConfig.firestorePort);

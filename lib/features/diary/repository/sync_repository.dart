@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart';
@@ -9,8 +10,8 @@ import 'diary_repository.dart';
 
 class SyncRepository {
   final LocalDatabase _db;
-  final FirebaseFirestore _firestore;
-  final FirebaseAuth _auth;
+  final FirebaseFirestore? _firestore;
+  final FirebaseAuth? _auth;
 
   SyncRepository(this._db, this._firestore, this._auth);
 
@@ -88,6 +89,7 @@ class SyncRepository {
 
   // Helper to sync a single day to/from Firestore
   Future<void> syncDay(String date) async {
+    if (_auth == null || _firestore == null) return;
     final user = _auth.currentUser;
     if (user == null) return;
 
@@ -130,6 +132,7 @@ class SyncRepository {
 
   // Two-way synchronization of all records
   Future<void> syncAll() async {
+    if (_auth == null || _firestore == null) return;
     final user = _auth.currentUser;
     if (user == null) return;
 
@@ -244,8 +247,23 @@ class SyncRepository {
 }
 
 // Providers
-final firestoreProvider = Provider<FirebaseFirestore>((ref) => FirebaseFirestore.instance);
-final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
+final firestoreProvider = Provider<FirebaseFirestore?>((ref) {
+  try {
+    Firebase.app();
+    return FirebaseFirestore.instance;
+  } catch (_) {
+    return null;
+  }
+});
+
+final firebaseAuthProvider = Provider<FirebaseAuth?>((ref) {
+  try {
+    Firebase.app();
+    return FirebaseAuth.instance;
+  } catch (_) {
+    return null;
+  }
+});
 
 final syncRepositoryProvider = Provider<SyncRepository>((ref) {
   final db = ref.watch(databaseProvider);
