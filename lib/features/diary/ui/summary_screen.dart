@@ -193,7 +193,7 @@ class SummaryScreen extends ConsumerWidget {
                     ),
                   );
                   // Go back to diary screen starting point
-                  Navigator.of(context).pop();
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 }
               },
               icon: const Icon(Icons.check_circle_rounded),
