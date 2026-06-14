@@ -123,6 +123,17 @@ jobs:
           name: android-apk-dev
           path: build/app/outputs/flutter-apk/app-release.apk
 
+      - name: 🔑 Authenticate to Firebase
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}
+
+      - name: 🚀 Deploy to Firebase App Distribution (Dev)
+        run: |
+          npx firebase-tools appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
+            --app 1:634048753631:android:c0762912de0bc0a7c6de6a \
+            --groups "app-tester"
+
   build-and-deploy-web:
     name: 🌐 Build & Deploy Web (Dev)
     needs: [test-flutter-unit-widget, test-mcp-server, test-firestore-rules]
