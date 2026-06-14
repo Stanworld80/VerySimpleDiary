@@ -39,7 +39,9 @@ void main() {
       // Tap Valider
       final validerButton = find.widgetWithText(ElevatedButton, 'Valider');
       await tester.tap(validerButton);
-      await tester.pumpAndSettle(const Duration(seconds: 2));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
 
       // 2. We should now be on the Home Screen
       expect(find.text('Explorer les données'), findsOneWidget);
@@ -86,6 +88,8 @@ void main() {
       // Tap "Valider la journée"
       final finalizeButton = find.widgetWithText(ElevatedButton, 'Valider la journée');
       await tester.tap(finalizeButton);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
       await tester.pumpAndSettle();
 
       // We should be redirected back to the Home Screen
