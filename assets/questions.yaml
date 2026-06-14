@@ -1,0 +1,133 @@
+# Liste des questions du journal
+# Vous pouvez ajouter, modifier ou supprimer des questions ici.
+# Chaque question doit avoir :
+# - number: Le numéro unique de la question (doit commencer à 1 et se suivre)
+# - category: Le thème/groupe de la question
+# - title: Le titre affiché en grand
+# - description: La description de la question
+
+# 1. Santé, Sport & Sommeil
+- number: 1
+  category: "1. Santé, Sport & Sommeil"
+  title: "SOMMEIL"
+  description: "Qualité de la nuit, endormissement, récupération."
+
+- number: 2
+  category: "1. Santé, Sport & Sommeil"
+  title: "SPORT"
+  description: "Activité physique, étirements, mouvements."
+
+- number: 3
+  category: "1. Santé, Sport & Sommeil"
+  title: "DOULEUR"
+  description: "Présence et intensité de douleurs physiques ou inconforts."
+
+- number: 4
+  category: "1. Santé, Sport & Sommeil"
+  title: "ÉNERGIE & MALADIE"
+  description: "Vitalité globale, symptômes viraux ou fatigue chronique."
+
+# 2. Alimentation
+- number: 5
+  category: "2. Alimentation"
+  title: "NOURRITURE"
+  description: "Qualité des repas, respect des objectifs nutritionnels."
+
+- number: 6
+  category: "2. Alimentation"
+  title: "HYDRATATION"
+  description: "Quantité d'eau bue dans la journée."
+
+- number: 7
+  category: "2. Alimentation"
+  title: "ÉLIMINATION"
+  description: "Digestion, transit et confort intestinal."
+
+- number: 8
+  category: "2. Alimentation"
+  title: "EXCÈS"
+  description: "Gestion des craquages (trash food, sucre, excitants)."
+
+# 3. Psychisme
+- number: 9
+  category: "3. Psychisme"
+  title: "STRESS & ANXIÉTÉ"
+  description: "Niveau de tension interne, pics d'angoisse."
+
+- number: 10
+  category: "3. Psychisme"
+  title: "HUMEUR & MORAL"
+  description: "Météo intérieure, optimisme ou rumination."
+
+- number: 11
+  category: "3. Psychisme"
+  title: "FOCUS & RÉFLEXION"
+  description: "Clarté mentale, concentration, gestion des distractions."
+
+- number: 12
+  category: "3. Psychisme"
+  title: "SPIRITUALITÉ & MÉDITATION"
+  description: "Temps de pause, alignement, pleine conscience."
+
+# 4. Hygiène & Ménage
+- number: 13
+  category: "4. Hygiène & Ménage"
+  title: "HYGIÈNE DU CORPS"
+  description: "Douche, soins personnels, routine corporelle."
+
+- number: 14
+  category: "4. Hygiène & Ménage"
+  title: "RANGEMENT"
+  description: "Maintien de l'ordre visuel dans les pièces de vie."
+
+- number: 15
+  category: "4. Hygiène & Ménage"
+  title: "PROPRETÉ & MÉNAGE"
+  description: "Nettoyage effectif (aspirateur, vaisselle, linge)."
+
+- number: 16
+  category: "4. Hygiène & Ménage"
+  title: "ATMOSPHÈRE"
+  description: "Calme, aération et confort global de la maison."
+
+# 5. Admin & Finances
+- number: 17
+  category: "5. Admin & Finances"
+  title: "TRAVAIL PRÉVU"
+  description: "Accomplissement des objectifs professionnels ou professionnels planifiés."
+
+- number: 18
+  category: "5. Admin & Finances"
+  title: "ÉTUDES & RECHERCHE"
+  description: "Temps dédié à l'apprentissage, la programmation ou la lecture."
+
+- number: 19
+  category: "5. Admin & Finances"
+  title: "BUDGET & FINANCES"
+  description: "Suivi des comptes, contrôle des dépenses."
+
+- number: 20
+  category: "5. Admin & Finances"
+  title: "DÉMARCHES"
+  description: "Gestion des courriers, contrats et obligations légales."
+
+# 6. Relations & Famille
+- number: 21
+  category: "6. Relations & Famille"
+  title: "VIE DE COUPLE"
+  description: "Complicité, partage, soutien mutuel."
+
+- number: 22
+  category: "6. Relations & Famille"
+  title: "FOYER & ENFANTS"
+  description: "Échanges avec les enfants, gestion du quotidien familial."
+
+- number: 23
+  category: "6. Relations & Famille"
+  title: "SOCIAL EXTÉRIEUR"
+  description: "Contacts avec les amis, collègues."
+
+- number: 24
+  category: "6. Relations & Famille"
+  title: "MONDE EXTÉRIEUR"
+  description: "Relation avec monde extérieur et inconnus : administration, institutions, prospect client..."

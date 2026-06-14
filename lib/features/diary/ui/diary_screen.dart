@@ -45,7 +45,7 @@ class DiaryScreen extends ConsumerWidget {
             padding: const EdgeInsets.only(right: 16.0),
             child: Center(
               child: Text(
-                'Q ${currentQuestion.number} / 24',
+                'Q ${currentQuestion.number} / ${diaryQuestionsList.length}',
                 style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
               ),
             ),
@@ -211,7 +211,7 @@ class DiaryScreen extends ConsumerWidget {
             child: ElevatedButton(
               onPressed: () async {
                 await notifier.nextQuestion();
-                if (context.mounted && currentQuestion.number == 24) {
+                if (context.mounted && currentQuestion.number == diaryQuestionsList.length) {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => SummaryScreen(date: selectedDate),
@@ -220,7 +220,7 @@ class DiaryScreen extends ConsumerWidget {
                 }
               },
               child: Text(
-                currentQuestion.number < 24 ? 'SUIVANT >' : 'RÉCAPITULATIF >',
+                currentQuestion.number < diaryQuestionsList.length ? 'SUIVANT >' : 'RÉCAPITULATIF >',
               ),
             ),
           ),

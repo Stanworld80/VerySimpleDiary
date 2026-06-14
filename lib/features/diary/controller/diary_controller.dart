@@ -17,37 +17,37 @@ class DiaryQuestion {
   });
 }
 
-final List<DiaryQuestion> diaryQuestionsList = [
+List<DiaryQuestion> diaryQuestionsList = [
   // 1. Santé, Sport & Sommeil
-  const DiaryQuestion(number: 1, category: '1. Santé, Sport & Sommeil', title: 'SOMMEIL', description: 'Qualité de la nuit, endormissement, récupération...'),
-  const DiaryQuestion(number: 2, category: '1. Santé, Sport & Sommeil', title: 'SPORT & MOUVEMENT', description: 'Activité physique, marche, étirements, tonus...'),
-  const DiaryQuestion(number: 3, category: '1. Santé, Sport & Sommeil', title: 'ALIMENTATION', description: 'Qualité des repas, digestion, hydratation, excès...'),
-  const DiaryQuestion(number: 4, category: '1. Santé, Sport & Sommeil', title: 'ÉNERGIE GLOBALE', description: 'Niveau de vitalité physique, fatigue générale...'),
-  // 2. Émotions & Humeur
-  const DiaryQuestion(number: 5, category: '2. Émotions & Humeur', title: 'JOIE & ENTHOUSIASME', description: 'Moments de bonheur, sourires, pensées positives...'),
-  const DiaryQuestion(number: 6, category: '2. Émotions & Humeur', title: 'STRESS & ANXIÉTÉ', description: 'Tension mentale, inquiétude, paix d\'esprit...'),
-  const DiaryQuestion(number: 7, category: '2. Émotions & Humeur', title: 'Patience & Calme', description: 'Réactivité émotionnelle, self-control, irritation...'),
-  const DiaryQuestion(number: 8, category: '2. Émotions & Humeur', title: 'CONFIANCE EN SOI', description: 'Estime personnelle, sentiment de capacité...'),
-  // 3. Mental & Productivité
-  const DiaryQuestion(number: 9, category: '3. Mental & Productivité', title: 'CONCENTRATION', description: 'Focus, clarté mentale, capacité d\'attention...'),
-  const DiaryQuestion(number: 10, category: '3. Mental & Productivité', title: 'EFFICACITÉ', description: 'Avancement des tâches, sentiment de devoir accompli...'),
-  const DiaryQuestion(number: 11, category: '3. Mental & Productivité', title: 'APPRENTISSAGE', description: 'Nouvelles connaissances, curiosité, lectures...'),
-  const DiaryQuestion(number: 12, category: '3. Mental & Productivité', title: 'ORGANISATION', description: 'Gestion du temps, planification, ordre...'),
-  // 4. Social & Relations
-  const DiaryQuestion(number: 13, category: '4. Social & Relations', title: 'RELATION PROCHES', description: 'Qualité des échanges en famille ou avec le/la partenaire...'),
-  const DiaryQuestion(number: 14, category: '4. Social & Relations', title: 'AMITIÉS', description: 'Discussions, contacts, partages avec des amis...'),
-  const DiaryQuestion(number: 15, category: '4. Social & Relations', title: 'TRAVAIL & COLLÈGUES', description: 'Climat professionnel, collaborations, échanges...'),
-  const DiaryQuestion(number: 16, category: '4. Social & Relations', title: 'EMPATHIE', description: 'Écoute active, bienveillance envers autrui...'),
-  // 5. Environnement & Cadre
-  const DiaryQuestion(number: 17, category: '5. Environnement & Cadre', title: 'ORDRE & PROPRETÉ', description: 'Rangement de l\'espace de vie et de travail...'),
-  const DiaryQuestion(number: 18, category: '5. Environnement & Cadre', title: 'MÉTÉO & NATURE', description: 'Lumière naturelle, temps passé dehors, grand air...'),
-  const DiaryQuestion(number: 19, category: '5. Environnement & Cadre', title: 'CONFORT & SÉCURITÉ', description: 'Bien-être matériel, calme sonore, température...'),
-  const DiaryQuestion(number: 20, category: '5. Environnement & Cadre', title: 'ÉCRANS & BADAUDAGE', description: 'Consommation digitale, réseaux sociaux, distraction...'),
-  // 6. Loisirs & Épanouissement
-  const DiaryQuestion(number: 21, category: '6. Loisirs & Épanouissement', title: 'PASSIONS & PROJETS', description: 'Temps dédié aux hobbies, projets personnels...'),
-  const DiaryQuestion(number: 22, category: '6. Loisirs & Épanouissement', title: 'RELAXATION & LÂCHER-PRISE', description: 'Méditation, sieste, déconnexion totale...'),
-  const DiaryQuestion(number: 23, category: '6. Loisirs & Épanouissement', title: 'CRÉATIVITÉ', description: 'Inspiration, expression artistique, résolution innovante...'),
-  const DiaryQuestion(number: 24, category: '6. Loisirs & Épanouissement', title: 'GRATITUDE', description: 'Reconnaissance pour les bons moments de la journée...'),
+  const DiaryQuestion(number: 1, category: '1. Santé, Sport & Sommeil', title: 'SOMMEIL', description: 'Qualité de la nuit, endormissement, récupération.'),
+  const DiaryQuestion(number: 2, category: '1. Santé, Sport & Sommeil', title: 'SPORT', description: 'Activité physique, étirements, mouvements.'),
+  const DiaryQuestion(number: 3, category: '1. Santé, Sport & Sommeil', title: 'DOULEUR', description: 'Présence et intensité de douleurs physiques ou inconforts.'),
+  const DiaryQuestion(number: 4, category: '1. Santé, Sport & Sommeil', title: 'ÉNERGIE & MALADIE', description: 'Vitalité globale, symptômes viraux ou fatigue chronique.'),
+  // 2. Alimentation
+  const DiaryQuestion(number: 5, category: '2. Alimentation', title: 'NOURRITURE', description: 'Qualité des repas, respect des objectifs nutritionnels.'),
+  const DiaryQuestion(number: 6, category: '2. Alimentation', title: 'HYDRATATION', description: 'Quantité d\'eau bue dans la journée.'),
+  const DiaryQuestion(number: 7, category: '2. Alimentation', title: 'ÉLIMINATION', description: 'Digestion, transit et confort intestinal.'),
+  const DiaryQuestion(number: 8, category: '2. Alimentation', title: 'EXCÈS', description: 'Gestion des craquages (trash food, sucre, excitants).'),
+  // 3. Psychisme
+  const DiaryQuestion(number: 9, category: '3. Psychisme', title: 'STRESS & ANXIÉTÉ', description: 'Niveau de tension interne, pics d\'angoisse.'),
+  const DiaryQuestion(number: 10, category: '3. Psychisme', title: 'HUMEUR & MORAL', description: 'Météo intérieure, optimisme ou rumination.'),
+  const DiaryQuestion(number: 11, category: '3. Psychisme', title: 'FOCUS & RÉFLEXION', description: 'Clarté mentale, concentration, gestion des distractions.'),
+  const DiaryQuestion(number: 12, category: '3. Psychisme', title: 'SPIRITUALITÉ & MÉDITATION', description: 'Temps de pause, alignement, pleine conscience.'),
+  // 4. Hygiène & Ménage
+  const DiaryQuestion(number: 13, category: '4. Hygiène & Ménage', title: 'HYGIÈNE DU CORPS', description: 'Douche, soins personnels, routine corporelle.'),
+  const DiaryQuestion(number: 14, category: '4. Hygiène & Ménage', title: 'RANGEMENT', description: 'Maintien de l\'ordre visuel dans les pièces de vie.'),
+  const DiaryQuestion(number: 15, category: '4. Hygiène & Ménage', title: 'PROPRETÉ & MÉNAGE', description: 'Nettoyage effectif (aspirateur, vaisselle, linge).'),
+  const DiaryQuestion(number: 16, category: '4. Hygiène & Ménage', title: 'ATMOSPHÈRE', description: 'Calme, aération et confort global de la maison.'),
+  // 5. Admin & Finances
+  const DiaryQuestion(number: 17, category: '5. Admin & Finances', title: 'TRAVAIL PRÉVU', description: 'Accomplissement des objectifs professionnels ou professionnels planifiés.'),
+  const DiaryQuestion(number: 18, category: '5. Admin & Finances', title: 'ÉTUDES & RECHERCHE', description: 'Temps dédié à l\'apprentissage, la programmation ou la lecture.'),
+  const DiaryQuestion(number: 19, category: '5. Admin & Finances', title: 'BUDGET & FINANCES', description: 'Suivi des comptes, contrôle des dépenses.'),
+  const DiaryQuestion(number: 20, category: '5. Admin & Finances', title: 'DÉMARCHES', description: 'Gestion des courriers, contrats et obligations légales.'),
+  // 6. Relations & Famille
+  const DiaryQuestion(number: 21, category: '6. Relations & Famille', title: 'VIE DE COUPLE', description: 'Complicité, partage, soutien mutuel.'),
+  const DiaryQuestion(number: 22, category: '6. Relations & Famille', title: 'FOYER & ENFANTS', description: 'Échanges avec les enfants, gestion du quotidien familial.'),
+  const DiaryQuestion(number: 23, category: '6. Relations & Famille', title: 'SOCIAL EXTÉRIEUR', description: 'Contacts avec les amis, collègues.'),
+  const DiaryQuestion(number: 24, category: '6. Relations & Famille', title: 'MONDE EXTÉRIEUR', description: 'Relation avec monde extérieur et inconnus : administration, institutions, prospect client...'),
 ];
 
 class DiaryState {
