@@ -19,13 +19,13 @@
 
 - number: 3
   category: "1. Santé, Sport & Sommeil"
-  title: "DOULEUR"
-  description: "Présence et intensité de douleurs physiques ou inconforts."
+  title: "BIEN ÊTRE PHYSIQUE"
+  description: "Intensité de confort et Gestion de douleurs physiques."
 
 - number: 4
   category: "1. Santé, Sport & Sommeil"
   title: "ÉNERGIE & MALADIE"
-  description: "Vitalité globale, symptômes viraux ou fatigue chronique."
+  description: "Gestion de l'immunité, des maladies et des virus."
 
 # 2. Alimentation
 - number: 5
@@ -45,14 +45,14 @@
 
 - number: 8
   category: "2. Alimentation"
-  title: "EXCÈS"
-  description: "Gestion des craquages (trash food, sucre, excitants)."
+  title: "GESTION DES EXCÈS"
+  description: "Gestion des envies (trash food, sucre, excitants)."
 
 # 3. Psychisme
 - number: 9
   category: "3. Psychisme"
-  title: "STRESS & ANXIÉTÉ"
-  description: "Niveau de tension interne, pics d'angoisse."
+  title: "CALME ET GESTION DU STRESS & DE L'ANXIÉTÉ"
+  description: "Gestion des tensions et de l'anxiété."
 
 - number: 10
   category: "3. Psychisme"

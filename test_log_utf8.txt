@@ -1,0 +1,433 @@
+﻿🌐 Web E2E Integration Test	Set up job	﻿2026-06-14T12:36:13.3728623Z Current runner version: '2.335.1'
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3754247Z ##[group]Runner Image Provisioner
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3755088Z Hosted Compute Agent
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3755774Z Version: 20260527.539
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3756485Z Commit: a891dd388383b896fa6ac04a82c0b75cec981078
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3757524Z Build Date: 2026-05-27T21:39:57Z
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3758259Z Worker ID: {3b5783a5-bd3d-4a11-bcb7-449970cc20e7}
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3758963Z Azure Region: centralus
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3759630Z ##[endgroup]
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3761121Z ##[group]Operating System
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3761754Z Ubuntu
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3762436Z 24.04.4
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3762948Z LTS
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3763478Z ##[endgroup]
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3764084Z ##[group]Runner Image
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3764675Z Image: ubuntu-24.04
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3765258Z Version: 20260607.184.1
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3766313Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260607.184/images/ubuntu/Ubuntu2404-Readme.md
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3768508Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260607.184
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3769486Z ##[endgroup]
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3770730Z ##[group]GITHUB_TOKEN Permissions
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3772615Z Contents: read
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3773655Z Metadata: read
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3774259Z Packages: read
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3774803Z ##[endgroup]
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3777403Z Secret source: Actions
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.3778447Z Prepare workflow directory
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.4168652Z Prepare all required actions
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.4223258Z Getting action download info
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.7269041Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:13.8000150Z Download action repository 'subosito/flutter-action@v2' (SHA:1a449444c387b1966244ae4d4f8c696479add0b2)
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:14.1213031Z Getting action download info
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:14.2018051Z Download action repository 'actions/cache@v5' (SHA:27d5ce7f107fe9357f9df03efb73ab90386fccae)
+🌐 Web E2E Integration Test	Set up job	2026-06-14T12:36:14.3388272Z Complete job name: 🌐 Web E2E Integration Test
+🌐 Web E2E Integration Test	📥 Checkout repository	﻿2026-06-14T12:36:14.4154749Z ##[group]Run actions/checkout@v4
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4155749Z with:
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4156278Z   repository: Stanworld80/VerySimpleDiary
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4161335Z   token: ***
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4161842Z   ssh-strict: true
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4162347Z   ssh-user: git
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4162857Z   persist-credentials: true
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4163398Z   clean: true
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4163908Z   sparse-checkout-cone-mode: true
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4164494Z   fetch-depth: 1
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4164977Z   fetch-tags: false
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4165471Z   show-progress: true
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4165980Z   lfs: false
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4166447Z   submodules: false
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4167397Z   set-safe-directory: true
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.4168323Z ##[endgroup]
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5256174Z Syncing repository: Stanworld80/VerySimpleDiary
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5258619Z ##[group]Getting Git version info
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5259573Z Working directory is '/home/runner/work/VerySimpleDiary/VerySimpleDiary'
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5260836Z [command]/usr/bin/git version
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5331225Z git version 2.54.0
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5356426Z ##[endgroup]
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5371231Z Temporarily overriding HOME='/home/runner/work/_temp/07074277-fa07-469b-89cf-e73aec7a26f9' before making global git config changes
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5373759Z Adding repository directory to the temporary git global config as a safe directory
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5383311Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/VerySimpleDiary/VerySimpleDiary
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5428849Z Deleting the contents of '/home/runner/work/VerySimpleDiary/VerySimpleDiary'
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5432442Z ##[group]Initializing the repository
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5436306Z [command]/usr/bin/git init /home/runner/work/VerySimpleDiary/VerySimpleDiary
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5519868Z hint: Using 'master' as the name for the initial branch. This default branch name
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5522129Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5523596Z hint: to use in all of your new repositories, which will suppress this warning,
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5524438Z hint: call:
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5525041Z hint:
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5526292Z hint: 	git config --global init.defaultBranch <name>
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5527792Z hint:
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5528934Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5530360Z hint: 'development'. The just-created branch can be renamed via this command:
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5531867Z hint:
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5532694Z hint: 	git branch -m <name>
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5533630Z hint:
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5534655Z hint: Disable this message with "git config set advice.defaultBranchName false"
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5536826Z Initialized empty Git repository in /home/runner/work/VerySimpleDiary/VerySimpleDiary/.git/
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5539897Z [command]/usr/bin/git remote add origin https://github.com/Stanworld80/VerySimpleDiary
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5583091Z ##[endgroup]
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5583985Z ##[group]Disabling automatic garbage collection
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5584719Z [command]/usr/bin/git config --local gc.auto 0
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5612275Z ##[endgroup]
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5619260Z ##[group]Setting up auth
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5620069Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5652557Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.5970944Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.6001080Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.6215511Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.6251726Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.6465138Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.6497958Z ##[endgroup]
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.6499371Z ##[group]Fetching the repository
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:14.6505615Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +b1d8e9f7b00146613818c0a9f7f81915dcf504c9:refs/remotes/origin/develop
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1121245Z From https://github.com/Stanworld80/VerySimpleDiary
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1123035Z  * [new ref]         b1d8e9f7b00146613818c0a9f7f81915dcf504c9 -> origin/develop
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1154705Z ##[endgroup]
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1157162Z ##[group]Determining the checkout info
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1159303Z ##[endgroup]
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1163205Z [command]/usr/bin/git sparse-checkout disable
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1207460Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1237593Z ##[group]Checking out the ref
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1239179Z [command]/usr/bin/git checkout --progress --force -B develop refs/remotes/origin/develop
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1437929Z Switched to a new branch 'develop'
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1440904Z branch 'develop' set up to track 'origin/develop'.
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1448196Z ##[endgroup]
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1483349Z [command]/usr/bin/git log -1 --format=%H
+🌐 Web E2E Integration Test	📥 Checkout repository	2026-06-14T12:36:15.1504527Z b1d8e9f7b00146613818c0a9f7f81915dcf504c9
+🌐 Web E2E Integration Test	🦅 Setup Flutter	﻿2026-06-14T12:36:15.2233706Z ##[group]Run subosito/flutter-action@v2
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2234934Z with:
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2235759Z   channel: stable
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2236837Z   cache: true
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2237719Z   architecture: X64
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2238872Z   pub-cache-path: default
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2239869Z   dry-run: false
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2240956Z   git-source: https://github.com/flutter/flutter.git
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2242248Z ##[endgroup]
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2392768Z ##[group]Run chmod +x "$GITHUB_ACTION_PATH/setup.sh"
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2394316Z [36;1mchmod +x "$GITHUB_ACTION_PATH/setup.sh"[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2604909Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2606315Z ##[endgroup]
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2779411Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh -p \
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2780808Z [36;1m$GITHUB_ACTION_PATH/setup.sh -p \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2782014Z [36;1m  -n '' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2782920Z [36;1m  -f '' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2783828Z [36;1m  -a 'X64' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2784795Z [36;1m  -k '' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2785744Z [36;1m  -c '' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2786908Z [36;1m  -l '' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2787874Z [36;1m  -d 'default' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2789099Z [36;1m  -g 'https://github.com/flutter/flutter.git' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2790401Z [36;1m  stable[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2822663Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.2824038Z ##[endgroup]
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.5932709Z ##[group]Run actions/cache@v5
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.5933755Z with:
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.5934746Z   path: /opt/hostedtoolcache/flutter/stable-3.44.2-x64
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.5936524Z   key: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.5938481Z   enableCrossOsArchive: false
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.5939541Z   fail-on-cache-miss: false
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.5940519Z   lookup-only: false
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.5941412Z   save-always: false
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.5942287Z ##[endgroup]
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:15.8678098Z Cache hit for: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:16.9974016Z Received 88080384 of 1688807015 (5.2%), 84.1 MBs/sec
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:18.0018740Z Received 268435456 of 1688807015 (15.9%), 127.9 MBs/sec
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:19.0038048Z Received 511705088 of 1688807015 (30.3%), 162.4 MBs/sec
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:20.0033416Z Received 696254464 of 1688807015 (41.2%), 165.8 MBs/sec
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:21.0078142Z Received 918552576 of 1688807015 (54.4%), 175.0 MBs/sec
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:22.0052325Z Received 1111490560 of 1688807015 (65.8%), 176.5 MBs/sec
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:23.0078487Z Received 1304428544 of 1688807015 (77.2%), 177.5 MBs/sec
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:24.0120055Z Received 1476395008 of 1688807015 (87.4%), 175.7 MBs/sec
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:25.0258532Z Received 1688807015 of 1688807015 (100.0%), 178.4 MBs/sec
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:25.0287709Z Cache Size: ~1611 MB (1688807015 B)
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:25.0342578Z [command]/usr/bin/tar -xf /home/runner/work/_temp/ac7adef2-dd08-4885-9f00-48cad25ebb84/cache.tzst -P -C /home/runner/work/VerySimpleDiary/VerySimpleDiary --use-compress-program unzstd
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:29.7839896Z Cache restored successfully
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:29.8637439Z Cache restored from key: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:29.9731740Z ##[group]Run actions/cache@v5
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:29.9732057Z with:
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:29.9732316Z   path: /home/runner/.pub-cache
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:29.9733076Z   key: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-67f383b0a8242614fd74784fd2715201d9d296554f94106bff991a6bab8f1052
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:29.9733879Z   enableCrossOsArchive: false
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:29.9734163Z   fail-on-cache-miss: false
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:29.9734439Z   lookup-only: false
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:29.9734687Z   save-always: false
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:29.9734928Z ##[endgroup]
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:30.2934973Z Cache hit for: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-67f383b0a8242614fd74784fd2715201d9d296554f94106bff991a6bab8f1052
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:31.6347870Z Received 53836828 of 53836828 (100.0%), 56.8 MBs/sec
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:31.6350498Z Cache Size: ~51 MB (53836828 B)
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:31.6458606Z [command]/usr/bin/tar -xf /home/runner/work/_temp/7c7cb149-3301-4009-9124-4fd4571a440f/cache.tzst -P -C /home/runner/work/VerySimpleDiary/VerySimpleDiary --use-compress-program unzstd
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:32.6332551Z Cache restored successfully
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:32.6444744Z Cache restored from key: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-67f383b0a8242614fd74784fd2715201d9d296554f94106bff991a6bab8f1052
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:32.6561051Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh \
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:32.6561441Z [36;1m$GITHUB_ACTION_PATH/setup.sh \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:32.6561791Z [36;1m  -n '3.44.2' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:32.6562036Z [36;1m  -a 'x64' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:32.6562378Z [36;1m  -c '/opt/hostedtoolcache/flutter/stable-3.44.2-x64' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:32.6562794Z [36;1m  -d '/home/runner/.pub-cache' \[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:32.6563093Z [36;1m  stable[0m
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:32.6595145Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+🌐 Web E2E Integration Test	🦅 Setup Flutter	2026-06-14T12:36:32.6595546Z ##[endgroup]
+🌐 Web E2E Integration Test	📦 Install dependencies	﻿2026-06-14T12:36:32.9583987Z ##[group]Run flutter pub get
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:32.9584360Z [36;1mflutter pub get[0m
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:32.9618015Z shell: /usr/bin/bash -e {0}
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:32.9618317Z env:
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:32.9618670Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:32.9640748Z   PUB_CACHE: /home/runner/.pub-cache
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:32.9641141Z ##[endgroup]
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.1761840Z Resolving dependencies...
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4498413Z Downloading packages...
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4906227Z   _fe_analyzer_shared 67.0.0 (103.0.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4907188Z   _flutterfire_internals 1.3.35 (1.3.72 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4918284Z   analyzer 6.4.1 (13.3.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4919099Z   analyzer_plugin 0.11.3 (0.14.12 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4919873Z   build 2.4.1 (4.0.6 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4920489Z   build_config 1.1.2 (1.3.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4921191Z   build_resolvers 2.4.2 (3.0.4 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4921774Z   build_runner 2.4.13 (2.15.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4922481Z   build_runner_core 7.3.2 (9.3.2 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4923090Z > characters 1.4.1 (was 1.4.0)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4923611Z   cli_util 0.4.2 (0.5.1 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4924152Z   cloud_firestore 4.17.5 (6.5.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4924855Z   cloud_firestore_platform_interface 6.2.5 (8.0.2 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4925573Z   cloud_firestore_web 3.12.5 (5.5.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4926183Z   custom_lint_core 0.6.3 (0.8.2 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4927020Z   dart_style 2.3.6 (3.1.9 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4927514Z   drift 2.19.1+1 (2.34.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4927984Z   drift_dev 2.19.1 (2.34.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4928461Z   firebase_auth 4.20.0 (6.5.2 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4929050Z   firebase_auth_platform_interface 7.3.0 (9.0.2 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4929701Z   firebase_auth_web 5.12.0 (6.2.2 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4930317Z   firebase_core 2.32.0 (4.10.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4930936Z   firebase_core_platform_interface 5.4.2 (7.0.1 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4931562Z   firebase_core_web 2.17.5 (3.8.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4932099Z   flutter_lints 3.0.2 (6.0.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4932609Z   flutter_riverpod 2.6.1 (3.3.2 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4933161Z   freezed_annotation 2.4.4 (3.1.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4933692Z   google_sign_in 6.3.0 (7.2.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4934452Z   google_sign_in_android 6.2.1 (7.2.13 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4935110Z   google_sign_in_ios 5.9.0 (6.3.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4935850Z   google_sign_in_platform_interface 2.5.0 (3.1.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4936586Z   google_sign_in_web 0.12.4+4 (1.1.3 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4937446Z   lints 3.0.0 (6.1.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4938120Z > matcher 0.12.19 (was 0.12.17) (0.12.20 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4939234Z > material_color_utilities 0.13.0 (was 0.11.1)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4939988Z > meta 1.18.0 (was 1.17.0) (1.18.3 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4940666Z   package_config 2.2.0 (3.0.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4941270Z   riverpod 2.6.1 (3.3.2 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4941912Z   riverpod_analyzer_utils 0.5.1 (0.5.10 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4942607Z   riverpod_annotation 2.6.1 (4.0.3 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4943276Z   riverpod_generator 2.4.0 (4.0.4 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4943933Z   shelf_web_socket 2.0.1 (3.0.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4944615Z   source_gen 1.5.0 (4.2.3 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4945241Z   sqlite3 2.4.5 (3.3.3 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4945901Z   sqlite3_flutter_libs 0.5.42 (0.6.0+eol available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4946589Z   sqlparser 0.37.1 (0.44.5 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4947594Z > test_api 0.7.11 (was 0.7.7) (0.7.12 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4948157Z   vector_math 2.2.0 (2.4.0 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4948667Z   web 0.5.1 (1.1.1 available)
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4949146Z Changed 5 dependencies!
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4950206Z 47 packages have newer versions incompatible with dependency constraints.
+🌐 Web E2E Integration Test	📦 Install dependencies	2026-06-14T12:36:33.4951052Z Try `flutter pub outdated` for more information.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	﻿2026-06-14T12:36:33.9338366Z ##[group]Run flutter pub run build_runner build --delete-conflicting-outputs
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:33.9338972Z [36;1mflutter pub run build_runner build --delete-conflicting-outputs[0m
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:33.9369734Z shell: /usr/bin/bash -e {0}
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:33.9370005Z env:
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:33.9370333Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:33.9370747Z   PUB_CACHE: /home/runner/.pub-cache
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:33.9371032Z ##[endgroup]
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:38.7027670Z [INFO] Generating build script...
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:38.9876925Z [INFO] Generating build script completed, took 294ms
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:38.9877547Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:39.0250342Z [INFO] Precompiling build script......
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:44.5535711Z [INFO] Precompiling build script... completed, took 5.5s
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:44.5536174Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:45.0825484Z [INFO] Initializing inputs
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:45.4710752Z [INFO] Building new asset graph...
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:46.6978218Z [INFO] Building new asset graph completed, took 1.2s
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:46.6978829Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:46.6986157Z [INFO] Checking for unexpected pre-existing outputs....
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:46.6994496Z [INFO] Deleting 1 declared outputs which already existed on disk.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:46.7007432Z [INFO] Checking for unexpected pre-existing outputs. completed, took 2ms
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:46.7007987Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:46.7093650Z [INFO] Running build...
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:46.7467851Z [INFO] Generating SDK summary...
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:48.8819363Z [INFO] 2.2s elapsed, 0/16 actions completed.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:50.9101000Z [INFO] 4.2s elapsed, 0/16 actions completed.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3534575Z [WARNING] riverpod_generator on test/score_calculator_limit_test.dart:
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3535595Z Your current `analyzer` version may not fully support your current SDK version.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3536135Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3536308Z Analyzer language version: 3.4.0
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3536944Z SDK language version: 3.12.0
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3537215Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3537530Z Please update to the latest `analyzer` version (13.3.0) by running
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3538114Z `flutter packages upgrade`.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3538380Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3538700Z If you are not getting the latest version by running the above command, you
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3539493Z can try adding a constraint like the following to your pubspec to start
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3540161Z diagnosing why you can't get the latest version:
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3540515Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3540656Z dev_dependencies:
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3540987Z   analyzer: ^13.3.0
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.3541193Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.9254060Z [INFO] Generating SDK summary completed, took 5.2s
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:51.9255025Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:52.9443536Z [INFO] 6.2s elapsed, 35/36 actions completed.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:54.0100886Z [INFO] 7.3s elapsed, 56/88 actions completed.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:55.8385345Z [INFO] 9.1s elapsed, 62/90 actions completed.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:36:57.6806022Z [INFO] 11.0s elapsed, 81/109 actions completed.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:37:04.6141682Z [INFO] 17.9s elapsed, 109/131 actions completed.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:37:06.2412551Z [INFO] 19.5s elapsed, 123/139 actions completed.
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:37:07.1837197Z [INFO] Running build completed, took 20.5s
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:37:07.1837684Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:37:07.1837875Z [INFO] Caching finalized dependency graph...
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:37:07.2604669Z [INFO] Caching finalized dependency graph completed, took 76ms
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:37:07.2605209Z 
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:37:07.2629285Z [INFO] Succeeded after 20.6s with 117 outputs (320 actions)
+🌐 Web E2E Integration Test	⚙️ Run build_runner	2026-06-14T12:37:07.2629758Z 
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	﻿2026-06-14T12:37:07.3678579Z ##[group]Run chromedriver --port=4444 &
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.3678987Z [36;1mchromedriver --port=4444 &[0m
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.3679610Z [36;1mflutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_e2e_test.dart -d web-server[0m
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.3710834Z shell: /usr/bin/bash -e {0}
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.3711101Z env:
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.3711421Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.3711835Z   PUB_CACHE: /home/runner/.pub-cache
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.3712119Z ##[endgroup]
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.5563680Z Resolving dependencies...
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.7144644Z Downloading packages...
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8084442Z   _fe_analyzer_shared 67.0.0 (103.0.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8085268Z   _flutterfire_internals 1.3.35 (1.3.72 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8086093Z   analyzer 6.4.1 (13.3.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8086847Z   analyzer_plugin 0.11.3 (0.14.12 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8087394Z   build 2.4.1 (4.0.6 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8087904Z   build_config 1.1.2 (1.3.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8088400Z   build_resolvers 2.4.2 (3.0.4 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8088891Z   build_runner 2.4.13 (2.15.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8089388Z   build_runner_core 7.3.2 (9.3.2 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8089856Z   cli_util 0.4.2 (0.5.1 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8090400Z   cloud_firestore 4.17.5 (6.5.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8091125Z   cloud_firestore_platform_interface 6.2.5 (8.0.2 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8091880Z   cloud_firestore_web 3.12.5 (5.5.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8092426Z   custom_lint_core 0.6.3 (0.8.2 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8092796Z   dart_style 2.3.6 (3.1.9 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8093141Z   drift 2.19.1+1 (2.34.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8093487Z   drift_dev 2.19.1 (2.34.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8093843Z   firebase_auth 4.20.0 (6.5.2 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8094307Z   firebase_auth_platform_interface 7.3.0 (9.0.2 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8094784Z   firebase_auth_web 5.12.0 (6.2.2 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8095165Z   firebase_core 2.32.0 (4.10.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8095603Z   firebase_core_platform_interface 5.4.2 (7.0.1 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8096060Z   firebase_core_web 2.17.5 (3.8.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8096437Z   flutter_lints 3.0.2 (6.0.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8097056Z   flutter_riverpod 2.6.1 (3.3.2 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8097366Z   freezed_annotation 2.4.4 (3.1.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8097666Z   google_sign_in 6.3.0 (7.2.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8097977Z   google_sign_in_android 6.2.1 (7.2.13 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8098291Z   google_sign_in_ios 5.9.0 (6.3.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8098642Z   google_sign_in_platform_interface 2.5.0 (3.1.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8099020Z   google_sign_in_web 0.12.4+4 (1.1.3 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8099322Z   lints 3.0.0 (6.1.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8099579Z   matcher 0.12.19 (0.12.20 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8099864Z   meta 1.18.0 (1.18.3 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8100131Z   package_config 2.2.0 (3.0.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8100657Z   riverpod 2.6.1 (3.3.2 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8100965Z   riverpod_analyzer_utils 0.5.1 (0.5.10 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8101297Z   riverpod_annotation 2.6.1 (4.0.3 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8101608Z   riverpod_generator 2.4.0 (4.0.4 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8101910Z   shelf_web_socket 2.0.1 (3.0.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8102195Z   source_gen 1.5.0 (4.2.3 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8102460Z   sqlite3 2.4.5 (3.3.3 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8102766Z   sqlite3_flutter_libs 0.5.42 (0.6.0+eol available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8103090Z   sqlparser 0.37.1 (0.44.5 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8103366Z   test_api 0.7.11 (0.7.12 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8103630Z   vector_math 2.2.0 (2.4.0 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8103890Z   web 0.5.1 (1.1.1 available)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8104145Z Got dependencies!
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8104667Z 47 packages have newer versions incompatible with dependency constraints.
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8105120Z Try `flutter pub outdated` for more information.
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8621575Z Starting ChromeDriver 149.0.7827.54 (42ce21f112d0b2ba486bbb5cadb225f78b4ddb97-refs/branch-heads/7827@{#1981}) on port 4444
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8623162Z Only local connections are allowed.
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:07.8624524Z Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:08.2444359Z Launching integration_test/app_e2e_test.dart on Web Server in debug mode...
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:08.2687010Z ChromeDriver was started successfully on port 4444.
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:37.4274291Z Waiting for connection from debug service on Web Server...         28.1s
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:37.4629345Z integration_test/app_e2e_test.dart is being served at http://localhost:44157
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:37.4631086Z The web-server device requires the Dart Debug Chrome extension for debugging. Consider using the Chrome or Edge devices for an improved development workflow.
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:50.5970646Z Debug service listening on ws://127.0.0.1:39605/KUBA_cBXMZs=/ws
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:50.5977546Z A Dart VM Service on Web Server is available at: http://127.0.0.1:39605/KUBA_cBXMZs=
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:37:50.5982760Z The Flutter DevTools debugger and profiler on Web Server is available at: http://127.0.0.1:39605/KUBA_cBXMZs=/devtools/?uri=ws://127.0.0.1:39605/KUBA_cBXMZs=/ws
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.8837705Z Failure Details:
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.8897755Z Failure in method: Complete user flow (Login -> Question grid -> Summary validation)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.8917612Z ══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞═════════════════
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.8927348Z The following TestFailure was thrown running a test:
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.8949442Z Expected: exactly one matching candidate
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.8977251Z   Actual: _TextWidgetFinder:<Found 0 widgets with text "Explorer
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9067515Z les données": []>
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9068195Z    Which: means none were found but one was expected
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9068678Z 
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9068958Z When the exception was thrown, this was the stack:
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9069877Z dart-sdk/lib/_internal/js_dev_runtime/private/ddc_runtime/errors.dart 274:3       throw_
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9071007Z package:matcher/src/expect/expect.dart 187:31                                     fail
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9072117Z package:matcher/src/expect/expect.dart 182:3                                      _expect
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9073355Z package:matcher/src/expect/expect.dart 65:3                                       expect$
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9074451Z package:flutter_test/src/widget_tester.dart 473:18                                expect$
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9075629Z app_e2e_test.dart 92:7                                                            <fn>
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9076823Z dart-sdk/lib/_internal/js_dev_runtime/patch/async_patch.dart 618:19               <fn>
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9077957Z dart-sdk/lib/_internal/js_dev_runtime/patch/async_patch.dart 643:23               <fn>
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9079454Z dart-sdk/lib/_internal/js_dev_runtime/patch/async_patch.dart 589:19               <fn>
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9080538Z dart-sdk/lib/async/zone_root.dart 48:47                                           _rootRunUnary
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9081640Z dart-sdk/lib/_internal/js_dev_runtime/private/ddc_runtime/operations.dart 118:77  tear
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9082706Z dart-sdk/lib/async/zone.dart 733:19                                               runUnary
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9083763Z dart-sdk/lib/async/future_impl.dart 222:18                                        handleValue
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9084881Z dart-sdk/lib/async/future_impl.dart 948:44                                        handleValueCallback
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9086047Z dart-sdk/lib/async/future_impl.dart 977:13                                        _propagateToListeners
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9087397Z dart-sdk/lib/async/future_impl.dart 720:5                                         [_completeWithValue]
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9088720Z dart-sdk/lib/async/future_impl.dart 804:7                                         <fn>
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9089740Z dart-sdk/lib/async/zone_root.dart 35:13                                           _rootRun
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9090822Z dart-sdk/lib/_internal/js_dev_runtime/private/ddc_runtime/operations.dart 118:77  tear
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9091866Z dart-sdk/lib/async/zone.dart 726:19                                               run
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9092871Z dart-sdk/lib/async/zone.dart 625:7                                                runGuarded
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9093874Z dart-sdk/lib/async/zone.dart 666:23                                               <fn>
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9094959Z dart-sdk/lib/async/schedule_microtask.dart 40:34                                  _microtaskLoop
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9096181Z dart-sdk/lib/async/schedule_microtask.dart 49:5                                   _startMicrotaskLoop
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9097556Z dart-sdk/lib/_internal/js_dev_runtime/private/ddc_runtime/operations.dart 118:77  tear
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9098651Z dart-sdk/lib/_internal/js_dev_runtime/patch/async_patch.dart 183:69               <fn>
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9099278Z 
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9099494Z The test description was:
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9100118Z   Complete user flow (Login -> Question grid -> Summary
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9100796Z   validation)
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9101590Z ═════════════════════════════════════════════════════════════════
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9102092Z 
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9102310Z end of failure 1
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9102617Z 
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9102627Z 
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9102632Z 
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:11.9754933Z Application finished.
+🌐 Web E2E Integration Test	🌐 Run Web Integration Test (Headless Chrome)	2026-06-14T12:38:17.0230739Z ##[error]Process completed with exit code 1.
+🌐 Web E2E Integration Test	Post 🦅 Setup Flutter	﻿2026-06-14T12:38:17.0405312Z Post job cleanup.
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	﻿2026-06-14T12:38:17.0483437Z Post job cleanup.
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.1470099Z [command]/usr/bin/git version
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.1505591Z git version 2.54.0
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.1549939Z Temporarily overriding HOME='/home/runner/work/_temp/bab130bd-70a9-40c5-b86d-18ece21b6f8c' before making global git config changes
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.1551494Z Adding repository directory to the temporary git global config as a safe directory
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.1563488Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/VerySimpleDiary/VerySimpleDiary
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.1598654Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.1630629Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.1847591Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.1870317Z http.https://github.com/.extraheader
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.1882725Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.1913667Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.2127029Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+🌐 Web E2E Integration Test	Post 📥 Checkout repository	2026-06-14T12:38:17.2160767Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+🌐 Web E2E Integration Test	Complete job	﻿2026-06-14T12:38:17.2505269Z Cleaning up orphan processes
+🌐 Web E2E Integration Test	Complete job	2026-06-14T12:38:17.2811593Z Terminate orphan process: pid (2733) (chromedriver)
+🌐 Web E2E Integration Test	Complete job	2026-06-14T12:38:17.2836509Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4. Actions will be forced to run with Node.js 24 by default starting June 16th, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
