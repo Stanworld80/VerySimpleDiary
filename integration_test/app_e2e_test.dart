@@ -26,7 +26,7 @@ void main() {
 
       // 1. Verify we are on the Login Screen
       expect(find.text('Very Simple Diary'), findsOneWidget);
-      expect(find.text('Valider'), findsOneWidget);
+      expect(find.text('Se connecter'), findsOneWidget);
 
       // Enter login credentials
       final emailField = find.byType(TextFormField).first;
@@ -36,8 +36,8 @@ void main() {
       await tester.enterText(passwordField, 'password123');
       await tester.pumpAndSettle();
 
-      // Tap Valider
-      final validerButton = find.widgetWithText(ElevatedButton, 'Valider');
+      // Tap Se connecter
+      final validerButton = find.widgetWithText(ElevatedButton, 'Se connecter');
       await tester.tap(validerButton);
       await tester.pumpAndSettle();
       await tester.pump(const Duration(seconds: 1));
