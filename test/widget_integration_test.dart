@@ -2,13 +2,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:verysimplediary/main.dart';
 import 'package:verysimplediary/core/db/local_database.dart';
 import 'package:verysimplediary/features/auth/repository/auth_repository.dart';
 import 'package:verysimplediary/features/diary/repository/diary_repository.dart';
 import 'package:verysimplediary/features/diary/repository/sync_repository.dart';
-import 'package:verysimplediary/features/diary/controller/diary_controller.dart';
 
 class MockDiaryRepository implements DiaryRepository {
   final _dayController = StreamController<DiaryDay?>.broadcast();

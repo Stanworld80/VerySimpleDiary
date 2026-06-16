@@ -222,7 +222,7 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
                         ),
                         Icon(
                           _useMean ? Icons.analytics_rounded : Icons.equalizer_rounded,
-                          color: AppTheme.textSecondary.withOpacity(0.4),
+                          color: AppTheme.textSecondary.withValues(alpha: 0.4),
                           size: 16,
                         ),
                       ],
@@ -399,7 +399,7 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
                                                 if (comment.isNotEmpty)
                                                   Text(
                                                     '"$comment"',
-                                                    style: TextStyle(fontSize: 8, fontStyle: FontStyle.italic, color: Colors.white.withOpacity(0.6)),
+                                                    style: TextStyle(fontSize: 8, fontStyle: FontStyle.italic, color: Colors.white.withValues(alpha: 0.6)),
                                                     maxLines: 1,
                                                     overflow: TextOverflow.ellipsis,
                                                   ),

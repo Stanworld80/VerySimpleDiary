@@ -228,7 +228,7 @@ class SummaryScreen extends ConsumerWidget {
                           question.category.substring(question.category.indexOf('.') + 1).trim(),
                           style: TextStyle(
                             fontSize: 10,
-                            color: AppTheme.primaryLight.withOpacity(0.8),
+                            color: AppTheme.primaryLight.withValues(alpha: 0.8),
                             fontWeight: FontWeight.w600,
                           ),
                           maxLines: 1,
@@ -274,7 +274,7 @@ class SummaryScreen extends ConsumerWidget {
                                                 if (comment.isNotEmpty)
                                                   Text(
                                                     '"$comment"',
-                                                    style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic, color: Colors.white.withOpacity(0.7)),
+                                                    style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic, color: Colors.white.withValues(alpha: 0.7)),
                                                     maxLines: 1,
                                                     overflow: TextOverflow.ellipsis,
                                                   ),
