@@ -196,7 +196,7 @@ void main() {
 
     // 2. Verify Home Screen is now loaded
     expect(find.text('Votre journal sémantique personnel, sécurisé et local.'), findsOneWidget);
-    expect(find.text('Explorer les données'), findsOneWidget);
+    expect(find.text('Exploration'), findsOneWidget);
 
     // Tap on the daily diary button
     final journalButton = find.byWidgetPredicate(
@@ -255,7 +255,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Tap "Explorer les données"
-    final explorerButton = find.widgetWithText(OutlinedButton, 'Explorer les données');
+    final explorerButton = find.widgetWithText(OutlinedButton, 'Exploration');
     expect(explorerButton, findsOneWidget);
     await tester.tap(explorerButton);
     await tester.pumpAndSettle();
