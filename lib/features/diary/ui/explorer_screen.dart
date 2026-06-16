@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controller/diary_controller.dart';
 import '../repository/diary_repository.dart';
-import '../repository/sync_repository.dart';
 import '../../../core/db/local_database.dart';
 import 'summary_screen.dart';
 // diary_screen.dart removed since modification is separated
