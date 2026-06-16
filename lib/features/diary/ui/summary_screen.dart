@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controller/diary_controller.dart';
+import 'home_screen.dart';
 import '../../../core/db/local_database.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/version_footer.dart';
@@ -340,8 +341,11 @@ class SummaryScreen extends ConsumerWidget {
                       backgroundColor: AppTheme.levelOptimal,
                     ),
                   );
-                  // Go back to diary screen starting point
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  // Go back to home screen
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const HomeScreen()),
+                    (route) => false,
+                  );
                 }
               },
               icon: const Icon(Icons.check_circle_rounded),

@@ -32,7 +32,7 @@ void main() {
       await tester.enterText(passwordField, 'password123');
       await tester.pumpAndSettle();
 
-      final validerButton = find.widgetWithText(ElevatedButton, 'Valider');
+      final validerButton = find.widgetWithText(ElevatedButton, 'Se connecter');
       await tester.tap(validerButton);
       await tester.pumpAndSettle();
       await tester.pump(const Duration(seconds: 1));
@@ -109,7 +109,7 @@ void main() {
       }
 
       // Now tap "Explorer les données"
-      final explorerButton = find.widgetWithText(ElevatedButton, 'Explorer les données');
+      final explorerButton = find.widgetWithText(OutlinedButton, 'Explorer les données');
       expect(explorerButton, findsOneWidget);
       await tester.tap(explorerButton);
       await tester.pumpAndSettle();
