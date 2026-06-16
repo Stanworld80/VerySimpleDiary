@@ -112,6 +112,11 @@ class DiaryRepository {
     await (_db.update(_db.diaryDays)..where((tbl) => tbl.id.equals(id))).write(companion);
   }
 
+  // Delete diary day by date
+  Future<void> deleteDiaryDay(String date) async {
+    await (_db.delete(_db.diaryDays)..where((tbl) => tbl.date.equals(date))).go();
+  }
+
   // Watch all responses
   Stream<List<DiaryResponse>> watchAllResponses() {
     return _db.select(_db.diaryResponses).watch();

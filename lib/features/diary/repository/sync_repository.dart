@@ -258,6 +258,23 @@ class SyncRepository {
       await _db.into(_db.diaryResponses).insertOnConflictUpdate(companion);
     }
   }
+
+  // Delete day locally and remotely
+  Future<void> deleteDay(String date) async {
+    await (_db.delete(_db.diaryDays)..where((tbl) => tbl.date.equals(date))).go();
+    
+    if (_auth == null || _firestore == null) return;
+    final user = _auth.currentUser;
+    if (user == null) return;
+    
+    try {
+      final docRef = _firestore!.collection('users').doc(user.uid).collection('diary_days').doc(date);
+      await docRef.delete();
+      debugPrint("Deleted day $date from Firestore.");
+    } catch (e) {
+      debugPrint("Failed to delete day $date from Firestore: $e");
+    }
+  }
 }
 
 // Providers

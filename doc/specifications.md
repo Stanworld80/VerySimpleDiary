@@ -96,6 +96,7 @@ L'application utilise un gabarit unique pour guider l'utilisateur à travers 24 
   * **Périodes** : Nuit (00h-05h), Matin (05h-11h), Journée (11h-17h), Soir (17h-00h).
   * **Options** : Négatif (-2), Nul (-1), Moyen (0), Bon (+1), Optimal (+2).
   * **Règle de Sélection** : Choix multiple libre. L'utilisateur peut cocher entre 0 et 5 cases par ligne (ex. s'il a ressenti à la fois une grande fatigue ("Négatif") et un moment de sursaut d'énergie ("Optimal") pendant la journée).
+  * **Commentaires par Période** : En tapant sur le nom d'une période (ex. "Nuit (00h-05h)", "Matin (05h-11h)", etc.), une boîte de dialogue s'ouvre permettant à l'utilisateur de saisir un commentaire textuel libre (limité à 64 caractères) pour apporter du contexte sémantique (ex. "Sommeil agité", "Séance de fractionné intense").
 * **Navigation** : Le bouton "Suivant" valide, enregistre l'état actuel en brouillon local, et passe à la question suivante avec une micro-animation fluide de transition latérale.
 
 ### 2.3 Écran Récapitulatif Final
@@ -118,6 +119,22 @@ Affiché automatiquement après la validation de la 24ème question.
 ### 2.4 Gestion des Dates et Périodicité
 * **Fenêtre temporelle d'enregistrement** : Par défaut, la saisie quotidienne enregistre les ressentis sur la période allant de **22h00 la veille** à **00h00 (minuit) le jour même** (couvrant ainsi la nuit complète précédente).
 * **Persistance continue (Brouillon)** : Chaque pression sur "Suivant" écrit immédiatement en base locale. Si l'application est tuée, elle se rouvre sur la question en cours.
+
+### 2.5 Écran d'Exploration des Données (Dashboard)
+Cet écran offre une vue d'ensemble et permet d'analyser l'historique des données récoltées.
+
+* **Statistiques Globales** : Résumé en tête d'écran indiquant le nombre total de jours suivis et le score moyen sur les jours finalisés.
+* **Filtres d'Affichage** :
+  * Filtre par statut : Tout, Brouillons, Finalisés.
+  * Filtre par niveau : Tout, Optimal, Bon, Moyen, Nul, Négatif.
+* **Évolution sur Période** :
+  * Sélection d'une plage de dates (De / À) via un calendrier.
+  * Sélection du type de calcul (Moyenne ou Médiane) pour afficher les tendances sous forme de carrousel horizontal pour les 24 questions thématiques.
+* **Aperçu des Choix de la Journée Sélectionnée** :
+  * Affiche en détail les réponses et commentaires saisis pour la journée sélectionnée dans la liste.
+  * **Bouton Modifier (Crayon)** : Permet de modifier la journée. Après confirmation par boîte de dialogue, la journée repasse en statut `"draft"` et l'utilisateur est redirigé vers le questionnaire pour modifier ses réponses.
+  * **Bouton Supprimer (Poubelle rouge)** : Supprime définitivement la journée. Après confirmation par boîte de dialogue, les données sont effacées localement et sur le cloud (Firestore). La sélection bascule automatiquement sur la journée suivante.
+* **Liste des Journaux Enregistrés** : Liste chronologique affichant la date, le statut (Brouillon/Finalisé), le score, le niveau et le texte explicatif d'insight. Un tap sur une ligne met en valeur cette journée pour en afficher l'aperçu. Un clic sur l'icône de flèche ouvre le questionnaire (si brouillon) ou le récapitulatif final (si finalisé).
 
 ---
 
@@ -181,6 +198,10 @@ Le modèle est conçu pour être plat et rapide à requêter, particulièrement 
 * `matin_values` : SmallInt
 * `journee_values` : SmallInt
 * `soir_values` : SmallInt
+* `nuit_comment` : Text (Commentaire sémantique de la nuit, limité à 64 caractères)
+* `matin_comment` : Text (Commentaire sémantique du matin, limité à 64 caractères)
+* `journee_comment` : Text (Commentaire sémantique de la journée, limité à 64 caractères)
+* `soir_comment` : Text (Commentaire sémantique du soir, limité à 64 caractères)
 * `updated_at` : Timestamp
 
 > [!NOTE]
@@ -206,15 +227,23 @@ Le document embarque la totalité de la structure pour éviter les jointures co�
   "responses": {
     "q01_sommeil": {
       "nuit": [-1, 0],
+      "nuit_comment": "Sommeil agité",
       "matin": [1],
+      "matin_comment": "",
       "journee": [2],
-      "soir": [1, 2]
+      "journee_comment": "",
+      "soir": [1, 2],
+      "soir_comment": ""
     },
     "q02_sport": {
       "nuit": [],
+      "nuit_comment": "",
       "matin": [0],
+      "matin_comment": "Petite séance d'étirements",
       "journee": [1],
-      "soir": [-2]
+      "journee_comment": "",
+      "soir": [-2],
+      "soir_comment": "Douleur genou"
     }
   },
   "created_at": "2026-06-12T07:15:00Z",

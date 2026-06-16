@@ -118,6 +118,14 @@ class MockDiaryRepository implements DiaryRepository {
     }
   }
 
+  @override
+  Future<void> deleteDiaryDay(String date) async {
+    if (currentDay?.date == date) {
+      currentDay = null;
+      _dayController.add(null);
+    }
+  }
+
   void dispose() {
     _dayController.close();
     _responsesController.close();
@@ -130,6 +138,9 @@ class MockSyncRepository implements SyncRepository {
 
   @override
   Future<void> syncAll() async {}
+
+  @override
+  Future<void> deleteDay(String date) async {}
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controller/diary_controller.dart';
 import '../repository/diary_repository.dart';
+import '../repository/sync_repository.dart';
 import '../../../core/db/local_database.dart';
 import 'summary_screen.dart';
 import 'diary_screen.dart';
@@ -274,22 +275,45 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'CHOIX DU $dateText',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.textSecondary,
-                    letterSpacing: 1.2,
+                Expanded(
+                  child: Text(
+                    'CHOIX DU $dateText',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textSecondary,
+                      letterSpacing: 1.2,
+                    ),
                   ),
                 ),
-                Text(
-                  'Score: ${diaryState.diaryDay!.totalScore.toInt()}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: _getLevelColor(diaryState.diaryDay!.level),
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Score: ${diaryState.diaryDay!.totalScore.toInt()}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: _getLevelColor(diaryState.diaryDay!.level),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined, size: 16, color: AppTheme.primaryLight),
+                      tooltip: 'Modifier',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () => _showEditConfirmation(context, diaryState.diaryDay!),
+                    ),
+                    const SizedBox(width: 12),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline_rounded, size: 16, color: AppTheme.levelNegatif),
+                      tooltip: 'Supprimer',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () => _showDeleteConfirmation(context, diaryState.diaryDay!),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -450,6 +474,123 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
       default:
         return AppTheme.textSecondary;
     }
+  }
+
+  void _showEditConfirmation(BuildContext context, DiaryDay day) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          backgroundColor: AppTheme.darkCard,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: const BorderSide(color: Color(0xFF2E3047), width: 1.5),
+          ),
+          title: const Text(
+            'Modifier cette journée ?',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            'Cette action va repasser cette journée en brouillon et ouvrir le questionnaire pour la journée du ${_formatDisplayDate(day.date)}. Confirmer ?',
+            style: const TextStyle(color: AppTheme.textSecondary),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Annuler', style: TextStyle(color: AppTheme.textSecondary)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primary,
+                minimumSize: const Size(100, 40),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+              ),
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                
+                if (day.status == 'finalized') {
+                  await ref.read(diaryRepositoryProvider).updateDiaryDay(
+                    id: day.id,
+                    status: 'draft',
+                    total: day.totalScore,
+                    mean: day.meanScore,
+                    median: day.medianScore,
+                    level: day.level,
+                    insight: day.insightText,
+                  );
+                  await ref.read(syncRepositoryProvider).syncDay(day.date);
+                }
+
+                ref.read(diaryDateProvider.notifier).state = day.date;
+                if (context.mounted) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const DiaryScreen()),
+                  );
+                }
+              },
+              child: const Text('Confirmer'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, DiaryDay day) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          backgroundColor: AppTheme.darkCard,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: const BorderSide(color: Color(0xFF2E3047), width: 1.5),
+          ),
+          title: const Text(
+            'Supprimer cette journée ?',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            'Attention, cette action est irréversible et supprimera définitivement toutes les données saisies pour le ${_formatDisplayDate(day.date)} (locale et cloud). Confirmer ?',
+            style: const TextStyle(color: AppTheme.textSecondary),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Annuler', style: TextStyle(color: AppTheme.textSecondary)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.levelNegatif,
+                minimumSize: const Size(100, 40),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+              ),
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                
+                await ref.read(syncRepositoryProvider).deleteDay(day.date);
+                
+                setState(() {
+                  if (_highlightedDate == day.date) {
+                    _highlightedDate = null;
+                  }
+                });
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('La journée du ${_formatDisplayDate(day.date)} a été supprimée.'),
+                      backgroundColor: AppTheme.levelNegatif,
+                    ),
+                  );
+                }
+              },
+              child: const Text('Supprimer'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

@@ -39,9 +39,17 @@ void main() {
       // Tap Se connecter
       final validerButton = find.widgetWithText(ElevatedButton, 'Se connecter');
       await tester.tap(validerButton);
-      await tester.pumpAndSettle();
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pumpAndSettle();
+      await tester.pump();
+
+      bool homeScreenVisibleAfterLogin = false;
+      for (int i = 0; i < 30; i++) {
+        await tester.pump(const Duration(milliseconds: 200));
+        if (find.text('Explorer les données').evaluate().isNotEmpty) {
+          homeScreenVisibleAfterLogin = true;
+          break;
+        }
+      }
+      expect(homeScreenVisibleAfterLogin, isTrue);
 
       // 2. We should now be on the Home Screen
       expect(find.text('Explorer les données'), findsOneWidget);
@@ -88,12 +96,19 @@ void main() {
       // Tap "Valider la journée"
       final finalizeButton = find.widgetWithText(ElevatedButton, 'Valider la journée');
       await tester.tap(finalizeButton);
-      await tester.pumpAndSettle();
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
-      // We should be redirected back to the Home Screen
-      expect(find.text('Explorer les données'), findsOneWidget);
+      // We should be redirected back to the Home Screen. Since finalizeDay is async,
+      // we pump and wait in a loop until the home screen is visible.
+      bool homeScreenVisible = false;
+      for (int i = 0; i < 30; i++) {
+        await tester.pump(const Duration(milliseconds: 200));
+        if (find.text('Explorer les données').evaluate().isNotEmpty) {
+          homeScreenVisible = true;
+          break;
+        }
+      }
+      expect(homeScreenVisible, isTrue);
     });
   });
 }

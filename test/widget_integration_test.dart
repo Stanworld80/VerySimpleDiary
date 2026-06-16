@@ -130,6 +130,16 @@ class MockDiaryRepository implements DiaryRepository {
     }
   }
 
+  @override
+  Future<void> deleteDiaryDay(String date) async {
+    allDays.removeWhere((d) => d.date == date);
+    _allDaysController.add(allDays);
+    if (currentDay?.date == date) {
+      currentDay = null;
+      _dayController.add(null);
+    }
+  }
+
   void dispose() {
     _dayController.close();
     _responsesController.close();
@@ -142,6 +152,8 @@ class MockSyncRepository implements SyncRepository {
   Future<void> syncDay(String date) async {}
   @override
   Future<void> syncAll() async {}
+  @override
+  Future<void> deleteDay(String date) async {}
 }
 
 void main() {
