@@ -195,6 +195,7 @@ jobs:
         run: |
           chromedriver --port=4444 &
           flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_e2e_test.dart -d web-server
+          flutter drive --driver=test_driver/integration_test.dart --target=integration_test/comments_and_stats_e2e_test.dart -d web-server
 
   post-deploy-smoke-test:
     name: 💨 Post-Deploy Smoke Test
