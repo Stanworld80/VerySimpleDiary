@@ -26,6 +26,12 @@ class MockDiaryRepository implements DiaryRepository {
   }
 
   @override
+  Stream<List<DiaryResponse>> watchAllResponses() async* {
+    yield currentResponses;
+    yield* _responsesController.stream;
+  }
+
+  @override
   Stream<List<DiaryDay>> watchAllDiaryDays() async* {
     if (currentDay != null) {
       yield [currentDay!];
@@ -60,6 +66,10 @@ class MockDiaryRepository implements DiaryRepository {
     required List<int> matin,
     required List<int> journee,
     required List<int> soir,
+    String nuitComment = '',
+    String matinComment = '',
+    String journeeComment = '',
+    String soirComment = '',
   }) async {
     final resp = DiaryResponse(
       id: '${diaryDayId}_$questionNumber',
@@ -69,6 +79,10 @@ class MockDiaryRepository implements DiaryRepository {
       matinValues: matin.join(','),
       journeeValues: journee.join(','),
       soirValues: soir.join(','),
+      nuitComment: nuitComment,
+      matinComment: matinComment,
+      journeeComment: journeeComment,
+      soirComment: soirComment,
       updatedAt: DateTime.now(),
     );
     currentResponses.removeWhere((r) => r.questionNumber == questionNumber);
@@ -207,6 +221,34 @@ void main() {
       expect(state.currentSelection['journee'], equals([-1]));
     });
 
+    test('Set comment and save comments draft', () async {
+      final notifier = container.read(diaryControllerProvider(testDate).notifier);
+      await Future.delayed(Duration.zero);
+
+      notifier.setComment('matin', 'feeling good');
+      notifier.setComment('soir', 'tired but happy');
+
+      var state = container.read(diaryControllerProvider(testDate));
+      expect(state.currentComments['matin'], 'feeling good');
+      expect(state.currentComments['soir'], 'tired but happy');
+
+      await notifier.nextQuestion();
+
+      expect(mockRepository.currentResponses.length, 1);
+      expect(mockRepository.currentResponses.first.matinComment, 'feeling good');
+      expect(mockRepository.currentResponses.first.soirComment, 'tired but happy');
+    });
+
+    test('Comment length is limited to 64 characters', () {
+      final notifier = container.read(diaryControllerProvider(testDate).notifier);
+      final longComment = 'a' * 100;
+      notifier.setComment('nuit', longComment);
+
+      final state = container.read(diaryControllerProvider(testDate));
+      expect(state.currentComments['nuit']!.length, 64);
+      expect(state.currentComments['nuit'], 'a' * 64);
+    });
+
     test('Finalize day updates status to finalized and computes scores', () async {
       final notifier = container.read(diaryControllerProvider(testDate).notifier);
       await Future.delayed(Duration.zero);
@@ -221,6 +263,10 @@ void main() {
           matinValues: '1',
           journeeValues: '2',
           soirValues: '1',
+          nuitComment: '',
+          matinComment: '',
+          journeeComment: '',
+          soirComment: '',
           updatedAt: DateTime.now(),
         )
       ];

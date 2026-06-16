@@ -58,6 +58,7 @@ class DiaryState {
   final List<DiaryResponse> responses;
   final int currentQuestionIndex;
   final Map<String, List<int>> currentSelection;
+  final Map<String, String> currentComments;
 
   const DiaryState({
     required this.date,
@@ -70,6 +71,12 @@ class DiaryState {
       'journee': [],
       'soir': [],
     },
+    this.currentComments = const {
+      'nuit': '',
+      'matin': '',
+      'journee': '',
+      'soir': '',
+    },
   });
 
   DiaryQuestion get currentQuestion => diaryQuestionsList[currentQuestionIndex];
@@ -81,6 +88,7 @@ class DiaryState {
     List<DiaryResponse>? responses,
     int? currentQuestionIndex,
     Map<String, List<int>>? currentSelection,
+    Map<String, String>? currentComments,
   }) {
     return DiaryState(
       date: date ?? this.date,
@@ -88,6 +96,7 @@ class DiaryState {
       responses: responses ?? this.responses,
       currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
       currentSelection: currentSelection ?? this.currentSelection,
+      currentComments: currentComments ?? this.currentComments,
     );
   }
 }
@@ -133,6 +142,12 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
           'journee': _parseValues(resp.journeeValues),
           'soir': _parseValues(resp.soirValues),
         },
+        currentComments: {
+          'nuit': resp.nuitComment,
+          'matin': resp.matinComment,
+          'journee': resp.journeeComment,
+          'soir': resp.soirComment,
+        },
       );
     } else {
       state = state.copyWith(
@@ -141,6 +156,12 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
           'matin': [],
           'journee': [],
           'soir': [],
+        },
+        currentComments: const {
+          'nuit': '',
+          'matin': '',
+          'journee': '',
+          'soir': '',
         },
       );
     }
@@ -165,6 +186,14 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
     state = state.copyWith(currentSelection: currentSelection);
   }
 
+  void setComment(String period, String comment) {
+    final currentComments = Map<String, String>.from(state.currentComments);
+    // Limit to 64 characters
+    final truncated = comment.length > 64 ? comment.substring(0, 64) : comment;
+    currentComments[period] = truncated;
+    state = state.copyWith(currentComments: currentComments);
+  }
+
   Future<void> nextQuestion() async {
     if (state.diaryDay == null) return;
     
@@ -176,6 +205,10 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
       matin: state.currentSelection['matin'] ?? [],
       journee: state.currentSelection['journee'] ?? [],
       soir: state.currentSelection['soir'] ?? [],
+      nuitComment: state.currentComments['nuit'] ?? '',
+      matinComment: state.currentComments['matin'] ?? '',
+      journeeComment: state.currentComments['journee'] ?? '',
+      soirComment: state.currentComments['soir'] ?? '',
     );
 
     // Sync draft in background

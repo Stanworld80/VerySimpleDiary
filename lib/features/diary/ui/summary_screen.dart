@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controller/diary_controller.dart';
+import '../../../core/db/local_database.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/version_footer.dart';
 import '../../../core/ui/profile_menu_button.dart';
@@ -145,6 +146,153 @@ class SummaryScreen extends ConsumerWidget {
               ],
             ),
 
+            const SizedBox(height: 24),
+
+            const Text(
+              'RÉPONSES AUX 24 QUESTIONS',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textSecondary,
+                letterSpacing: 1.2,
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 180,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: diaryQuestionsList.length,
+                itemBuilder: (context, index) {
+                  final question = diaryQuestionsList[index];
+                  final response = diaryState.responses.cast<DiaryResponse?>().firstWhere(
+                    (r) => r?.questionNumber == question.number,
+                    orElse: () => null,
+                  );
+                  
+                  List<int> parseVals(String valStr) {
+                    if (valStr.trim().isEmpty) return [];
+                    return valStr.split(',').map((e) => int.tryParse(e) ?? 0).toList();
+                  }
+
+                  final Map<String, List<int>> selections = response != null ? {
+                    'nuit': parseVals(response.nuitValues),
+                    'matin': parseVals(response.matinValues),
+                    'journee': parseVals(response.journeeValues),
+                    'soir': parseVals(response.soirValues),
+                  } : {
+                    'nuit': [],
+                    'matin': [],
+                    'journee': [],
+                    'soir': [],
+                  };
+                  
+                  final Map<String, String> comments = response != null ? {
+                    'nuit': response.nuitComment,
+                    'matin': response.matinComment,
+                    'journee': response.journeeComment,
+                    'soir': response.soirComment,
+                  } : {
+                    'nuit': '',
+                    'matin': '',
+                    'journee': '',
+                    'soir': '',
+                  };
+
+                  final hasAnyData = selections.values.any((l) => l.isNotEmpty) || comments.values.any((s) => s.isNotEmpty);
+
+                  return Container(
+                    width: 220,
+                    margin: const EdgeInsets.only(right: 16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppTheme.darkCard,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFF2E3047), width: 1.5),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Q${question.number}. ${question.title}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          question.category.substring(question.category.indexOf('.') + 1).trim(),
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: AppTheme.primaryLight.withOpacity(0.8),
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const Divider(color: Color(0xFF2E3047), height: 16),
+                        Expanded(
+                          child: !hasAnyData
+                              ? const Center(
+                                  child: Text(
+                                    'Aucune réponse',
+                                    style: TextStyle(fontSize: 11, fontStyle: FontStyle.italic, color: AppTheme.textSecondary),
+                                  ),
+                                )
+                              : ListView(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.zero,
+                                  children: ['nuit', 'matin', 'journee', 'soir'].map((p) {
+                                    final ratings = selections[p] ?? [];
+                                    final comment = comments[p] ?? '';
+                                    if (ratings.isEmpty && comment.isEmpty) return const SizedBox.shrink();
+                                    
+                                    final label = p == 'nuit' ? 'Nuit' : p == 'matin' ? 'Matin' : p == 'journee' ? 'Journée' : 'Soir';
+
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '$label: ',
+                                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                if (ratings.isNotEmpty)
+                                                  Text(
+                                                    ratings.map((r) => r > 0 ? '+$r' : '$r').join(', '),
+                                                    style: const TextStyle(fontSize: 11, color: AppTheme.primaryLight, fontWeight: FontWeight.bold),
+                                                  ),
+                                                if (comment.isNotEmpty)
+                                                  Text(
+                                                    '"$comment"',
+                                                    style: TextStyle(fontSize: 10, fontStyle: FontStyle.italic, color: Colors.white.withOpacity(0.7)),
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
             const SizedBox(height: 24),
 
             // Summary insight card

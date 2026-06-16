@@ -606,6 +606,38 @@ class $DiaryResponsesTable extends DiaryResponses
   late final GeneratedColumn<String> soirValues = GeneratedColumn<String>(
       'soir_values', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nuitCommentMeta =
+      const VerificationMeta('nuitComment');
+  @override
+  late final GeneratedColumn<String> nuitComment = GeneratedColumn<String>(
+      'nuit_comment', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _matinCommentMeta =
+      const VerificationMeta('matinComment');
+  @override
+  late final GeneratedColumn<String> matinComment = GeneratedColumn<String>(
+      'matin_comment', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _journeeCommentMeta =
+      const VerificationMeta('journeeComment');
+  @override
+  late final GeneratedColumn<String> journeeComment = GeneratedColumn<String>(
+      'journee_comment', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _soirCommentMeta =
+      const VerificationMeta('soirComment');
+  @override
+  late final GeneratedColumn<String> soirComment = GeneratedColumn<String>(
+      'soir_comment', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
   static const VerificationMeta _updatedAtMeta =
       const VerificationMeta('updatedAt');
   @override
@@ -621,6 +653,10 @@ class $DiaryResponsesTable extends DiaryResponses
         matinValues,
         journeeValues,
         soirValues,
+        nuitComment,
+        matinComment,
+        journeeComment,
+        soirComment,
         updatedAt
       ];
   @override
@@ -686,6 +722,30 @@ class $DiaryResponsesTable extends DiaryResponses
     } else if (isInserting) {
       context.missing(_soirValuesMeta);
     }
+    if (data.containsKey('nuit_comment')) {
+      context.handle(
+          _nuitCommentMeta,
+          nuitComment.isAcceptableOrUnknown(
+              data['nuit_comment']!, _nuitCommentMeta));
+    }
+    if (data.containsKey('matin_comment')) {
+      context.handle(
+          _matinCommentMeta,
+          matinComment.isAcceptableOrUnknown(
+              data['matin_comment']!, _matinCommentMeta));
+    }
+    if (data.containsKey('journee_comment')) {
+      context.handle(
+          _journeeCommentMeta,
+          journeeComment.isAcceptableOrUnknown(
+              data['journee_comment']!, _journeeCommentMeta));
+    }
+    if (data.containsKey('soir_comment')) {
+      context.handle(
+          _soirCommentMeta,
+          soirComment.isAcceptableOrUnknown(
+              data['soir_comment']!, _soirCommentMeta));
+    }
     if (data.containsKey('updated_at')) {
       context.handle(_updatedAtMeta,
           updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
@@ -715,6 +775,14 @@ class $DiaryResponsesTable extends DiaryResponses
           .read(DriftSqlType.string, data['${effectivePrefix}journee_values'])!,
       soirValues: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}soir_values'])!,
+      nuitComment: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}nuit_comment'])!,
+      matinComment: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}matin_comment'])!,
+      journeeComment: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}journee_comment'])!,
+      soirComment: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}soir_comment'])!,
       updatedAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
     );
@@ -734,6 +802,10 @@ class DiaryResponse extends DataClass implements Insertable<DiaryResponse> {
   final String matinValues;
   final String journeeValues;
   final String soirValues;
+  final String nuitComment;
+  final String matinComment;
+  final String journeeComment;
+  final String soirComment;
   final DateTime updatedAt;
   const DiaryResponse(
       {required this.id,
@@ -743,6 +815,10 @@ class DiaryResponse extends DataClass implements Insertable<DiaryResponse> {
       required this.matinValues,
       required this.journeeValues,
       required this.soirValues,
+      required this.nuitComment,
+      required this.matinComment,
+      required this.journeeComment,
+      required this.soirComment,
       required this.updatedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -754,6 +830,10 @@ class DiaryResponse extends DataClass implements Insertable<DiaryResponse> {
     map['matin_values'] = Variable<String>(matinValues);
     map['journee_values'] = Variable<String>(journeeValues);
     map['soir_values'] = Variable<String>(soirValues);
+    map['nuit_comment'] = Variable<String>(nuitComment);
+    map['matin_comment'] = Variable<String>(matinComment);
+    map['journee_comment'] = Variable<String>(journeeComment);
+    map['soir_comment'] = Variable<String>(soirComment);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
   }
@@ -767,6 +847,10 @@ class DiaryResponse extends DataClass implements Insertable<DiaryResponse> {
       matinValues: Value(matinValues),
       journeeValues: Value(journeeValues),
       soirValues: Value(soirValues),
+      nuitComment: Value(nuitComment),
+      matinComment: Value(matinComment),
+      journeeComment: Value(journeeComment),
+      soirComment: Value(soirComment),
       updatedAt: Value(updatedAt),
     );
   }
@@ -782,6 +866,10 @@ class DiaryResponse extends DataClass implements Insertable<DiaryResponse> {
       matinValues: serializer.fromJson<String>(json['matinValues']),
       journeeValues: serializer.fromJson<String>(json['journeeValues']),
       soirValues: serializer.fromJson<String>(json['soirValues']),
+      nuitComment: serializer.fromJson<String>(json['nuitComment']),
+      matinComment: serializer.fromJson<String>(json['matinComment']),
+      journeeComment: serializer.fromJson<String>(json['journeeComment']),
+      soirComment: serializer.fromJson<String>(json['soirComment']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
@@ -796,6 +884,10 @@ class DiaryResponse extends DataClass implements Insertable<DiaryResponse> {
       'matinValues': serializer.toJson<String>(matinValues),
       'journeeValues': serializer.toJson<String>(journeeValues),
       'soirValues': serializer.toJson<String>(soirValues),
+      'nuitComment': serializer.toJson<String>(nuitComment),
+      'matinComment': serializer.toJson<String>(matinComment),
+      'journeeComment': serializer.toJson<String>(journeeComment),
+      'soirComment': serializer.toJson<String>(soirComment),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
@@ -808,6 +900,10 @@ class DiaryResponse extends DataClass implements Insertable<DiaryResponse> {
           String? matinValues,
           String? journeeValues,
           String? soirValues,
+          String? nuitComment,
+          String? matinComment,
+          String? journeeComment,
+          String? soirComment,
           DateTime? updatedAt}) =>
       DiaryResponse(
         id: id ?? this.id,
@@ -817,6 +913,10 @@ class DiaryResponse extends DataClass implements Insertable<DiaryResponse> {
         matinValues: matinValues ?? this.matinValues,
         journeeValues: journeeValues ?? this.journeeValues,
         soirValues: soirValues ?? this.soirValues,
+        nuitComment: nuitComment ?? this.nuitComment,
+        matinComment: matinComment ?? this.matinComment,
+        journeeComment: journeeComment ?? this.journeeComment,
+        soirComment: soirComment ?? this.soirComment,
         updatedAt: updatedAt ?? this.updatedAt,
       );
   DiaryResponse copyWithCompanion(DiaryResponsesCompanion data) {
@@ -836,6 +936,16 @@ class DiaryResponse extends DataClass implements Insertable<DiaryResponse> {
           : this.journeeValues,
       soirValues:
           data.soirValues.present ? data.soirValues.value : this.soirValues,
+      nuitComment:
+          data.nuitComment.present ? data.nuitComment.value : this.nuitComment,
+      matinComment: data.matinComment.present
+          ? data.matinComment.value
+          : this.matinComment,
+      journeeComment: data.journeeComment.present
+          ? data.journeeComment.value
+          : this.journeeComment,
+      soirComment:
+          data.soirComment.present ? data.soirComment.value : this.soirComment,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
@@ -850,14 +960,29 @@ class DiaryResponse extends DataClass implements Insertable<DiaryResponse> {
           ..write('matinValues: $matinValues, ')
           ..write('journeeValues: $journeeValues, ')
           ..write('soirValues: $soirValues, ')
+          ..write('nuitComment: $nuitComment, ')
+          ..write('matinComment: $matinComment, ')
+          ..write('journeeComment: $journeeComment, ')
+          ..write('soirComment: $soirComment, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, diaryDayId, questionNumber, nuitValues,
-      matinValues, journeeValues, soirValues, updatedAt);
+  int get hashCode => Object.hash(
+      id,
+      diaryDayId,
+      questionNumber,
+      nuitValues,
+      matinValues,
+      journeeValues,
+      soirValues,
+      nuitComment,
+      matinComment,
+      journeeComment,
+      soirComment,
+      updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -869,6 +994,10 @@ class DiaryResponse extends DataClass implements Insertable<DiaryResponse> {
           other.matinValues == this.matinValues &&
           other.journeeValues == this.journeeValues &&
           other.soirValues == this.soirValues &&
+          other.nuitComment == this.nuitComment &&
+          other.matinComment == this.matinComment &&
+          other.journeeComment == this.journeeComment &&
+          other.soirComment == this.soirComment &&
           other.updatedAt == this.updatedAt);
 }
 
@@ -880,6 +1009,10 @@ class DiaryResponsesCompanion extends UpdateCompanion<DiaryResponse> {
   final Value<String> matinValues;
   final Value<String> journeeValues;
   final Value<String> soirValues;
+  final Value<String> nuitComment;
+  final Value<String> matinComment;
+  final Value<String> journeeComment;
+  final Value<String> soirComment;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
   const DiaryResponsesCompanion({
@@ -890,6 +1023,10 @@ class DiaryResponsesCompanion extends UpdateCompanion<DiaryResponse> {
     this.matinValues = const Value.absent(),
     this.journeeValues = const Value.absent(),
     this.soirValues = const Value.absent(),
+    this.nuitComment = const Value.absent(),
+    this.matinComment = const Value.absent(),
+    this.journeeComment = const Value.absent(),
+    this.soirComment = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -901,6 +1038,10 @@ class DiaryResponsesCompanion extends UpdateCompanion<DiaryResponse> {
     required String matinValues,
     required String journeeValues,
     required String soirValues,
+    this.nuitComment = const Value.absent(),
+    this.matinComment = const Value.absent(),
+    this.journeeComment = const Value.absent(),
+    this.soirComment = const Value.absent(),
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
@@ -919,6 +1060,10 @@ class DiaryResponsesCompanion extends UpdateCompanion<DiaryResponse> {
     Expression<String>? matinValues,
     Expression<String>? journeeValues,
     Expression<String>? soirValues,
+    Expression<String>? nuitComment,
+    Expression<String>? matinComment,
+    Expression<String>? journeeComment,
+    Expression<String>? soirComment,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
   }) {
@@ -930,6 +1075,10 @@ class DiaryResponsesCompanion extends UpdateCompanion<DiaryResponse> {
       if (matinValues != null) 'matin_values': matinValues,
       if (journeeValues != null) 'journee_values': journeeValues,
       if (soirValues != null) 'soir_values': soirValues,
+      if (nuitComment != null) 'nuit_comment': nuitComment,
+      if (matinComment != null) 'matin_comment': matinComment,
+      if (journeeComment != null) 'journee_comment': journeeComment,
+      if (soirComment != null) 'soir_comment': soirComment,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -943,6 +1092,10 @@ class DiaryResponsesCompanion extends UpdateCompanion<DiaryResponse> {
       Value<String>? matinValues,
       Value<String>? journeeValues,
       Value<String>? soirValues,
+      Value<String>? nuitComment,
+      Value<String>? matinComment,
+      Value<String>? journeeComment,
+      Value<String>? soirComment,
       Value<DateTime>? updatedAt,
       Value<int>? rowid}) {
     return DiaryResponsesCompanion(
@@ -953,6 +1106,10 @@ class DiaryResponsesCompanion extends UpdateCompanion<DiaryResponse> {
       matinValues: matinValues ?? this.matinValues,
       journeeValues: journeeValues ?? this.journeeValues,
       soirValues: soirValues ?? this.soirValues,
+      nuitComment: nuitComment ?? this.nuitComment,
+      matinComment: matinComment ?? this.matinComment,
+      journeeComment: journeeComment ?? this.journeeComment,
+      soirComment: soirComment ?? this.soirComment,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
     );
@@ -982,6 +1139,18 @@ class DiaryResponsesCompanion extends UpdateCompanion<DiaryResponse> {
     if (soirValues.present) {
       map['soir_values'] = Variable<String>(soirValues.value);
     }
+    if (nuitComment.present) {
+      map['nuit_comment'] = Variable<String>(nuitComment.value);
+    }
+    if (matinComment.present) {
+      map['matin_comment'] = Variable<String>(matinComment.value);
+    }
+    if (journeeComment.present) {
+      map['journee_comment'] = Variable<String>(journeeComment.value);
+    }
+    if (soirComment.present) {
+      map['soir_comment'] = Variable<String>(soirComment.value);
+    }
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
@@ -1001,6 +1170,10 @@ class DiaryResponsesCompanion extends UpdateCompanion<DiaryResponse> {
           ..write('matinValues: $matinValues, ')
           ..write('journeeValues: $journeeValues, ')
           ..write('soirValues: $soirValues, ')
+          ..write('nuitComment: $nuitComment, ')
+          ..write('matinComment: $matinComment, ')
+          ..write('journeeComment: $journeeComment, ')
+          ..write('soirComment: $soirComment, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1277,6 +1450,10 @@ typedef $$DiaryResponsesTableCreateCompanionBuilder = DiaryResponsesCompanion
   required String matinValues,
   required String journeeValues,
   required String soirValues,
+  Value<String> nuitComment,
+  Value<String> matinComment,
+  Value<String> journeeComment,
+  Value<String> soirComment,
   required DateTime updatedAt,
   Value<int> rowid,
 });
@@ -1289,6 +1466,10 @@ typedef $$DiaryResponsesTableUpdateCompanionBuilder = DiaryResponsesCompanion
   Value<String> matinValues,
   Value<String> journeeValues,
   Value<String> soirValues,
+  Value<String> nuitComment,
+  Value<String> matinComment,
+  Value<String> journeeComment,
+  Value<String> soirComment,
   Value<DateTime> updatedAt,
   Value<int> rowid,
 });
@@ -1318,6 +1499,10 @@ class $$DiaryResponsesTableTableManager extends RootTableManager<
             Value<String> matinValues = const Value.absent(),
             Value<String> journeeValues = const Value.absent(),
             Value<String> soirValues = const Value.absent(),
+            Value<String> nuitComment = const Value.absent(),
+            Value<String> matinComment = const Value.absent(),
+            Value<String> journeeComment = const Value.absent(),
+            Value<String> soirComment = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -1329,6 +1514,10 @@ class $$DiaryResponsesTableTableManager extends RootTableManager<
             matinValues: matinValues,
             journeeValues: journeeValues,
             soirValues: soirValues,
+            nuitComment: nuitComment,
+            matinComment: matinComment,
+            journeeComment: journeeComment,
+            soirComment: soirComment,
             updatedAt: updatedAt,
             rowid: rowid,
           ),
@@ -1340,6 +1529,10 @@ class $$DiaryResponsesTableTableManager extends RootTableManager<
             required String matinValues,
             required String journeeValues,
             required String soirValues,
+            Value<String> nuitComment = const Value.absent(),
+            Value<String> matinComment = const Value.absent(),
+            Value<String> journeeComment = const Value.absent(),
+            Value<String> soirComment = const Value.absent(),
             required DateTime updatedAt,
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -1351,6 +1544,10 @@ class $$DiaryResponsesTableTableManager extends RootTableManager<
             matinValues: matinValues,
             journeeValues: journeeValues,
             soirValues: soirValues,
+            nuitComment: nuitComment,
+            matinComment: matinComment,
+            journeeComment: journeeComment,
+            soirComment: soirComment,
             updatedAt: updatedAt,
             rowid: rowid,
           ),
@@ -1387,6 +1584,26 @@ class $$DiaryResponsesTableFilterComposer
 
   ColumnFilters<String> get soirValues => $state.composableBuilder(
       column: $state.table.soirValues,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get nuitComment => $state.composableBuilder(
+      column: $state.table.nuitComment,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get matinComment => $state.composableBuilder(
+      column: $state.table.matinComment,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get journeeComment => $state.composableBuilder(
+      column: $state.table.journeeComment,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get soirComment => $state.composableBuilder(
+      column: $state.table.soirComment,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -1438,6 +1655,26 @@ class $$DiaryResponsesTableOrderingComposer
 
   ColumnOrderings<String> get soirValues => $state.composableBuilder(
       column: $state.table.soirValues,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get nuitComment => $state.composableBuilder(
+      column: $state.table.nuitComment,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get matinComment => $state.composableBuilder(
+      column: $state.table.matinComment,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get journeeComment => $state.composableBuilder(
+      column: $state.table.journeeComment,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get soirComment => $state.composableBuilder(
+      column: $state.table.soirComment,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 

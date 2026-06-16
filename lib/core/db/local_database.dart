@@ -30,6 +30,10 @@ class DiaryResponses extends Table {
   TextColumn get matinValues => text()();
   TextColumn get journeeValues => text()();
   TextColumn get soirValues => text()();
+  TextColumn get nuitComment => text().withDefault(const Constant(''))();
+  TextColumn get matinComment => text().withDefault(const Constant(''))();
+  TextColumn get journeeComment => text().withDefault(const Constant(''))();
+  TextColumn get soirComment => text().withDefault(const Constant(''))();
   DateTimeColumn get updatedAt => dateTime()();
 
   @override
@@ -43,5 +47,17 @@ class LocalDatabase extends _$LocalDatabase {
   LocalDatabase.forTesting(super.connection);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (migrator, from, to) async {
+          if (from < 2) {
+            await migrator.addColumn(diaryResponses, diaryResponses.nuitComment);
+            await migrator.addColumn(diaryResponses, diaryResponses.matinComment);
+            await migrator.addColumn(diaryResponses, diaryResponses.journeeComment);
+            await migrator.addColumn(diaryResponses, diaryResponses.soirComment);
+          }
+        },
+      );
 }

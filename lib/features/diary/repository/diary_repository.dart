@@ -62,6 +62,10 @@ class DiaryRepository {
     required List<int> matin,
     required List<int> journee,
     required List<int> soir,
+    String nuitComment = '',
+    String matinComment = '',
+    String journeeComment = '',
+    String soirComment = '',
   }) async {
     final existing = await (_db.select(_db.diaryResponses)
       ..where((tbl) => tbl.diaryDayId.equals(diaryDayId) & tbl.questionNumber.equals(questionNumber)))
@@ -76,6 +80,10 @@ class DiaryRepository {
       matinValues: Value(matin.join(',')),
       journeeValues: Value(journee.join(',')),
       soirValues: Value(soir.join(',')),
+      nuitComment: Value(nuitComment),
+      matinComment: Value(matinComment),
+      journeeComment: Value(journeeComment),
+      soirComment: Value(soirComment),
       updatedAt: Value(DateTime.now()),
     );
 
@@ -103,6 +111,11 @@ class DiaryRepository {
     );
     await (_db.update(_db.diaryDays)..where((tbl) => tbl.id.equals(id))).write(companion);
   }
+
+  // Watch all responses
+  Stream<List<DiaryResponse>> watchAllResponses() {
+    return _db.select(_db.diaryResponses).watch();
+  }
 }
 
 final databaseProvider = Provider<LocalDatabase>((ref) {
@@ -114,4 +127,9 @@ final databaseProvider = Provider<LocalDatabase>((ref) {
 final diaryRepositoryProvider = Provider<DiaryRepository>((ref) {
   final db = ref.watch(databaseProvider);
   return DiaryRepository(db);
+});
+
+final allResponsesProvider = StreamProvider<List<DiaryResponse>>((ref) {
+  final repo = ref.watch(diaryRepositoryProvider);
+  return repo.watchAllResponses();
 });

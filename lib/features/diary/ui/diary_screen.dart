@@ -140,17 +140,68 @@ class DiaryScreen extends ConsumerWidget {
                   // Time Periods Rows
                   ...periods.map((period) {
                     final selectedRatings = diaryState.currentSelection[period] ?? [];
+                    final comment = diaryState.currentComments[period] ?? '';
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Row(
                         children: [
                           Expanded(
                             flex: 3,
-                            child: Text(
-                              periodLabels[period]!,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
+                            child: InkWell(
+                              onTap: () {
+                                _showCommentDialog(
+                                  context,
+                                  ref,
+                                  period,
+                                  periodLabels[period]!,
+                                  comment,
+                                  notifier,
+                                );
+                              },
+                              borderRadius: BorderRadius.circular(8),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      periodLabels[period]!,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.chat_bubble_outline_rounded,
+                                          size: 10,
+                                          color: comment.isNotEmpty
+                                              ? AppTheme.primaryLight
+                                              : AppTheme.textSecondary.withValues(alpha: 0.5),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            comment.isNotEmpty ? comment : 'Ajouter...',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              fontStyle: comment.isNotEmpty
+                                                  ? FontStyle.normal
+                                                  : FontStyle.italic,
+                                              color: comment.isNotEmpty
+                                                  ? AppTheme.textPrimary
+                                                  : AppTheme.textSecondary.withValues(alpha: 0.5),
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -228,4 +279,72 @@ class DiaryScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+void _showCommentDialog(
+  BuildContext context,
+  WidgetRef ref,
+  String period,
+  String periodLabel,
+  String currentComment,
+  DiaryNotifier notifier,
+) {
+  final controller = TextEditingController(text: currentComment);
+  
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        backgroundColor: AppTheme.darkSurface,
+        title: Text(
+          'Commentaire - $periodLabel',
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: controller,
+              maxLength: 64,
+              maxLines: 2,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: 'Saisir un commentaire (64 car. max)...',
+                hintStyle: TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.5)),
+                counterStyle: const TextStyle(color: AppTheme.textSecondary),
+                enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFF2E3047)),
+                ),
+                focusedBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppTheme.primary),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('ANNULER', style: TextStyle(color: AppTheme.textSecondary)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primary,
+              foregroundColor: Colors.white,
+              minimumSize: const Size(100, 44),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            onPressed: () {
+              notifier.setComment(period, controller.text);
+              Navigator.of(context).pop();
+            },
+            child: const Text('VALIDER'),
+          ),
+        ],
+      );
+    },
+  );
 }

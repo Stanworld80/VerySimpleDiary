@@ -49,9 +49,13 @@ class SyncRepository {
       final key = _getQuestionKey(r.questionNumber, question.title);
       result[key] = {
         'nuit': _parseValues(r.nuitValues),
+        'nuit_comment': r.nuitComment,
         'matin': _parseValues(r.matinValues),
+        'matin_comment': r.matinComment,
         'journee': _parseValues(r.journeeValues),
+        'journee_comment': r.journeeComment,
         'soir': _parseValues(r.soirValues),
+        'soir_comment': r.soirComment,
       };
     }
     return result;
@@ -72,6 +76,11 @@ class SyncRepository {
         final List<dynamic> matin = map['matin'] ?? [];
         final List<dynamic> journee = map['journee'] ?? [];
         final List<dynamic> soir = map['soir'] ?? [];
+        
+        final String nuitComment = map['nuit_comment'] as String? ?? '';
+        final String matinComment = map['matin_comment'] as String? ?? '';
+        final String journeeComment = map['journee_comment'] as String? ?? '';
+        final String soirComment = map['soir_comment'] as String? ?? '';
 
         companions.add(DiaryResponsesCompanion(
           id: Value('${diaryDayId}_$qNumber'),
@@ -81,6 +90,10 @@ class SyncRepository {
           matinValues: Value(matin.join(',')),
           journeeValues: Value(journee.join(',')),
           soirValues: Value(soir.join(',')),
+          nuitComment: Value(nuitComment),
+          matinComment: Value(matinComment),
+          journeeComment: Value(journeeComment),
+          soirComment: Value(soirComment),
           updatedAt: Value(DateTime.now()),
         ));
       }
