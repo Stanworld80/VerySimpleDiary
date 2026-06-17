@@ -56,13 +56,13 @@ void main() {
       expect(find.text('1. Santé, Sport & Sommeil'), findsOneWidget);
 
       // Tap on the 'Nuit' period row to enter a comment
-      final nuitText = find.text('Nuit');
+      final nuitText = find.text('Nuit (00h-05h)');
       expect(nuitText, findsOneWidget);
       await tester.tap(nuitText);
       await tester.pumpAndSettle();
 
       // Dialog should be open
-      expect(find.text('Commentaire - Nuit'), findsOneWidget);
+      expect(find.text('Commentaire - Nuit (00h-05h)'), findsOneWidget);
       final textField = find.byType(TextField);
       expect(textField, findsOneWidget);
 
@@ -109,7 +109,7 @@ void main() {
       }
 
       // Now tap "Explorer les données"
-      final explorerButton = find.widgetWithText(OutlinedButton, 'Explorer les données');
+      final explorerButton = find.widgetWithText(OutlinedButton, 'Exploration');
       expect(explorerButton, findsOneWidget);
       await tester.tap(explorerButton);
       await tester.pumpAndSettle();
