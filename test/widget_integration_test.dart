@@ -248,6 +248,18 @@ void main() {
     final sixtyFourCharsString = 'B' * 64;
     expect(find.text(sixtyFourCharsString), findsOneWidget);
 
+    // Test swipe left to go to next question
+    await tester.fling(find.text('SOMMEIL'), const Offset(-200, 0), 1000);
+    await tester.pumpAndSettle();
+    expect(find.text('Q 2 / 24'), findsOneWidget);
+    expect(find.text('SPORT'), findsOneWidget);
+
+    // Test swipe right to go back to previous question
+    await tester.fling(find.text('SPORT'), const Offset(200, 0), 1000);
+    await tester.pumpAndSettle();
+    expect(find.text('Q 1 / 24'), findsOneWidget);
+    expect(find.text('SOMMEIL'), findsOneWidget);
+
     // Navigate back to Home
     final backButton = find.byType(BackButton);
     expect(backButton, findsOneWidget);

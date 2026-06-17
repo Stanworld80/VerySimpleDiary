@@ -51,231 +51,253 @@ class DiaryScreen extends ConsumerWidget {
           const ProfileMenuButton(),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Linear progress bar
-          LinearProgressIndicator(
-            value: diaryState.progressPercentage / 100,
-            backgroundColor: const Color(0xFF2E3047),
-            valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primary),
-            minHeight: 6,
-          ),
-          
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 16),
-                  
-                  // Question Card
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: AppTheme.darkCard,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFF2E3047)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          currentQuestion.title,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                            letterSpacing: 1,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          currentQuestion.description,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: AppTheme.textSecondary,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 32),
-                  
-                  // Grid Header
-                  const Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          'PÉRIODE',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.textSecondary,
-                          ),
-                        ),
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onHorizontalDragEnd: (details) async {
+          if (details.primaryVelocity == null) return;
+          if (details.primaryVelocity! < -300) {
+            // Swipe left -> Next question
+            await notifier.nextQuestion();
+            if (context.mounted && currentQuestion.number == diaryQuestionsList.length) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => SummaryScreen(date: selectedDate),
+                ),
+              );
+            }
+          } else if (details.primaryVelocity! > 300) {
+            // Swipe right -> Prev question
+            if (diaryState.currentQuestionIndex > 0) {
+              notifier.prevQuestion();
+            }
+          }
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Linear progress bar
+            LinearProgressIndicator(
+              value: diaryState.progressPercentage / 100,
+              backgroundColor: const Color(0xFF2E3047),
+              valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primary),
+              minHeight: 6,
+            ),
+            
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 16),
+                    
+                    // Question Card
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: AppTheme.darkCard,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFF2E3047)),
                       ),
-                      Expanded(
-                        flex: 7,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('-2', style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text('-1', style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text('0', style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text('+1', style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text('+2', style: TextStyle(fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Divider(color: Color(0xFF2E3047), height: 24),
-                  
-                  // Time Periods Rows
-                  ...periods.map((period) {
-                    final selectedRatings = diaryState.currentSelection[period] ?? [];
-                    final comment = diaryState.currentComments[period] ?? '';
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Expanded(
-                            flex: 3,
-                            child: InkWell(
-                              onTap: () {
-                                _showCommentDialog(
-                                  context,
-                                  ref,
-                                  period,
-                                  periodLabels[period]!,
-                                  comment,
-                                  notifier,
-                                );
-                              },
-                              borderRadius: BorderRadius.circular(8),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      periodLabels[period]!,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.chat_bubble_outline_rounded,
-                                          size: 10,
-                                          color: comment.isNotEmpty
-                                              ? AppTheme.primaryLight
-                                              : AppTheme.textSecondary.withValues(alpha: 0.5),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Expanded(
-                                          child: Text(
-                                            comment.isNotEmpty ? comment : 'Ajouter...',
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontStyle: comment.isNotEmpty
-                                                  ? FontStyle.normal
-                                                  : FontStyle.italic,
-                                              color: comment.isNotEmpty
-                                                  ? AppTheme.textPrimary
-                                                  : AppTheme.textSecondary.withValues(alpha: 0.5),
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
+                          Text(
+                            currentQuestion.title,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                              letterSpacing: 1,
                             ),
+                            textAlign: TextAlign.center,
                           ),
-                          Expanded(
-                            flex: 7,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: ratings.map((rating) {
-                                final isSelected = selectedRatings.contains(rating);
-                                return GestureDetector(
-                                  onTap: () => notifier.toggleRating(period, rating),
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 150),
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: isSelected
-                                          ? AppTheme.primary.withValues(alpha: 0.2)
-                                          : Colors.transparent,
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? AppTheme.primary
-                                            : const Color(0xFF2E3047),
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: SizedBox(
-                                        height: 16,
-                                        width: 16,
-                                        child: isSelected
-                                            ? const Icon(
-                                                Icons.circle,
-                                                size: 10,
-                                                color: AppTheme.primary,
-                                              )
-                                            : null,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
+                          const SizedBox(height: 8),
+                          Text(
+                            currentQuestion.description,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppTheme.textSecondary,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),
-                    );
-                  }),
-                ],
-              ),
-            ),
-          ),
-          
-          // Next / Validate Button
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: ElevatedButton(
-              onPressed: () async {
-                await notifier.nextQuestion();
-                if (context.mounted && currentQuestion.number == diaryQuestionsList.length) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => SummaryScreen(date: selectedDate),
                     ),
-                  );
-                }
-              },
-              child: Text(
-                currentQuestion.number < diaryQuestionsList.length ? 'SUIVANT >' : 'RÉCAPITULATIF >',
+                    
+                    const SizedBox(height: 32),
+                    
+                    // Grid Header
+                    const Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            'PÉRIODE',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.textSecondary,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 7,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('-2', style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text('-1', style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text('0', style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text('+1', style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text('+2', style: TextStyle(fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(color: Color(0xFF2E3047), height: 24),
+                    
+                    // Time Periods Rows
+                    ...periods.map((period) {
+                      final selectedRatings = diaryState.currentSelection[period] ?? [];
+                      final comment = diaryState.currentComments[period] ?? '';
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: InkWell(
+                                onTap: () {
+                                  _showCommentDialog(
+                                    context,
+                                    ref,
+                                    period,
+                                    periodLabels[period]!,
+                                    comment,
+                                    notifier,
+                                  );
+                                },
+                                borderRadius: BorderRadius.circular(8),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        periodLabels[period]!,
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.chat_bubble_outline_rounded,
+                                            size: 10,
+                                            color: comment.isNotEmpty
+                                                ? AppTheme.primaryLight
+                                                : AppTheme.textSecondary.withValues(alpha: 0.5),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Expanded(
+                                            child: Text(
+                                              comment.isNotEmpty ? comment : 'Ajouter...',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontStyle: comment.isNotEmpty
+                                                    ? FontStyle.normal
+                                                    : FontStyle.italic,
+                                                color: comment.isNotEmpty
+                                                    ? AppTheme.textPrimary
+                                                    : AppTheme.textSecondary.withValues(alpha: 0.5),
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 7,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: ratings.map((rating) {
+                                  final isSelected = selectedRatings.contains(rating);
+                                  return GestureDetector(
+                                    onTap: () => notifier.toggleRating(period, rating),
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 150),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: isSelected
+                                            ? AppTheme.primary.withValues(alpha: 0.2)
+                                            : Colors.transparent,
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? AppTheme.primary
+                                              : const Color(0xFF2E3047),
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: SizedBox(
+                                          height: 16,
+                                          width: 16,
+                                          child: isSelected
+                                              ? const Icon(
+                                                  Icons.circle,
+                                                  size: 10,
+                                                  color: AppTheme.primary,
+                                                )
+                                              : null,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ],
+                ),
               ),
             ),
-          ),
-          const VersionFooter(),
-        ],
+            
+            // Next / Validate Button
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  await notifier.nextQuestion();
+                  if (context.mounted && currentQuestion.number == diaryQuestionsList.length) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => SummaryScreen(date: selectedDate),
+                      ),
+                    );
+                  }
+                },
+                child: Text(
+                  currentQuestion.number < diaryQuestionsList.length ? 'SUIVANT >' : 'RÉCAPITULATIF >',
+                ),
+              ),
+            ),
+            const VersionFooter(),
+          ],
+        ),
       ),
     );
   }
