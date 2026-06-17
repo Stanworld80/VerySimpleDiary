@@ -44,7 +44,7 @@ void main() {
       bool homeScreenVisibleAfterLogin = false;
       for (int i = 0; i < 30; i++) {
         await tester.pump(const Duration(milliseconds: 200));
-        if (find.text('Explorer les données').evaluate().isNotEmpty) {
+        if (find.text('Exploration').evaluate().isNotEmpty) {
           homeScreenVisibleAfterLogin = true;
           break;
         }
@@ -52,7 +52,7 @@ void main() {
       expect(homeScreenVisibleAfterLogin, isTrue);
 
       // 2. We should now be on the Home Screen
-      expect(find.text('Explorer les données'), findsOneWidget);
+      expect(find.text('Exploration'), findsOneWidget);
 
       // Tap on "Journal du jour" button
       final journalButton = find.byWidgetPredicate(
@@ -103,7 +103,7 @@ void main() {
       bool homeScreenVisible = false;
       for (int i = 0; i < 30; i++) {
         await tester.pump(const Duration(milliseconds: 200));
-        if (find.text('Explorer les données').evaluate().isNotEmpty) {
+        if (find.text('Exploration').evaluate().isNotEmpty) {
           homeScreenVisible = true;
           break;
         }
