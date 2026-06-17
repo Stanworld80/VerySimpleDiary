@@ -95,6 +95,7 @@ void main() {
 
       // Tap "Valider la journée"
       final finalizeButton = find.widgetWithText(ElevatedButton, 'Valider la journée');
+      await tester.ensureVisible(finalizeButton);
       await tester.tap(finalizeButton);
       await tester.pump();
 
