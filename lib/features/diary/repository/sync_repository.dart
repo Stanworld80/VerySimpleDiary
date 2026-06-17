@@ -268,7 +268,7 @@ class SyncRepository {
     if (user == null) return;
     
     try {
-      final docRef = _firestore!.collection('users').doc(user.uid).collection('diary_days').doc(date);
+      final docRef = _firestore.collection('users').doc(user.uid).collection('diary_days').doc(date);
       await docRef.delete();
       debugPrint("Deleted day $date from Firestore.");
     } catch (e) {
