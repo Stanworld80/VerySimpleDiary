@@ -213,10 +213,7 @@ void main() {
       expect(backArrowDiary, findsOneWidget);
       await tester.tap(backArrowDiary);
       await tester.pumpAndSettle();
-
-      // Go back to History Screen
-      await tester.tap(historiqueButton);
-      await tester.pumpAndSettle();
+      // We are now directly back on HistoryScreen because DiaryScreen was pushed from HistoryScreen.
 
       // 5. Test Delete Flow
       // Tap on BROUILLON to highlight/select the day
