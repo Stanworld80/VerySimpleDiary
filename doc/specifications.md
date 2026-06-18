@@ -98,6 +98,9 @@ L'application utilise un gabarit unique pour guider l'utilisateur à travers 24 
   * **Règle de Sélection** : Choix multiple libre. L'utilisateur peut cocher entre 0 et 5 cases par ligne (ex. s'il a ressenti à la fois une grande fatigue ("Négatif") et un moment de sursaut d'énergie ("Optimal") pendant la journée).
   * **Commentaires par Période** : En tapant sur le nom d'une période (ex. "Nuit (00h-05h)", "Matin (05h-11h)", etc.), une boîte de dialogue s'ouvre permettant à l'utilisateur de saisir un commentaire textuel libre (limité à 64 caractères) pour apporter du contexte sémantique (ex. "Sommeil agité", "Séance de fractionné intense").
 * **Navigation** : Le bouton "Suivant" valide, enregistre l'état actuel en brouillon local, et passe à la question suivante avec une micro-animation fluide de transition latérale.
+* **Gestes de Navigation (Swipe)** : En plus des boutons, l'utilisateur peut balayer l'écran horizontalement :
+  * Un glissement vers la gauche (Swipe Left) enregistre l'état actuel en brouillon local et passe à la question suivante (ou redirige vers l'écran récapitulatif si c'est la 24ème question).
+  * Un glissement vers la droite (Swipe Right) permet de revenir à la question précédente.
 
 ### 2.3 Écran Récapitulatif Final
 Affiché automatiquement après la validation de la 24ème question.
@@ -121,20 +124,31 @@ Affiché automatiquement après la validation de la 24ème question.
 * **Persistance continue (Brouillon)** : Chaque pression sur "Suivant" écrit immédiatement en base locale. Si l'application est tuée, elle se rouvre sur la question en cours.
 
 ### 2.5 Écran d'Exploration des Données (Dashboard)
-Cet écran offre une vue d'ensemble et permet d'analyser l'historique des données récoltées.
+Cet écran offre une vue d'ensemble et permet d'analyser l'historique des données récoltées à travers des indicateurs de tendances et des filtres avancés.
 
-* **Statistiques Globales** : Résumé en tête d'écran indiquant le nombre total de jours suivis et le score moyen sur les jours finalisés.
+* **Statistiques Globales** : Résumé en tête d'écran indiquant le nombre total de jours suivis et le score moyen calculé uniquement sur les jours finalisés.
 * **Filtres d'Affichage** :
-  * Filtre par statut : Tout, Brouillons, Finalisés.
-  * Filtre par niveau : Tout, Optimal, Bon, Moyen, Nul, Négatif.
-* **Évolution sur Période** :
-  * Sélection d'une plage de dates (De / À) via un calendrier.
-  * Sélection du type de calcul (Moyenne ou Médiane) pour afficher les tendances sous forme de carrousel horizontal pour les 24 questions thématiques.
+  * Filtre par statut (Tout, Brouillons, Finalisés) et filtre par niveau (Tout, Optimal, Bon, Moyen, Nul, Négatif) combinables pour affiner la liste des journaux.
+* **Évolution sur Période & Analyse Multidimensionnelle** :
+  * Sélection d'une plage de dates (De / À) via des boutons de calendrier.
+  * Sélection du type de calcul (Moyenne ou Médiane) pour adapter dynamiquement le calcul des scores sur la période.
+  * **Carrousels de Tendances** : Affichage sous forme de trois carrousels horizontaux défilants :
+    1. **Stats par Thème** : Tendance globale sur les 6 thèmes majeurs du MVP.
+    2. **Stats par Sous-Thème** : Tendance détaillée pour chacune des 24 questions thématiques.
+    3. **Stats par Moment de la Journée** : Tendance sur les 4 tranches horaires (Nuit, Matin, Après-midi, Soir).
 * **Aperçu des Choix de la Journée Sélectionnée** :
-  * Affiche en détail les réponses et commentaires saisis pour la journée sélectionnée dans la liste.
-  * **Bouton Modifier (Crayon)** : Permet de modifier la journée. Après confirmation par boîte de dialogue, la journée repasse en statut `"draft"` et l'utilisateur est redirigé vers le questionnaire pour modifier ses réponses.
-  * **Bouton Supprimer (Poubelle rouge)** : Supprime définitivement la journée. Après confirmation par boîte de dialogue, les données sont effacées localement et sur le cloud (Firestore). La sélection bascule automatiquement sur la journée suivante.
-* **Liste des Journaux Enregistrés** : Liste chronologique affichant la date, le statut (Brouillon/Finalisé), le score, le niveau et le texte explicatif d'insight. Un tap sur une ligne met en valeur cette journée pour en afficher l'aperçu. Un clic sur l'icône de flèche ouvre le questionnaire (si brouillon) ou le récapitulatif final (si finalisé).
+  * Affiche en détail sous forme de carrousel horizontal les réponses et commentaires saisis pour la journée sélectionnée dans la liste du bas.
+* **Liste des Journaux Enregistrés** : Liste chronologique affichant la date, le statut (Brouillon/Finalisé), le score, le niveau et le texte d'insight. Un tap sur une ligne met en valeur cette journée pour charger ses détails dans l'aperçu. Un clic sur l'icône de flèche ouvre le récapitulatif final (si finalisé) ou affiche un message d'orientation s'il s'agit d'un brouillon.
+
+### 2.6 Écran d'Historique et de Modification (HistoryScreen)
+Cet écran dédié sépare la consultation globale des actions de modification et de gestion du cycle de vie des données, afin d'éviter les actions destructrices accidentelles.
+
+* **Filtres de Statut** : Filtre rapide (Tout l'historique, Brouillons, Finalisés) pour isoler les journaux.
+* **Panneau d'Actions rapides (Journée Surlignée)** :
+  * Affiche les réponses détaillées de la journée sélectionnée sous forme de carrousel horizontal.
+  * **Bouton Modifier (Crayon)** : Après confirmation par boîte de dialogue, repasse la journée en statut `"draft"` et redirige l'utilisateur vers le questionnaire (`DiaryScreen`) pour ajuster ses réponses. Les modifications sont synchronisées avec le cloud (Firestore).
+  * **Bouton Supprimer (Poubelle)** : Après confirmation par boîte de dialogue, efface définitivement la journée localement (avec cascade sur les réponses) et appelle le module de synchronisation pour la supprimer de Firestore.
+* **Liste Chronologique** : Affiche les journaux avec leur date, statut (Brouillon avec badge orange visible), niveau de score et texte d'insight. Un bouton d'édition rapide (Crayon) est présent sur chaque ligne pour accéder directement à la modification de cette journée.
 
 ---
 
