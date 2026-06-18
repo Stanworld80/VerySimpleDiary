@@ -200,7 +200,16 @@ void main() {
       expect(find.text(truncatedComment), findsOneWidget);
 
       // Go back to Home
-      final backArrowDiary = find.byIcon(Icons.arrow_back_ios_new_rounded);
+      Finder backArrowDiary = find.byType(BackButton);
+      if (backArrowDiary.evaluate().isEmpty) {
+        backArrowDiary = find.byTooltip('Back');
+      }
+      if (backArrowDiary.evaluate().isEmpty) {
+        backArrowDiary = find.byTooltip('Retour');
+      }
+      if (backArrowDiary.evaluate().isEmpty) {
+        backArrowDiary = find.byIcon(Icons.arrow_back_ios_new_rounded);
+      }
       expect(backArrowDiary, findsOneWidget);
       await tester.tap(backArrowDiary);
       await tester.pumpAndSettle();
