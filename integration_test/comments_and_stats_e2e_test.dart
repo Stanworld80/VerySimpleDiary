@@ -140,10 +140,22 @@ void main() {
       if (deButton.evaluate().isNotEmpty) {
         await tester.tap(deButton);
         await tester.pumpAndSettle();
-        // Close the DatePicker by clicking Cancel
-        final cancelBtn = find.text('CANCEL');
-        if (cancelBtn.evaluate().isNotEmpty) {
+        // Close the DatePicker by clicking Cancel/ANNULER/Annuler/etc.
+        final cancelTexts = ['Cancel', 'CANCEL', 'Annuler', 'ANNULER'];
+        Finder? cancelBtn;
+        for (final txt in cancelTexts) {
+          final f = find.text(txt);
+          if (f.evaluate().isNotEmpty) {
+            cancelBtn = f;
+            break;
+          }
+        }
+        if (cancelBtn != null) {
           await tester.tap(cancelBtn);
+          await tester.pumpAndSettle();
+        } else {
+          // Fallback: tap outside the dialog (e.g., top-left corner) to dismiss it
+          await tester.tapAt(const Offset(10, 10));
           await tester.pumpAndSettle();
         }
       }
