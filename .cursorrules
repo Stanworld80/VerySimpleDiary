@@ -1,0 +1,89 @@
+# Very Simple Diary - Rules and Architecture for Asynchronous Vibe Coding (Antigravity 2.0 + Jules MCP)
+
+Ce fichier définit les directives de développement, d'architecture et de validation pour les agents autonomes travaillant en mode Asynchrone sur le dépôt `Very Simple Diary`.
+
+---
+
+## 1. Principes Fondamentaux de l'Asynchrone (Vibe Coding)
+
+### 1.1 Le Combo Antigravity 2.0 + Jules via MCP
+Le flux de développement asynchrone repose sur le couplage entre l'application locale **Antigravity 2.0** (le hub d'orchestration) et **Jules** (l'agent d'exécution Cloud) via le protocole MCP (Model Context Protocol).
+
+*   **Définition de Tâche** : Définissez et formulez clairement la tâche dans le Hub Antigravity.
+*   **Planification Asynchrone (Jules)** : Le serveur MCP Jules prend la main, initialise la session asynchrone dans sa VM Cloud sécurisée et génère le plan de développement détaillé (`implementation_plan.md`).
+*   **Barrière de Validation (Approval Gate)** : L'agent s'arrête et présente le plan de développement à l'utilisateur. **Aucune ligne de code de production ne doit être écrite avant la validation explicite du plan.**
+*   **Exécution en Arrière-plan (VM Cloud)** : Après validation, Jules exécute la tâche de manière autonome dans le cloud. L'utilisateur peut fermer son ordinateur en toute confiance.
+
+### 1.2 Context-as-Code (Règles Embarquées)
+Toute modification apportée par un agent (que ce soit Jules en Cloud ou un agent local) doit se conformer strictement aux fichiers de règles présents dans le dépôt (`.cursorrules` et `.ai-rules`).
+*   **Règle d'or** : Lire et comprendre ces contraintes d'architecture avant de modifier la moindre ligne.
+
+### 1.3 Boucle de Validation Automatique
+Avant de soumettre une Pull Request ou de déclarer une tâche terminée, l'agent doit impérativement valider son travail en exécutant la suite de tests complète définie dans le `Makefile`.
+
+---
+
+## 2. Commandes de Test et de Génération (Makefile)
+
+Un `Makefile` est présent à la racine pour uniformiser les commandes de validation. L'agent doit utiliser ces commandes :
+
+*   `make setup` : Installe toutes les dépendances (Flutter, Firestore unit tests npm packages, et MCP server packages).
+*   `make build-runner` : Lance la génération de code Flutter (Riverpod, Drift, etc.).
+*   `make test-unit` : Exécute les tests unitaires et widget de l'application Flutter.
+*   `make test-firestore` : Démarre l'émulateur Firebase, exécute les tests unitaires des règles de sécurité Firestore, puis arrête l'émulateur.
+*   `make test-mcp` : Compile et exécute les tests du serveur MCP (Node.js/TypeScript).
+*   `make test-integration` : Exécute les tests d'intégration E2E de Flutter.
+*   `make test-all` : Exécute l'intégralité des suites de tests ci-dessus.
+
+---
+
+## 3. Architecture Logicielle & Contraintes Techniques
+
+### 3.1 Flutter / Dart
+*   **Gestion d'État** : Riverpod v2 avec génération de code (`@riverpod`, `riverpod_generator`). Ne jamais instancier de providers manuels obsolètes.
+*   **Structure du Code (Feature-first)** :
+    *   Les dossiers doivent être structurés par fonctionnalité sous `lib/features/`.
+    *   Chaque fonctionnalité doit contenir : `controller/` ou `provider/`, `repository/` (si applicable), `ui/` (widgets et écrans).
+    *   Le code partagé et transverse va dans `lib/core/` (services, thèmes, utilitaires, widgets génériques).
+*   **Base de Données Locale** : Drift (`drift`, `drift_dev`) pour la persistance locale sqlite.
+    *   Toutes les requêtes Drift complexes doivent être testées et optimisées.
+    *   Exécuter `make build-runner` après chaque modification de schéma Drift.
+*   **Test-Driven Development (TDD)** :
+    *   Toute logique métier doit commencer par un test qui échoue (`test/`), puis être implémentée au strict minimum, puis refactorisée.
+    *   Valider les valeurs limites (ex: scores minimaux/maximaux) et le comportement sur de grands jeux de données (> 10 000 éléments) pour prévenir les blocages CPU.
+
+### 3.2 Firestore (Security Rules)
+*   Toute nouvelle collection ou modification des règles de sécurité Firestore dans `firestore.rules` doit être couverte par les tests unitaires dans `test/firestore_rules_test/`.
+*   **Sécurité stricte** :
+    *   Accès anonyme totalement bloqué.
+    *   Un utilisateur connecté ne peut accéder et écrire que dans sa propre arborescence `/users/{userId}/...`.
+    *   Toute tentative de contournement ou accès croisé doit échouer.
+
+### 3.3 Serveur MCP
+*   Le serveur MCP (Model Context Protocol) se trouve dans `mcp_server/`.
+*   Il sert à exposer le contexte sémantique de l'application (ex: `diary://daily/{date}`, `diary://themes/trends`).
+*   Toute modification du serveur MCP doit passer la compilation TypeScript et ses tests (`npm run test` dans `mcp_server/`).
+
+---
+
+## 4. Design Aesthetics & Visual Excellence (Normes UI/UX)
+
+Si l'agent modifie ou ajoute des interfaces graphiques dans l'application Flutter :
+
+*   **Aesthetics Premium** : L'interface doit impressionner par sa modernité et son élégance. Éviter les couleurs primaires/génériques basiques. Utiliser des palettes harmonieuses, basées sur des couleurs HSL raffinées et un mode sombre par défaut très soigné.
+*   **Typographie** : Utiliser des polices modernes (comme Inter, Roboto, ou Outfit) via Google Fonts ou configurées proprement, au lieu des polices système par défaut.
+*   **Dynamisme** : Ajouter des micro-animations interactives, des gradients fluides, du flou de mouvement et des effets de survol/toucher réactifs.
+*   **Pas de Placeholders** : Utiliser de vraies images générées via IA ou des illustrations vectorielles propres. Ne jamais laisser de carrés gris ou de textes temporaires ("Lorem Ipsum").
+
+---
+
+## 5. Agents Spécialisés Quotidiens
+
+Pour préserver la qualité du dépôt, des pipelines asynchrones exécutent quotidiennement deux agents spécialisés :
+
+1.  **Sentinel (Agent de Sécurité)** :
+    *   Scanne le dépôt pour détecter d'éventuelles failles de sécurité, clés Firebase exposées en clair, dépendances vulnérables ou régressions dans les règles de sécurité Firestore.
+    *   Propose automatiquement des Pull Requests de correction.
+2.  **Bolt (Agent de Performance)** :
+    *   Analyse le code Flutter et Drift pour repérer les fuites de mémoire (ex: non-désactivation de streams/contrôleurs), les recalculs excessifs d'IHM, et les requêtes Drift inefficaces.
+    *   Valide les benchmarks de performance sur de grands jeux de données.
