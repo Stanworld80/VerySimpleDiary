@@ -20,7 +20,7 @@ class SettingsState {
     required this.geminiApiKey,
     required this.useGemini,
     this.geminiMode = 'proxy',
-    this.geminiProxyUrl = 'https://us-central1-stanverysimplediary-dev.cloudfunctions.net/getGeminiInsight',
+    this.geminiProxyUrl = 'https://getgeminiinsight-fxdhdnouoa-uc.a.run.app',
   });
 
   SettingsState copyWith({
@@ -48,7 +48,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           useGemini: _prefs.getBool('use_gemini') ?? false,
           geminiMode: _prefs.getString('gemini_mode') ?? 'proxy',
           geminiProxyUrl: _prefs.getString('gemini_proxy_url') ??
-              'https://us-central1-stanverysimplediary-dev.cloudfunctions.net/getGeminiInsight',
+              'https://getgeminiinsight-fxdhdnouoa-uc.a.run.app',
         )) {
     _loadSecureKey();
   }
