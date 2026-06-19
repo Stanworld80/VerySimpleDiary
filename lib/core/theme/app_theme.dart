@@ -20,6 +20,50 @@ class AppTheme {
   static const Color levelNul = Color(0xFFF97316);     // Orange
   static const Color levelNegatif = Color(0xFFEF4444);  // Red
 
+  // Period colors
+  static const Color periodNuit = Color(0xFF818CF8);    // Indigo/Blue
+  static const Color periodMatin = Color(0xFFFFD54F);   // Amber/Yellow
+  static const Color periodJournee = Color(0xFFFF9800); // Orange
+  static const Color periodSoir = Color(0xFFE040FB);    // Purple/Magenta
+
+  static Color getRatingColor(int rating) {
+    switch (rating) {
+      case -2:
+        return levelNegatif;
+      case -1:
+        return levelNul;
+      case 0:
+        return Colors.white;
+      case 1:
+        return levelBon;
+      case 2:
+        return levelOptimal;
+      default:
+        return textSecondary;
+    }
+  }
+
+  static Color getPeriodColor(String period) {
+    switch (period.toLowerCase()) {
+      case 'nuit':
+        return periodNuit;
+      case 'matin':
+        return periodMatin;
+      case 'journee':
+      case 'journée':
+      case 'après-midi':
+      case 'apres-midi':
+      case 'jrn':
+        return periodJournee;
+      case 'soir':
+      case 'soirée':
+      case 'soi':
+        return periodSoir;
+      default:
+        return textSecondary;
+    }
+  }
+
   static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,

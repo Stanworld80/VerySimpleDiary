@@ -321,16 +321,30 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                                         children: [
                                           Text(
                                             '$label: ',
-                                            style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                                            style: TextStyle(
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppTheme.getPeriodColor(p),
+                                            ),
                                           ),
                                           Expanded(
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 if (ratings.isNotEmpty)
-                                                  Text(
-                                                    ratings.map((r) => r > 0 ? '+$r' : '$r').join(', '),
-                                                    style: const TextStyle(fontSize: 9, color: AppTheme.primaryLight, fontWeight: FontWeight.bold),
+                                                  Wrap(
+                                                    spacing: 4,
+                                                    children: ratings.map((r) {
+                                                      final valText = r > 0 ? '+$r' : '$r';
+                                                      return Text(
+                                                        valText,
+                                                        style: TextStyle(
+                                                          fontSize: 9,
+                                                          color: AppTheme.getRatingColor(r),
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      );
+                                                    }).toList(),
                                                   ),
                                                 if (comment.isNotEmpty)
                                                   Text(

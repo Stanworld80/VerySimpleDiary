@@ -4,6 +4,8 @@ import '../repository/diary_repository.dart';
 import '../repository/sync_repository.dart';
 import '../score_calculator.dart';
 import '../../../core/db/local_database.dart';
+import '../../../core/config/settings_provider.dart';
+import '../../../core/services/gemini_service.dart';
 
 class DiaryQuestion {
   final int number;
@@ -104,8 +106,9 @@ class DiaryState {
 class DiaryNotifier extends StateNotifier<DiaryState> {
   final DiaryRepository _diaryRepository;
   final SyncRepository _syncRepository;
+  final Ref _ref;
 
-  DiaryNotifier(this._diaryRepository, this._syncRepository, String date) : super(DiaryState(date: date)) {
+  DiaryNotifier(this._diaryRepository, this._syncRepository, this._ref, String date) : super(DiaryState(date: date)) {
     _init();
   }
 
@@ -177,9 +180,10 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
     final periodList = List<int>.from(currentSelection[period] ?? []);
 
     if (periodList.contains(rating)) {
-      periodList.remove(rating);
+      periodList.clear(); // Deselect if already selected
     } else {
-      periodList.add(rating);
+      periodList.clear(); // Clear previous choices on this line
+      periodList.add(rating); // Set the new single choice
     }
     
     currentSelection[period] = periodList;
@@ -245,10 +249,42 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
 
     final scoreResult = ScoreCalculator.calculate(allValues);
     
-    // Auto-generate some dynamic summary description based on level
-    final insight = "Aujourd'hui, votre score est ${scoreResult.level}. "
-        "Vous avez cumulé un score total de ${scoreResult.total} "
-        "avec une moyenne de ${scoreResult.mean.toStringAsFixed(2)}.";
+    final currentInsight = state.diaryDay?.insightText;
+    final hasValidGeminiInsight = currentInsight != null &&
+        currentInsight.isNotEmpty &&
+        !currentInsight.startsWith("Aujourd'hui, votre score est") &&
+        !currentInsight.startsWith("Journée finalisée avec un score") &&
+        !currentInsight.contains("Échec de la génération");
+
+    // Check if Gemini is enabled and configured
+    final settings = _ref.read(settingsProvider);
+    String insight;
+    if (hasValidGeminiInsight) {
+      // Keep the existing Gemini insight to avoid calling the LLM again
+      insight = currentInsight;
+    } else if (settings.useGemini && settings.geminiApiKey.isNotEmpty) {
+      try {
+        insight = await GeminiService.generateInsight(
+          apiKey: settings.geminiApiKey,
+          totalScore: scoreResult.total.toDouble(),
+          meanScore: scoreResult.mean,
+          medianScore: scoreResult.median,
+          level: scoreResult.level,
+          responses: state.responses,
+        );
+      } catch (e) {
+        debugPrint("Gemini generation failed, falling back to standard insight: $e");
+        insight = "Aujourd'hui, votre score est ${scoreResult.level}. "
+            "Vous avez cumulé un score total de ${scoreResult.total} "
+            "avec une moyenne de ${scoreResult.mean.toStringAsFixed(2)}.\n\n"
+            "(Échec de la génération de l'analyse IA : $e)";
+      }
+    } else {
+      // Auto-generate some dynamic summary description based on level
+      insight = "Aujourd'hui, votre score est ${scoreResult.level}. "
+          "Vous avez cumulé un score total de ${scoreResult.total} "
+          "avec une moyenne de ${scoreResult.mean.toStringAsFixed(2)}.";
+    }
 
     await _diaryRepository.updateDiaryDay(
       id: state.diaryDay!.id,
@@ -266,6 +302,63 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
     });
   }
 
+  Future<void> generateGeminiInsightManual() async {
+    if (state.diaryDay == null) return;
+    
+    final settings = _ref.read(settingsProvider);
+    if (settings.geminiApiKey.isEmpty) {
+      throw Exception("Clé API Gemini manquante. Veuillez la configurer dans les Paramètres.");
+    }
+
+    // Temporarily set insightText to a loading state
+    await _diaryRepository.updateDiaryDay(
+      id: state.diaryDay!.id,
+      status: state.diaryDay!.status,
+      total: state.diaryDay!.totalScore,
+      mean: state.diaryDay!.meanScore,
+      median: state.diaryDay!.medianScore,
+      level: state.diaryDay!.level,
+      insight: "Génération de l'analyse par Gemini en cours...",
+    );
+
+    try {
+      final insight = await GeminiService.generateInsight(
+        apiKey: settings.geminiApiKey,
+        totalScore: state.diaryDay!.totalScore,
+        meanScore: state.diaryDay!.meanScore,
+        medianScore: state.diaryDay!.medianScore,
+        level: state.diaryDay!.level,
+        responses: state.responses,
+      );
+
+      await _diaryRepository.updateDiaryDay(
+        id: state.diaryDay!.id,
+        status: state.diaryDay!.status,
+        total: state.diaryDay!.totalScore,
+        mean: state.diaryDay!.meanScore,
+        median: state.diaryDay!.medianScore,
+        level: state.diaryDay!.level,
+        insight: insight,
+      );
+
+      _syncRepository.syncDay(state.date).catchError((e) {
+        debugPrint("Background sync error: $e");
+      });
+    } catch (e) {
+      // Fallback
+      await _diaryRepository.updateDiaryDay(
+        id: state.diaryDay!.id,
+        status: state.diaryDay!.status,
+        total: state.diaryDay!.totalScore,
+        mean: state.diaryDay!.meanScore,
+        median: state.diaryDay!.medianScore,
+        level: state.diaryDay!.level,
+        insight: "Échec de la génération de l'analyse IA : $e",
+      );
+      rethrow;
+    }
+  }
+
   Future<void> finalizeDay() async {
     if (state.diaryDay == null) return;
     
@@ -279,8 +372,37 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
     }
 
     final scoreResult = ScoreCalculator.calculate(allValues);
-    final insight = "Journée finalisée avec un score total de ${scoreResult.total} (${scoreResult.level}). "
-        "Pensez à bien observer vos corrélations quotidiennes.";
+    
+    final currentInsight = state.diaryDay?.insightText;
+    final hasValidGeminiInsight = currentInsight != null &&
+        currentInsight.isNotEmpty &&
+        !currentInsight.startsWith("Aujourd'hui, votre score est") &&
+        !currentInsight.startsWith("Journée finalisée avec un score") &&
+        !currentInsight.contains("Échec de la génération");
+
+    // Check if Gemini is enabled and configured, and if we should generate/regenerate on finalization
+    final settings = _ref.read(settingsProvider);
+    String insight;
+    if (hasValidGeminiInsight) {
+      insight = currentInsight;
+    } else if (settings.useGemini && settings.geminiApiKey.isNotEmpty) {
+      try {
+        insight = await GeminiService.generateInsight(
+          apiKey: settings.geminiApiKey,
+          totalScore: scoreResult.total.toDouble(),
+          meanScore: scoreResult.mean,
+          medianScore: scoreResult.median,
+          level: scoreResult.level,
+          responses: state.responses,
+        );
+      } catch (e) {
+        debugPrint("Gemini generation failed on finalization: $e");
+        insight = state.diaryDay!.insightText ?? "Journée finalisée avec un score total de ${scoreResult.total} (${scoreResult.level}).";
+      }
+    } else {
+      insight = "Journée finalisée avec un score total de ${scoreResult.total} (${scoreResult.level}). "
+          "Pensez à bien observer vos corrélations quotidiennes.";
+    }
 
     await _diaryRepository.updateDiaryDay(
       id: state.diaryDay!.id,
@@ -310,7 +432,7 @@ final diaryDateProvider = StateProvider<String>((ref) {
 final diaryControllerProvider = StateNotifierProvider.family<DiaryNotifier, DiaryState, String>((ref, date) {
   final repo = ref.watch(diaryRepositoryProvider);
   final syncRepo = ref.watch(syncRepositoryProvider);
-  return DiaryNotifier(repo, syncRepo, date);
+  return DiaryNotifier(repo, syncRepo, ref, date);
 });
 
 final allDiaryDaysProvider = StreamProvider<List<DiaryDay>>((ref) {

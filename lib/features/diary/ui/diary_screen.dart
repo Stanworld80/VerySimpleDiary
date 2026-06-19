@@ -128,9 +128,9 @@ class DiaryScreen extends ConsumerWidget {
                     const SizedBox(height: 32),
                     
                     // Grid Header
-                    const Row(
+                    Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                           flex: 3,
                           child: Text(
                             'PÉRIODE',
@@ -146,11 +146,11 @@ class DiaryScreen extends ConsumerWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('-2', style: TextStyle(fontWeight: FontWeight.bold)),
-                              Text('-1', style: TextStyle(fontWeight: FontWeight.bold)),
-                              Text('0', style: TextStyle(fontWeight: FontWeight.bold)),
-                              Text('+1', style: TextStyle(fontWeight: FontWeight.bold)),
-                              Text('+2', style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text('-2', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.getRatingColor(-2))),
+                              Text('-1', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.getRatingColor(-1))),
+                              Text('0', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.getRatingColor(0))),
+                              Text('+1', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.getRatingColor(1))),
+                              Text('+2', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.getRatingColor(2))),
                             ],
                           ),
                         ),
@@ -187,9 +187,10 @@ class DiaryScreen extends ConsumerWidget {
                                     children: [
                                       Text(
                                         periodLabels[period]!,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w500,
+                                          color: AppTheme.getPeriodColor(period),
                                         ),
                                       ),
                                       const SizedBox(height: 2),
@@ -199,7 +200,7 @@ class DiaryScreen extends ConsumerWidget {
                                             Icons.chat_bubble_outline_rounded,
                                             size: 10,
                                             color: comment.isNotEmpty
-                                                ? AppTheme.primaryLight
+                                                ? AppTheme.getPeriodColor(period)
                                                 : AppTheme.textSecondary.withValues(alpha: 0.5),
                                           ),
                                           const SizedBox(width: 4),
@@ -232,6 +233,7 @@ class DiaryScreen extends ConsumerWidget {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: ratings.map((rating) {
                                   final isSelected = selectedRatings.contains(rating);
+                                  final ratingColor = AppTheme.getRatingColor(rating);
                                   return GestureDetector(
                                     onTap: () => notifier.toggleRating(period, rating),
                                     child: AnimatedContainer(
@@ -240,11 +242,11 @@ class DiaryScreen extends ConsumerWidget {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: isSelected
-                                            ? AppTheme.primary.withValues(alpha: 0.2)
+                                            ? ratingColor.withValues(alpha: 0.2)
                                             : Colors.transparent,
                                         border: Border.all(
                                           color: isSelected
-                                              ? AppTheme.primary
+                                              ? ratingColor
                                               : const Color(0xFF2E3047),
                                           width: 1.5,
                                         ),
@@ -254,10 +256,10 @@ class DiaryScreen extends ConsumerWidget {
                                           height: 16,
                                           width: 16,
                                           child: isSelected
-                                              ? const Icon(
+                                              ? Icon(
                                                   Icons.circle,
                                                   size: 10,
-                                                  color: AppTheme.primary,
+                                                  color: ratingColor,
                                                 )
                                               : null,
                                         ),

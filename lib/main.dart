@@ -8,8 +8,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:yaml/yaml.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/theme/app_theme.dart';
 import 'core/network/network_config.dart';
+import 'core/config/settings_provider.dart';
 import 'features/auth/repository/auth_repository.dart';
 import 'features/auth/ui/login_screen.dart';
 import 'features/diary/ui/home_screen.dart';
@@ -56,9 +58,14 @@ void main() async {
   } catch (e) {
     debugPrint("Firebase init failed: $e. Running in Local-First Mode.");
   }
+  final prefs = await SharedPreferences.getInstance();
+
   runApp(
-    const ProviderScope(
-      child: MyApp(),
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+      ],
+      child: const MyApp(),
     ),
   );
 }

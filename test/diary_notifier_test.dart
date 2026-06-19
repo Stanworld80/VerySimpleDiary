@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:verysimplediary/features/diary/controller/diary_controller.dart';
 import 'package:verysimplediary/features/diary/repository/sync_repository.dart';
 import 'package:verysimplediary/features/diary/repository/diary_repository.dart';
 import 'package:verysimplediary/core/db/local_database.dart';
+import 'package:verysimplediary/core/config/settings_provider.dart';
 
 class MockDiaryRepository implements DiaryRepository {
   final _dayController = StreamController<DiaryDay?>.broadcast();
@@ -151,12 +153,15 @@ void main() {
   late MockDiaryRepository mockRepository;
   const testDate = '2026-06-12';
 
-  setUp(() {
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
     mockRepository = MockDiaryRepository();
     container = ProviderContainer(
       overrides: [
         diaryRepositoryProvider.overrideWithValue(mockRepository),
         syncRepositoryProvider.overrideWithValue(MockSyncRepository()),
+        sharedPreferencesProvider.overrideWithValue(prefs),
       ],
     );
   });

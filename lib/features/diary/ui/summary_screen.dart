@@ -6,6 +6,7 @@ import '../../../core/db/local_database.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/version_footer.dart';
 import '../../../core/ui/profile_menu_button.dart';
+import '../../../core/config/settings_provider.dart';
 
 class SummaryScreen extends ConsumerWidget {
   final String date;
@@ -42,6 +43,8 @@ class SummaryScreen extends ConsumerWidget {
     }
 
     final levelColor = _getLevelColor(day.level);
+
+    final settings = ref.watch(settingsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -261,16 +264,30 @@ class SummaryScreen extends ConsumerWidget {
                                         children: [
                                           Text(
                                             '$label: ',
-                                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppTheme.getPeriodColor(p),
+                                            ),
                                           ),
                                           Expanded(
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 if (ratings.isNotEmpty)
-                                                  Text(
-                                                    ratings.map((r) => r > 0 ? '+$r' : '$r').join(', '),
-                                                    style: const TextStyle(fontSize: 11, color: AppTheme.primaryLight, fontWeight: FontWeight.bold),
+                                                  Wrap(
+                                                    spacing: 4,
+                                                    children: ratings.map((r) {
+                                                      final valText = r > 0 ? '+$r' : '$r';
+                                                      return Text(
+                                                        valText,
+                                                        style: TextStyle(
+                                                          fontSize: 11,
+                                                          color: AppTheme.getRatingColor(r),
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      );
+                                                    }).toList(),
                                                   ),
                                                 if (comment.isNotEmpty)
                                                   Text(
@@ -307,13 +324,45 @@ class SummaryScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Analyse de la journée',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          if (settings.useGemini && settings.geminiApiKey.isNotEmpty) ...[
+                            const Icon(Icons.auto_awesome_rounded, color: Colors.amber, size: 18),
+                            const SizedBox(width: 8),
+                          ],
+                          const Text(
+                            'Analyse de la journée',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (settings.useGemini && settings.geminiApiKey.isNotEmpty)
+                        IconButton(
+                          icon: const Icon(Icons.refresh_rounded, color: AppTheme.primaryLight, size: 20),
+                          tooltip: 'Régénérer l\'analyse IA',
+                          onPressed: () async {
+                            try {
+                              await notifier.generateGeminiInsightManual();
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Erreur : $e'),
+                                    backgroundColor: AppTheme.levelNegatif,
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                        ),
+                    ],
                   ),
                   const SizedBox(height: 12),
                   Text(
@@ -324,6 +373,23 @@ class SummaryScreen extends ConsumerWidget {
                       height: 1.5,
                     ),
                   ),
+                  if (!settings.useGemini || settings.geminiApiKey.isEmpty) ...[
+                    const Divider(color: Color(0xFF2E3047), height: 24),
+                    Row(
+                      children: [
+                        const Icon(Icons.lightbulb_outline_rounded, color: Colors.amber, size: 16),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            settings.geminiApiKey.isEmpty
+                                ? 'Configurez votre clé API Gemini dans les Paramètres pour obtenir des analyses personnalisées et des conseils de bien-être.'
+                                : 'Activez l\'analyse IA dans les Paramètres pour générer un résumé enrichi.',
+                            style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),

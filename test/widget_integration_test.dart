@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:verysimplediary/main.dart';
 import 'package:verysimplediary/core/db/local_database.dart';
 import 'package:verysimplediary/features/auth/repository/auth_repository.dart';
 import 'package:verysimplediary/features/diary/repository/diary_repository.dart';
 import 'package:verysimplediary/features/diary/repository/sync_repository.dart';
+import 'package:verysimplediary/core/config/settings_provider.dart';
 
 class MockDiaryRepository implements DiaryRepository {
   final _dayController = StreamController<DiaryDay?>.broadcast();
@@ -160,18 +162,21 @@ void main() {
   late MockDiaryRepository mockDiaryRepository;
   late MockSyncRepository mockSyncRepository;
 
-  setUp(() {
+  setUp(() async {
     mockDiaryRepository = MockDiaryRepository();
     mockSyncRepository = MockSyncRepository();
     AuthRepository.forceMock = true;
+    SharedPreferences.setMockInitialValues({});
   });
 
   testWidgets('Full User Integration Flow (Login, Comments, Explorer Stats)', (WidgetTester tester) async {
+    final prefs = await SharedPreferences.getInstance();
     // 1. Initialize container and sign out
     final container = ProviderContainer(
       overrides: [
         diaryRepositoryProvider.overrideWithValue(mockDiaryRepository),
         syncRepositoryProvider.overrideWithValue(mockSyncRepository),
+        sharedPreferencesProvider.overrideWithValue(prefs),
       ],
     );
     

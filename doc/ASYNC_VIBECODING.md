@@ -46,7 +46,7 @@ Pour s'assurer que l'agent asynchrone ne dérive pas, le dépôt embarque les fi
 
 L'agent doit obligatoirement valider l'ensemble des suites de tests avant de soumettre son travail :
 *   **Sur Linux/macOS/WSL/Git Bash** : `make test-all`
-*   **Sur Windows PowerShell** : `.\run_tests.ps1 test-all`
+*   **Sur Windows PowerShell** : `powershell -ExecutionPolicy Bypass -File .\run_tests.ps1 test-all` (ou `.\run_tests.ps1 test-all` si les politiques d'exécution de scripts le permettent)
 
 Ces commandes lancent de manière ordonnée :
 1.  **Tests unitaires & Widget Flutter** (cas limites bornes -2/+2 et volumétrie >10k éléments).

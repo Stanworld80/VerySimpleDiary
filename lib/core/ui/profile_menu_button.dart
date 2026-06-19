@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/auth/repository/auth_repository.dart';
 import '../theme/app_theme.dart';
+import '../config/settings_provider.dart';
 
 class ProfileMenuButton extends ConsumerWidget {
   const ProfileMenuButton({super.key});
@@ -38,6 +39,147 @@ class ProfileMenuButton extends ConsumerWidget {
     );
   }
 
+  void _showSettingsDialog(BuildContext context, WidgetRef ref) {
+    final settings = ref.read(settingsProvider);
+    final notifier = ref.read(settingsProvider.notifier);
+    
+    final apiKeyController = TextEditingController(text: settings.geminiApiKey);
+    bool useGemini = settings.useGemini;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: AppTheme.darkSurface,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: const BorderSide(color: Color(0xFF2E3047), width: 1.5),
+              ),
+              title: const Row(
+                children: [
+                  Icon(Icons.settings_rounded, color: AppTheme.primaryLight),
+                  SizedBox(width: 8),
+                  Text(
+                    'Paramètres',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ],
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      'Configuration de l\'application :',
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      '• Synchronisation Cloud active\n• Mode Local-First activé\n• Langue : Français',
+                      style: TextStyle(color: AppTheme.textSecondary, fontSize: 13, height: 1.4),
+                    ),
+                    const Divider(color: Color(0xFF2E3047), height: 32),
+                    
+                    // Gemini title
+                    const Row(
+                      children: [
+                        Icon(Icons.auto_awesome_rounded, color: Colors.amber, size: 18),
+                        SizedBox(width: 8),
+                        Text(
+                          'Analyse IA par Gemini',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Générez automatiquement un résumé de vos ressentis de la journée et des conseils personnalisés pour vous améliorer.',
+                      style: TextStyle(color: AppTheme.textSecondary, fontSize: 12, height: 1.3),
+                    ),
+                    const SizedBox(height: 12),
+                    
+                    // Switch
+                    SwitchListTile(
+                      title: const Text('Activer l\'analyse IA', style: TextStyle(fontSize: 14, color: Colors.white)),
+                      value: useGemini,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (val) {
+                        setState(() {
+                          useGemini = val;
+                        });
+                      },
+                    ),
+                    
+                    // Textfield for API Key
+                    if (useGemini) ...[
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: apiKeyController,
+                        obscureText: true,
+                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        decoration: InputDecoration(
+                          labelText: 'Clé API Gemini',
+                          labelStyle: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                          hintText: 'Saisir votre clé API Gemini...',
+                          hintStyle: TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.5)),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFF2E3047)),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: AppTheme.primary),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Où trouver une clé API Gemini gratuite ?\n→ Sur Google AI Studio (aistudio.google.com)',
+                        style: TextStyle(color: AppTheme.primaryLight, fontSize: 11),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text(
+                    'Annuler',
+                    style: TextStyle(color: AppTheme.textSecondary),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primary,
+                    minimumSize: const Size(100, 40),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  onPressed: () async {
+                    await notifier.setUseGemini(useGemini);
+                    await notifier.setGeminiApiKey(apiKeyController.text);
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Paramètres enregistrés avec succès.'),
+                          backgroundColor: AppTheme.levelOptimal,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Enregistrer'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PopupMenuButton<String>(
@@ -52,11 +194,7 @@ class ProfileMenuButton extends ConsumerWidget {
       onSelected: (value) async {
         switch (value) {
           case 'settings':
-            _showDialog(
-              context,
-              'Paramètres',
-              'Configuration de l\'application :\n- Synchronisation Cloud active\n- Mode Local-First activé\n- Langue : Français',
-            );
+            _showSettingsDialog(context, ref);
             break;
           case 'legal':
             _showDialog(
