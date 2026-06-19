@@ -44,7 +44,9 @@ class ProfileMenuButton extends ConsumerWidget {
     final notifier = ref.read(settingsProvider.notifier);
     
     final apiKeyController = TextEditingController(text: settings.geminiApiKey);
+    final proxyUrlController = TextEditingController(text: settings.geminiProxyUrl);
     bool useGemini = settings.useGemini;
+    String geminiMode = settings.geminiMode;
 
     showDialog(
       context: context,
@@ -113,32 +115,94 @@ class ProfileMenuButton extends ConsumerWidget {
                       },
                     ),
                     
-                    // Textfield for API Key
                     if (useGemini) ...[
                       const SizedBox(height: 8),
-                      TextField(
-                        controller: apiKeyController,
-                        obscureText: true,
+                      // Dropdown for Mode Selection
+                      DropdownButtonFormField<String>(
+                        value: geminiMode,
+                        dropdownColor: AppTheme.darkCard,
                         style: const TextStyle(color: Colors.white, fontSize: 13),
-                        decoration: InputDecoration(
-                          labelText: 'Clé API Gemini',
-                          labelStyle: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
-                          hintText: 'Saisir votre clé API Gemini...',
-                          hintStyle: TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.5)),
-                          enabledBorder: const OutlineInputBorder(
+                        decoration: const InputDecoration(
+                          labelText: 'Mode d\'intégration',
+                          labelStyle: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                          enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Color(0xFF2E3047)),
                           ),
-                          focusedBorder: const OutlineInputBorder(
+                          focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: AppTheme.primary),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                         ),
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'direct',
+                            child: Text('Direct (clé API personnelle)'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'proxy',
+                            child: Text('Serveur Proxy (Option B)'),
+                          ),
+                        ],
+                        onChanged: (val) {
+                          if (val != null) {
+                            setState(() {
+                              geminiMode = val;
+                            });
+                          }
+                        },
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Où trouver une clé API Gemini gratuite ?\n→ Sur Google AI Studio (aistudio.google.com)',
-                        style: TextStyle(color: AppTheme.primaryLight, fontSize: 11),
-                      ),
+                      
+                      const SizedBox(height: 16),
+                      
+                      // Conditionally show API Key or Proxy URL
+                      if (geminiMode == 'direct') ...[
+                        TextField(
+                          controller: apiKeyController,
+                          obscureText: true,
+                          style: const TextStyle(color: Colors.white, fontSize: 13),
+                          decoration: InputDecoration(
+                            labelText: 'Clé API Gemini',
+                            labelStyle: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                            hintText: 'Saisir votre clé API Gemini...',
+                            hintStyle: TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.5)),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFF2E3047)),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: AppTheme.primary),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Où trouver une clé API Gemini gratuite ?\n→ Sur Google AI Studio (aistudio.google.com)',
+                          style: TextStyle(color: AppTheme.primaryLight, fontSize: 11),
+                        ),
+                      ] else ...[
+                        TextField(
+                          controller: proxyUrlController,
+                          style: const TextStyle(color: Colors.white, fontSize: 13),
+                          decoration: InputDecoration(
+                            labelText: 'URL du Proxy Gemini',
+                            labelStyle: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                            hintText: 'https://votre-proxy.com/api/insight',
+                            hintStyle: TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.5)),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFF2E3047)),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: AppTheme.primary),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Configurez l\'URL du serveur proxy qui détient la clé d\'API.',
+                          style: TextStyle(color: AppTheme.primaryLight, fontSize: 11),
+                        ),
+                      ],
                     ],
                   ],
                 ),
@@ -159,7 +223,12 @@ class ProfileMenuButton extends ConsumerWidget {
                   ),
                   onPressed: () async {
                     await notifier.setUseGemini(useGemini);
-                    await notifier.setGeminiApiKey(apiKeyController.text);
+                    await notifier.setGeminiMode(geminiMode);
+                    if (geminiMode == 'direct') {
+                      await notifier.setGeminiApiKey(apiKeyController.text);
+                    } else {
+                      await notifier.setGeminiProxyUrl(proxyUrlController.text);
+                    }
                     if (context.mounted) {
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(

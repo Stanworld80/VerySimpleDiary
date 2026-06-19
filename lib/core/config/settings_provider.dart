@@ -13,19 +13,27 @@ final secureStorageProvider = Provider<FlutterSecureStorage>((ref) {
 class SettingsState {
   final String geminiApiKey;
   final bool useGemini;
+  final String geminiMode;
+  final String geminiProxyUrl;
 
   const SettingsState({
     required this.geminiApiKey,
     required this.useGemini,
+    this.geminiMode = 'direct',
+    this.geminiProxyUrl = '',
   });
 
   SettingsState copyWith({
     String? geminiApiKey,
     bool? useGemini,
+    String? geminiMode,
+    String? geminiProxyUrl,
   }) {
     return SettingsState(
       geminiApiKey: geminiApiKey ?? this.geminiApiKey,
       useGemini: useGemini ?? this.useGemini,
+      geminiMode: geminiMode ?? this.geminiMode,
+      geminiProxyUrl: geminiProxyUrl ?? this.geminiProxyUrl,
     );
   }
 }
@@ -38,6 +46,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       : super(SettingsState(
           geminiApiKey: const String.fromEnvironment('GEMINI_API_KEY', defaultValue: ''),
           useGemini: _prefs.getBool('use_gemini') ?? false,
+          geminiMode: _prefs.getString('gemini_mode') ?? 'direct',
+          geminiProxyUrl: _prefs.getString('gemini_proxy_url') ?? '',
         )) {
     _loadSecureKey();
   }
@@ -73,6 +83,16 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   Future<void> setUseGemini(bool useGemini) async {
     await _prefs.setBool('use_gemini', useGemini);
     state = state.copyWith(useGemini: useGemini);
+  }
+
+  Future<void> setGeminiMode(String mode) async {
+    await _prefs.setString('gemini_mode', mode);
+    state = state.copyWith(geminiMode: mode);
+  }
+
+  Future<void> setGeminiProxyUrl(String url) async {
+    await _prefs.setString('gemini_proxy_url', url);
+    state = state.copyWith(geminiProxyUrl: url);
   }
 }
 

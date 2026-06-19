@@ -324,72 +324,93 @@ class SummaryScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
+                  LayoutBuilder(
+                    builder: (context, _) {
+                      final hasGeminiConfig = settings.useGemini &&
+                          (settings.geminiMode == 'proxy'
+                              ? settings.geminiProxyUrl.isNotEmpty
+                              : settings.geminiApiKey.isNotEmpty);
+
+                      final isMissingConfig = !settings.useGemini ||
+                          (settings.geminiMode == 'proxy'
+                              ? settings.geminiProxyUrl.isEmpty
+                              : settings.geminiApiKey.isEmpty);
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (settings.useGemini && settings.geminiApiKey.isNotEmpty) ...[
-                            const Icon(Icons.auto_awesome_rounded, color: Colors.amber, size: 18),
-                            const SizedBox(width: 8),
-                          ],
-                          const Text(
-                            'Analyse de la journée',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  if (hasGeminiConfig) ...[
+                                    const Icon(Icons.auto_awesome_rounded, color: Colors.amber, size: 18),
+                                    const SizedBox(width: 8),
+                                  ],
+                                  const Text(
+                                    'Analyse de la journée',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (hasGeminiConfig)
+                                IconButton(
+                                  icon: const Icon(Icons.refresh_rounded, color: AppTheme.primaryLight, size: 20),
+                                  tooltip: 'Régénérer l\'analyse IA',
+                                  onPressed: () async {
+                                    try {
+                                      await notifier.generateGeminiInsightManual();
+                                    } catch (e) {
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('Erreur : $e'),
+                                            backgroundColor: AppTheme.levelNegatif,
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            day.insightText ?? 'Aucun détail généré pour cette journée.',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppTheme.textSecondary,
+                              height: 1.5,
                             ),
                           ),
-                        ],
-                      ),
-                      if (settings.useGemini && settings.geminiApiKey.isNotEmpty)
-                        IconButton(
-                          icon: const Icon(Icons.refresh_rounded, color: AppTheme.primaryLight, size: 20),
-                          tooltip: 'Régénérer l\'analyse IA',
-                          onPressed: () async {
-                            try {
-                              await notifier.generateGeminiInsightManual();
-                            } catch (e) {
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Erreur : $e'),
-                                    backgroundColor: AppTheme.levelNegatif,
+                          if (isMissingConfig) ...[
+                            const Divider(color: Color(0xFF2E3047), height: 24),
+                            Row(
+                              children: [
+                                const Icon(Icons.lightbulb_outline_rounded, color: Colors.amber, size: 16),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    !settings.useGemini
+                                        ? 'Activez l\'analyse IA dans les Paramètres pour générer un résumé enrichi.'
+                                        : (settings.geminiMode == 'proxy'
+                                            ? 'Configurez l\'URL du Proxy Gemini dans les Paramètres pour obtenir des analyses personnalisées.'
+                                            : 'Configurez votre clé API Gemini dans les Paramètres pour obtenir des analyses personnalisées.'),
+                                    style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
                                   ),
-                                );
-                              }
-                            }
-                          },
-                        ),
-                    ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      );
+                    },
                   ),
-                  const SizedBox(height: 12),
-                  Text(
-                    day.insightText ?? 'Aucun détail généré pour cette journée.',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppTheme.textSecondary,
-                      height: 1.5,
-                    ),
-                  ),
-                  if (!settings.useGemini || settings.geminiApiKey.isEmpty) ...[
-                    const Divider(color: Color(0xFF2E3047), height: 24),
-                    Row(
-                      children: [
-                        const Icon(Icons.lightbulb_outline_rounded, color: Colors.amber, size: 16),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            settings.geminiApiKey.isEmpty
-                                ? 'Configurez votre clé API Gemini dans les Paramètres pour obtenir des analyses personnalisées et des conseils de bien-être.'
-                                : 'Activez l\'analyse IA dans les Paramètres pour générer un résumé enrichi.',
-                            style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
                 ],
               ),
             ),

@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import '../db/local_database.dart';
 import '../../features/diary/controller/diary_controller.dart'; // to reference diaryQuestionsList
@@ -5,12 +8,25 @@ import '../../features/diary/controller/diary_controller.dart'; // to reference 
 class GeminiService {
   static Future<String> generateInsight({
     required String apiKey,
+    required String mode,
+    required String proxyUrl,
     required double totalScore,
     required double meanScore,
     required double medianScore,
     required String level,
     required List<DiaryResponse> responses,
   }) async {
+    if (mode == 'proxy') {
+      return _generateInsightViaProxy(
+        proxyUrl: proxyUrl,
+        totalScore: totalScore,
+        meanScore: meanScore,
+        medianScore: medianScore,
+        level: level,
+        responses: responses,
+      );
+    }
+
     final model = GenerativeModel(
       model: 'gemini-1.5-flash',
       apiKey: apiKey,
@@ -91,5 +107,61 @@ Directives importantes :
       throw Exception("Réponse vide de Gemini");
     }
     return text.trim();
+  }
+
+  static Future<String> _generateInsightViaProxy({
+    required String proxyUrl,
+    required double totalScore,
+    required double meanScore,
+    required double medianScore,
+    required String level,
+    required List<DiaryResponse> responses,
+  }) async {
+    if (proxyUrl.trim().isEmpty) {
+      throw Exception("L'URL du proxy est vide.");
+    }
+
+    final client = HttpClient();
+    try {
+      final uri = Uri.parse(proxyUrl);
+      final request = await client.postUrl(uri);
+      request.headers.contentType = ContentType.json;
+
+      final body = {
+        'totalScore': totalScore,
+        'meanScore': meanScore,
+        'medianScore': medianScore,
+        'level': level,
+        'responses': responses.map((r) => {
+          'questionNumber': r.questionNumber,
+          'nuitValues': r.nuitValues,
+          'nuitComment': r.nuitComment,
+          'matinValues': r.matinValues,
+          'matinComment': r.matinComment,
+          'journeeValues': r.journeeValues,
+          'journeeComment': r.journeeComment,
+          'soirValues': r.soirValues,
+          'soirComment': r.soirComment,
+        }).toList(),
+      };
+
+      request.write(jsonEncode(body));
+      final response = await request.close();
+
+      if (response.statusCode != 200) {
+        throw Exception("Erreur du serveur proxy (code : ${response.statusCode})");
+      }
+
+      final responseBody = await response.transform(utf8.decoder).join();
+      final data = jsonDecode(responseBody);
+      
+      if (data is Map && data.containsKey('insight')) {
+        return data['insight'] as String;
+      } else {
+        throw Exception("Réponse du proxy invalide (clé 'insight' manquante).");
+      }
+    } finally {
+      client.close();
+    }
   }
 }

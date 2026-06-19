@@ -262,10 +262,12 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
     if (hasValidGeminiInsight) {
       // Keep the existing Gemini insight to avoid calling the LLM again
       insight = currentInsight;
-    } else if (settings.useGemini && settings.geminiApiKey.isNotEmpty) {
+    } else if (settings.useGemini && (settings.geminiMode == 'proxy' || settings.geminiApiKey.isNotEmpty)) {
       try {
         insight = await GeminiService.generateInsight(
           apiKey: settings.geminiApiKey,
+          mode: settings.geminiMode,
+          proxyUrl: settings.geminiProxyUrl,
           totalScore: scoreResult.total.toDouble(),
           meanScore: scoreResult.mean,
           medianScore: scoreResult.median,
@@ -306,8 +308,11 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
     if (state.diaryDay == null) return;
     
     final settings = _ref.read(settingsProvider);
-    if (settings.geminiApiKey.isEmpty) {
+    if (settings.geminiMode == 'direct' && settings.geminiApiKey.isEmpty) {
       throw Exception("Clé API Gemini manquante. Veuillez la configurer dans les Paramètres.");
+    }
+    if (settings.geminiMode == 'proxy' && settings.geminiProxyUrl.isEmpty) {
+      throw Exception("URL du Proxy Gemini manquante. Veuillez la configurer dans les Paramètres.");
     }
 
     // Temporarily set insightText to a loading state
@@ -324,6 +329,8 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
     try {
       final insight = await GeminiService.generateInsight(
         apiKey: settings.geminiApiKey,
+        mode: settings.geminiMode,
+        proxyUrl: settings.geminiProxyUrl,
         totalScore: state.diaryDay!.totalScore,
         meanScore: state.diaryDay!.meanScore,
         medianScore: state.diaryDay!.medianScore,
@@ -385,10 +392,12 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
     String insight;
     if (hasValidGeminiInsight) {
       insight = currentInsight;
-    } else if (settings.useGemini && settings.geminiApiKey.isNotEmpty) {
+    } else if (settings.useGemini && (settings.geminiMode == 'proxy' || settings.geminiApiKey.isNotEmpty)) {
       try {
         insight = await GeminiService.generateInsight(
           apiKey: settings.geminiApiKey,
+          mode: settings.geminiMode,
+          proxyUrl: settings.geminiProxyUrl,
           totalScore: scoreResult.total.toDouble(),
           meanScore: scoreResult.mean,
           medianScore: scoreResult.median,
