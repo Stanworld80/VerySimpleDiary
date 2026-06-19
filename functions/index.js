@@ -1,10 +1,10 @@
-import { onRequest } from "firebase-functions/v2/https";
-import logger from "firebase-functions/logger";
+const { onRequest } = require("firebase-functions/v2/https");
+const logger = require("firebase-functions/logger");
 
 // Ce proxy utilise Firebase Secret Manager pour stocker la clé API Gemini en toute sécurité.
 // Pour configurer la clé sur Firebase :
 // firebase functions:secrets:set GEMINI_API_KEY=VOTRE_CLE_API_GEMINI
-export const getGeminiInsight = onRequest({ secrets: ["GEMINI_API_KEY"], cors: true }, async (req, res) => {
+exports.getGeminiInsight = onRequest({ secrets: ["GEMINI_API_KEY"], cors: true }, async (req, res) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     res.status(500).json({ error: "La clé API Gemini (GEMINI_API_KEY) n'est pas configurée dans les secrets de Firebase." });

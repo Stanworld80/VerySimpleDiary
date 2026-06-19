@@ -3,7 +3,6 @@
   "description": "Cloud Functions for Very Simple Diary",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
