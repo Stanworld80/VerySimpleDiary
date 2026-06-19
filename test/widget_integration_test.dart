@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:verysimplediary/main.dart';
 import 'package:verysimplediary/core/db/local_database.dart';
 import 'package:verysimplediary/features/auth/repository/auth_repository.dart';
@@ -167,6 +168,7 @@ void main() {
     mockSyncRepository = MockSyncRepository();
     AuthRepository.forceMock = true;
     SharedPreferences.setMockInitialValues({});
+    FlutterSecureStorage.setMockInitialValues({});
   });
 
   testWidgets('Full User Integration Flow (Login, Comments, Explorer Stats)', (WidgetTester tester) async {

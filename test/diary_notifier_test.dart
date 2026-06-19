@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:verysimplediary/features/diary/controller/diary_controller.dart';
 import 'package:verysimplediary/features/diary/repository/sync_repository.dart';
 import 'package:verysimplediary/features/diary/repository/diary_repository.dart';
@@ -155,6 +156,7 @@ void main() {
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
+    FlutterSecureStorage.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     mockRepository = MockDiaryRepository();
     container = ProviderContainer(

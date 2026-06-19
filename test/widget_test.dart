@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:verysimplediary/main.dart';
 import 'package:verysimplediary/features/auth/repository/auth_repository.dart';
 import 'package:verysimplediary/core/config/settings_provider.dart';
@@ -8,6 +9,7 @@ import 'package:verysimplediary/core/config/settings_provider.dart';
 void main() {
   testWidgets('Loads LoginScreen successfully', (WidgetTester tester) async {
     SharedPreferences.setMockInitialValues({});
+    FlutterSecureStorage.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
 
     await tester.pumpWidget(
