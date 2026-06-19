@@ -119,7 +119,7 @@ class ProfileMenuButton extends ConsumerWidget {
                       const SizedBox(height: 8),
                       // Dropdown for Mode Selection
                       DropdownButtonFormField<String>(
-                        value: geminiMode,
+                        initialValue: geminiMode,
                         dropdownColor: AppTheme.darkCard,
                         style: const TextStyle(color: Colors.white, fontSize: 13),
                         decoration: const InputDecoration(
