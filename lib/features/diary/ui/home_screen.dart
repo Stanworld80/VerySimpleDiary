@@ -122,11 +122,11 @@ class HomeScreen extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(color: const Color(0xFF2E3047), width: 1.5),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Journal of the day Button
-                      ElevatedButton(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
+                      final btnJournal = ElevatedButton(
                         onPressed: () {
                           // Select today's date and open the Diary Screen
                           ref.read(diaryDateProvider.notifier).state = todayStr;
@@ -163,89 +163,106 @@ class HomeScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Actions Buttons side-by-side
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => const ExplorerScreen(),
-                                  ),
-                                );
-                              },
-                              style: OutlinedButton.styleFrom(
-                                minimumSize: const Size.fromHeight(60),
-                                side: const BorderSide(color: Color(0xFF3B82F6), width: 1.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                      );
+
+                      final btnExploration = OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ExplorerScreen(),
+                            ),
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(60),
+                          side: const BorderSide(color: Color(0xFF3B82F6), width: 1.5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.analytics_rounded, size: 20, color: Color(0xFF3B82F6)),
+                            SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                'Exploration',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF3B82F6),
                                 ),
-                              ),
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.analytics_rounded, size: 20, color: Color(0xFF3B82F6)),
-                                  SizedBox(width: 8),
-                                  Flexible(
-                                    child: Text(
-                                      'Exploration',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF3B82F6),
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => const HistoryScreen(),
-                                  ),
-                                );
-                              },
-                              style: OutlinedButton.styleFrom(
-                                minimumSize: const Size.fromHeight(60),
-                                side: const BorderSide(color: Color(0xFFEC4899), width: 1.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                          ],
+                        ),
+                      );
+
+                      final btnHistory = OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const HistoryScreen(),
+                            ),
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(60),
+                          side: const BorderSide(color: Color(0xFFEC4899), width: 1.5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+              ),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.history_rounded, size: 20, color: Color(0xFFEC4899)),
+                            SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                'Historique',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFFEC4899),
                                 ),
-                              ),
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.history_rounded, size: 20, color: Color(0xFFEC4899)),
-                                  SizedBox(width: 8),
-                                  Flexible(
-                                    child: Text(
-                                      'Historique',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFFEC4899),
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      );
+
+                      if (isPortrait) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            btnJournal,
+                            const SizedBox(height: 16),
+                            btnExploration,
+                            const SizedBox(height: 16),
+                            btnHistory,
+                          ],
+                        );
+                      } else {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            btnJournal,
+                            const SizedBox(height: 16),
+                            Row(
+                              children: [
+                                Expanded(child: btnExploration),
+                                const SizedBox(width: 12),
+                                Expanded(child: btnHistory),
+                              ],
+                            ),
+                          ],
+                        );
+                      }
+                    },
                   ),
                 ),
                 

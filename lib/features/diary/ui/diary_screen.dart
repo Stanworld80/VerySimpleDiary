@@ -9,6 +9,81 @@ import '../../../core/ui/profile_menu_button.dart';
 class DiaryScreen extends ConsumerWidget {
   const DiaryScreen({super.key});
 
+  Widget _buildNavButton({
+    required BuildContext context,
+    required String label,
+    required IconData icon,
+    required VoidCallback? onPressed,
+    required bool isPrimary,
+    required double buttonWidth,
+  }) {
+    final showText = buttonWidth > 140;
+
+    final child = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (isPrimary) ...[
+          if (showText) ...[
+            Flexible(
+              child: Text(
+                label,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
+          Icon(icon, size: 20),
+        ] else ...[
+          Icon(icon, size: 20),
+          if (showText) ...[
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                label,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ],
+      ],
+    );
+
+    if (isPrimary) {
+      return ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.primary,
+          foregroundColor: Colors.white,
+          minimumSize: const Size.fromHeight(56),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 4,
+          shadowColor: AppTheme.primary.withValues(alpha: 0.3),
+        ),
+        child: child,
+      );
+    } else {
+      return OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppTheme.textSecondary,
+          minimumSize: const Size.fromHeight(56),
+          side: const BorderSide(color: Color(0xFF2E3047), width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child: child,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedDate = ref.watch(diaryDateProvider);
@@ -278,23 +353,71 @@ class DiaryScreen extends ConsumerWidget {
               ),
             ),
             
-            // Next / Validate Button
+            // Next / Prev / Validate Navigation Buttons
             Padding(
               padding: const EdgeInsets.all(24.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  await notifier.nextQuestion();
-                  if (context.mounted && currentQuestion.number == diaryQuestionsList.length) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => SummaryScreen(date: selectedDate),
-                      ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+                  final hasPrev = diaryState.currentQuestionIndex > 0;
+
+                  final nextLabel = currentQuestion.number < diaryQuestionsList.length ? 'SUIVANT' : 'RÉCAPITULATIF';
+                  final nextIcon = currentQuestion.number < diaryQuestionsList.length 
+                      ? Icons.arrow_forward_ios_rounded 
+                      : Icons.check_circle_outline_rounded;
+
+                  final btnNext = _buildNavButton(
+                    context: context,
+                    label: nextLabel,
+                    icon: nextIcon,
+                    isPrimary: true,
+                    buttonWidth: !hasPrev 
+                        ? constraints.maxWidth 
+                        : (isPortrait ? constraints.maxWidth : (constraints.maxWidth - 12) / 2),
+                    onPressed: () async {
+                      await notifier.nextQuestion();
+                      if (context.mounted && currentQuestion.number == diaryQuestionsList.length) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => SummaryScreen(date: selectedDate),
+                          ),
+                        );
+                      }
+                    },
+                  );
+
+                  if (!hasPrev) {
+                    return btnNext;
+                  }
+
+                  final btnPrev = _buildNavButton(
+                    context: context,
+                    label: 'PRÉCÉDENT',
+                    icon: Icons.arrow_back_ios_new_rounded,
+                    isPrimary: false,
+                    buttonWidth: isPortrait ? constraints.maxWidth : (constraints.maxWidth - 12) / 2,
+                    onPressed: () => notifier.prevQuestion(),
+                  );
+
+                  if (isPortrait) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        btnNext,
+                        const SizedBox(height: 12),
+                        btnPrev,
+                      ],
+                    );
+                  } else {
+                    return Row(
+                      children: [
+                        Expanded(child: btnPrev),
+                        const SizedBox(width: 12),
+                        Expanded(child: btnNext),
+                      ],
                     );
                   }
                 },
-                child: Text(
-                  currentQuestion.number < diaryQuestionsList.length ? 'SUIVANT >' : 'RÉCAPITULATIF >',
-                ),
               ),
             ),
             const VersionFooter(),
