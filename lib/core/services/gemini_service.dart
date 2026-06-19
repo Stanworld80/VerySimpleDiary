@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:google_generative_ai/google_generative_ai.dart';
 import '../db/local_database.dart';
 import '../../features/diary/controller/diary_controller.dart'; // to reference diaryQuestionsList
@@ -47,7 +47,7 @@ class GeminiService {
       );
 
       final List<String> periodDetails = [];
-      
+
       void addPeriod(String name, String values, String comment) {
         if (values.trim().isNotEmpty) {
           final ratings = values.split(',').map((e) => int.tryParse(e) ?? 0).toList();
@@ -120,47 +120,42 @@ Directives importantes :
       throw Exception("L'URL du proxy est vide.");
     }
 
-    final client = HttpClient();
-    try {
-      final uri = Uri.parse(proxyUrl);
-      final request = await client.postUrl(uri);
-      request.headers.contentType = ContentType.json;
+    final uri = Uri.parse(proxyUrl);
 
-      final body = {
-        'totalScore': totalScore,
-        'meanScore': meanScore,
-        'medianScore': medianScore,
-        'level': level,
-        'responses': responses.map((r) => {
-          'questionNumber': r.questionNumber,
-          'nuitValues': r.nuitValues,
-          'nuitComment': r.nuitComment,
-          'matinValues': r.matinValues,
-          'matinComment': r.matinComment,
-          'journeeValues': r.journeeValues,
-          'journeeComment': r.journeeComment,
-          'soirValues': r.soirValues,
-          'soirComment': r.soirComment,
-        }).toList(),
-      };
+    final body = jsonEncode({
+      'totalScore': totalScore,
+      'meanScore': meanScore,
+      'medianScore': medianScore,
+      'level': level,
+      'responses': responses.map((r) => {
+        'questionNumber': r.questionNumber,
+        'nuitValues': r.nuitValues,
+        'nuitComment': r.nuitComment,
+        'matinValues': r.matinValues,
+        'matinComment': r.matinComment,
+        'journeeValues': r.journeeValues,
+        'journeeComment': r.journeeComment,
+        'soirValues': r.soirValues,
+        'soirComment': r.soirComment,
+      }).toList(),
+    });
 
-      request.write(jsonEncode(body));
-      final response = await request.close();
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: body,
+    );
 
-      if (response.statusCode != 200) {
-        throw Exception("Erreur du serveur proxy (code : ${response.statusCode})");
-      }
+    if (response.statusCode != 200) {
+      throw Exception("Erreur du serveur proxy (code : ${response.statusCode})");
+    }
 
-      final responseBody = await response.transform(utf8.decoder).join();
-      final data = jsonDecode(responseBody);
-      
-      if (data is Map && data.containsKey('insight')) {
-        return data['insight'] as String;
-      } else {
-        throw Exception("Réponse du proxy invalide (clé 'insight' manquante).");
-      }
-    } finally {
-      client.close();
+    final data = jsonDecode(response.body);
+
+    if (data is Map && data.containsKey('insight')) {
+      return data['insight'] as String;
+    } else {
+      throw Exception("Réponse du proxy invalide (clé 'insight' manquante).");
     }
   }
 }
