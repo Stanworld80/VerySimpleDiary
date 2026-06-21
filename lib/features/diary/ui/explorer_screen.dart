@@ -81,6 +81,33 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
     }
   }
 
+  // ⚡ Bolt Optimization: Extract date parsing and list filtering to prevent O(N*M)
+  // repetitive DateTime.parse operations during widget build. We compute valid
+  // days exactly once and cache their IDs in a Set for O(1) response filtering.
+  List<DiaryResponse> _getInRangeResponses(List<DiaryResponse> allResponses, List<DiaryDay> days) {
+    final validDayIds = <String>{};
+    final start = _startDate != null ? DateTime(_startDate!.year, _startDate!.month, _startDate!.day) : null;
+    final end = _endDate != null ? DateTime(_endDate!.year, _endDate!.month, _endDate!.day) : null;
+
+    // Parse date only once per DiaryDay instead of once per DiaryResponse
+    for (final day in days) {
+      try {
+        final date = DateTime.parse(day.date);
+        final checkDate = DateTime(date.year, date.month, date.day);
+
+        bool isValid = true;
+        if (start != null && checkDate.isBefore(start)) isValid = false;
+        if (end != null && checkDate.isAfter(end)) isValid = false;
+
+        if (isValid) {
+          validDayIds.add(day.id);
+        }
+      } catch (_) {}
+    }
+
+    return allResponses.where((resp) => validDayIds.contains(resp.diaryDayId)).toList();
+  }
+
   Widget _buildToggleOption(String label, bool isActive, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
@@ -107,25 +134,7 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
 
     return responsesAsync.when(
       data: (allResponses) {
-        final Map<String, String> dayIdToDate = {
-          for (var d in days) d.id: d.date
-        };
-
-        final inRangeResponses = allResponses.where((resp) {
-          final dateStr = dayIdToDate[resp.diaryDayId];
-          if (dateStr == null) return false;
-          try {
-            final date = DateTime.parse(dateStr);
-            final checkDate = DateTime(date.year, date.month, date.day);
-            final start = _startDate != null ? DateTime(_startDate!.year, _startDate!.month, _startDate!.day) : null;
-            final end = _endDate != null ? DateTime(_endDate!.year, _endDate!.month, _endDate!.day) : null;
-            if (start != null && checkDate.isBefore(start)) return false;
-            if (end != null && checkDate.isAfter(end)) return false;
-            return true;
-          } catch (_) {
-            return false;
-          }
-        }).toList();
+        final inRangeResponses = _getInRangeResponses(allResponses, days);
 
         List<int> parseVals(String valStr) {
           if (valStr.trim().isEmpty) return [];
@@ -312,25 +321,7 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
 
     return responsesAsync.when(
       data: (allResponses) {
-        final Map<String, String> dayIdToDate = {
-          for (var d in days) d.id: d.date
-        };
-
-        final inRangeResponses = allResponses.where((resp) {
-          final dateStr = dayIdToDate[resp.diaryDayId];
-          if (dateStr == null) return false;
-          try {
-            final date = DateTime.parse(dateStr);
-            final checkDate = DateTime(date.year, date.month, date.day);
-            final start = _startDate != null ? DateTime(_startDate!.year, _startDate!.month, _startDate!.day) : null;
-            final end = _endDate != null ? DateTime(_endDate!.year, _endDate!.month, _endDate!.day) : null;
-            if (start != null && checkDate.isBefore(start)) return false;
-            if (end != null && checkDate.isAfter(end)) return false;
-            return true;
-          } catch (_) {
-            return false;
-          }
-        }).toList();
+        final inRangeResponses = _getInRangeResponses(allResponses, days);
 
         List<int> parseVals(String valStr) {
           if (valStr.trim().isEmpty) return [];
@@ -498,25 +489,7 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
 
     return responsesAsync.when(
       data: (allResponses) {
-        final Map<String, String> dayIdToDate = {
-          for (var d in days) d.id: d.date
-        };
-
-        final inRangeResponses = allResponses.where((resp) {
-          final dateStr = dayIdToDate[resp.diaryDayId];
-          if (dateStr == null) return false;
-          try {
-            final date = DateTime.parse(dateStr);
-            final checkDate = DateTime(date.year, date.month, date.day);
-            final start = _startDate != null ? DateTime(_startDate!.year, _startDate!.month, _startDate!.day) : null;
-            final end = _endDate != null ? DateTime(_endDate!.year, _endDate!.month, _endDate!.day) : null;
-            if (start != null && checkDate.isBefore(start)) return false;
-            if (end != null && checkDate.isAfter(end)) return false;
-            return true;
-          } catch (_) {
-            return false;
-          }
-        }).toList();
+        final inRangeResponses = _getInRangeResponses(allResponses, days);
 
         List<int> parseVals(String valStr) {
           if (valStr.trim().isEmpty) return [];

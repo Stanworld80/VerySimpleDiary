@@ -1,0 +1,3 @@
+## 2024-05-30 - [ExplorerScreen Performance Optimization]
+**Learning:** In Riverpod/Flutter list operations, repeated `DateTime.parse()` inside multiple `allResponses.where(...)` loops executed within widget build methods causes heavy, redundant overhead. The list filtering logic runs for every single widget reconstruction, parsing thousands of dates each frame without caching.
+**Action:** Extract list cross-referencing and `DateTime` parsing outside of individual iterative methods. Use `Set`s for $O(1)$ lookups instead of doing duplicate dictionary matching in every filter. Memoize parsed items directly when fetching lists containing complex/string dates.
