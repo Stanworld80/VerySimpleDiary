@@ -111,25 +111,27 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
           for (var d in days) d.id: d.date
         };
 
+        final String? startDateStr = _startDate != null
+            ? "${_startDate!.year.toString().padLeft(4, '0')}-${_startDate!.month.toString().padLeft(2, '0')}-${_startDate!.day.toString().padLeft(2, '0')}"
+            : null;
+        final String? endDateStr = _endDate != null
+            ? "${_endDate!.year.toString().padLeft(4, '0')}-${_endDate!.month.toString().padLeft(2, '0')}-${_endDate!.day.toString().padLeft(2, '0')}T23:59:59"
+            : null;
+
         final inRangeResponses = allResponses.where((resp) {
           final dateStr = dayIdToDate[resp.diaryDayId];
           if (dateStr == null) return false;
-          try {
-            final date = DateTime.parse(dateStr);
-            final checkDate = DateTime(date.year, date.month, date.day);
-            final start = _startDate != null ? DateTime(_startDate!.year, _startDate!.month, _startDate!.day) : null;
-            final end = _endDate != null ? DateTime(_endDate!.year, _endDate!.month, _endDate!.day) : null;
-            if (start != null && checkDate.isBefore(start)) return false;
-            if (end != null && checkDate.isAfter(end)) return false;
-            return true;
-          } catch (_) {
-            return false;
-          }
+          if (startDateStr != null && dateStr.compareTo(startDateStr) < 0) return false;
+          if (endDateStr != null && dateStr.compareTo(endDateStr) > 0) return false;
+          return true;
         }).toList();
 
-        List<int> parseVals(String valStr) {
-          if (valStr.trim().isEmpty) return [];
-          return valStr.split(',').map((e) => int.tryParse(e) ?? 0).toList();
+        void addVals(String valStr, List<int> out) {
+          if (valStr.trim().isEmpty) return;
+          for (final s in valStr.split(',')) {
+            final v = int.tryParse(s);
+            out.add(v ?? 0);
+          }
         }
 
         final Map<int, List<int>> questionValues = {};
@@ -138,13 +140,13 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
         }
 
         for (final resp in inRangeResponses) {
-          final vals = [
-            ...parseVals(resp.nuitValues),
-            ...parseVals(resp.matinValues),
-            ...parseVals(resp.journeeValues),
-            ...parseVals(resp.soirValues),
-          ];
-          questionValues[resp.questionNumber]?.addAll(vals);
+          final list = questionValues[resp.questionNumber];
+          if (list != null) {
+            addVals(resp.nuitValues, list);
+            addVals(resp.matinValues, list);
+            addVals(resp.journeeValues, list);
+            addVals(resp.soirValues, list);
+          }
         }
 
         final List<Map<String, dynamic>> themeDefinitions = [
