@@ -1,0 +1,3 @@
+## 2024-06-22 - Optimizing Dart List Processing
+**Learning:** Instantiating `DateTime` and calling `.parse()` inside a `.where()` loop over large collections (e.g., diary entries) introduces a measurable performance hit.
+**Action:** Always format dates as ISO-8601 strings (e.g., `YYYY-MM-DD`) *before* the loop. Because ISO-8601 strings are lexicographically sortable, you can use `String.compareTo()` to filter dates directly without ever constructing a `DateTime` inside the loop. This changes O(n) heavy allocations into extremely fast string comparisons. Additionally, for string arrays (e.g. `1,2,-1`), building a list with `add()` rather than `split(',').map().toList()` and spreading (`...`) eliminates huge temporary object overhead.
