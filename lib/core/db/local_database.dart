@@ -22,6 +22,7 @@ class DiaryDays extends Table {
 }
 
 @DataClassName('DiaryResponse')
+@TableIndex(name: 'idx_diary_day_id', columns: {#diaryDayId})
 class DiaryResponses extends Table {
   TextColumn get id => text()();
   TextColumn get diaryDayId => text().references(DiaryDays, #id, onDelete: KeyAction.cascade)();
@@ -47,7 +48,7 @@ class LocalDatabase extends _$LocalDatabase {
   LocalDatabase.forTesting(super.connection);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -57,6 +58,10 @@ class LocalDatabase extends _$LocalDatabase {
             await migrator.addColumn(diaryResponses, diaryResponses.matinComment);
             await migrator.addColumn(diaryResponses, diaryResponses.journeeComment);
             await migrator.addColumn(diaryResponses, diaryResponses.soirComment);
+          }
+          if (from < 3) {
+            await migrator.issueCustomQuery(
+                'CREATE INDEX IF NOT EXISTS idx_diary_day_id ON diary_responses (diary_day_id);');
           }
         },
       );
