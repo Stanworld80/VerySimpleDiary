@@ -1,0 +1,3 @@
+## 2023-10-27 - [Add TableIndex to Drift SQLite foreign keys]
+**Learning:** In Drift SQLite, foreign key columns are not automatically indexed. This can lead to full table scans when querying child tables by their foreign key, which becomes a critical performance bottleneck as the dataset grows.
+**Action:** Always use `@TableIndex` annotations on frequently queried foreign key relationships in Drift tables to ensure efficient lookups and prevent full table scans. Regenerate the `local_database.g.dart` file after modifying schema or index definitions.
