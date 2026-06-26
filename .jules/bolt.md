@@ -1,0 +1,3 @@
+## 2025-02-14 - Drift SQLite Foreign Key Indexing
+**Learning:** Drift SQLite does not automatically index foreign key columns on tables, leading to potential full table scans on queries that fetch child records by parent ID (e.g., retrieving `DiaryResponses` by `diaryDayId`).
+**Action:** Always manually annotate frequently queried foreign key relationships with `@TableIndex` (e.g., `@TableIndex(name: 'diary_responses_diary_day_id_idx', columns: {#diaryDayId})`) and include index creation in `onUpgrade` migrations using `migrator.createIndex()`.
