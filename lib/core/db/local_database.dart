@@ -21,6 +21,10 @@ class DiaryDays extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+// PERFORMANCE: Added index on diaryDayId foreign key.
+// This prevents full table scans when querying responses for a specific day,
+// significantly improving query performance as the diary grows.
+@TableIndex(name: 'diary_responses_diary_day_id_idx', columns: {#diaryDayId})
 @DataClassName('DiaryResponse')
 class DiaryResponses extends Table {
   TextColumn get id => text()();
@@ -47,7 +51,7 @@ class LocalDatabase extends _$LocalDatabase {
   LocalDatabase.forTesting(super.connection);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -57,6 +61,9 @@ class LocalDatabase extends _$LocalDatabase {
             await migrator.addColumn(diaryResponses, diaryResponses.matinComment);
             await migrator.addColumn(diaryResponses, diaryResponses.journeeComment);
             await migrator.addColumn(diaryResponses, diaryResponses.soirComment);
+          }
+          if (from < 3) {
+            await migrator.createIndex(diaryResponsesDiaryDayIdIdx);
           }
         },
       );

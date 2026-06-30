@@ -1186,12 +1186,15 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
   $LocalDatabaseManager get managers => $LocalDatabaseManager(this);
   late final $DiaryDaysTable diaryDays = $DiaryDaysTable(this);
   late final $DiaryResponsesTable diaryResponses = $DiaryResponsesTable(this);
+  late final Index diaryResponsesDiaryDayIdIdx = Index(
+      'diary_responses_diary_day_id_idx',
+      'CREATE INDEX diary_responses_diary_day_id_idx ON diary_responses (diary_day_id)');
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [diaryDays, diaryResponses];
+      [diaryDays, diaryResponses, diaryResponsesDiaryDayIdIdx];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
