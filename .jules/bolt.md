@@ -1,0 +1,3 @@
+## 2024-05-24 - Missing SQLite Foreign Key Indexes
+**Learning:** In Drift SQLite, foreign keys (like `diaryDayId` in `DiaryResponses` pointing to `DiaryDays`) are not automatically indexed, which can lead to O(N) full table scans when querying child records. This was noticed as a bottleneck when reading diary day responses.
+**Action:** When defining Drift tables with references, always use `@TableIndex(name: '...', columns: {#...})` to explicitly add an index on the foreign key column to optimize related queries, then regenerate the Drift `.g.dart` file and add a schema migration (`migrator.createIndex`).
