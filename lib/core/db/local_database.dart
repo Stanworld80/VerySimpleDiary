@@ -54,12 +54,27 @@ class QuestionSets extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+@DataClassName('QuestionCategory')
+class QuestionCategories extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get color => text().withDefault(const Constant('#6C63FF'))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DataClassName('CustomQuestion')
 class CustomQuestions extends Table {
   TextColumn get id => text()();
   TextColumn get setId => text().references(QuestionSets, #id, onDelete: KeyAction.cascade)();
   IntColumn get number => integer()();
-  TextColumn get category => text()();
+  // categoryId references QuestionCategories; nullable for backward-compat with migration
+  TextColumn get categoryId => text().nullable().references(QuestionCategories, #id, onDelete: KeyAction.setNull)();
+  // Legacy text field kept for display fallback (set to category name for old data)
+  TextColumn get category => text().withDefault(const Constant(''))();
   TextColumn get title => text()();
   TextColumn get description => text()();
   DateTimeColumn get createdAt => dateTime()();
@@ -69,14 +84,14 @@ class CustomQuestions extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [DiaryDays, DiaryResponses, QuestionSets, CustomQuestions])
+@DriftDatabase(tables: [DiaryDays, DiaryResponses, QuestionSets, QuestionCategories, CustomQuestions])
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(conn.openConnection());
 
   LocalDatabase.forTesting(super.connection);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -91,6 +106,12 @@ class LocalDatabase extends _$LocalDatabase {
             await migrator.createTable(questionSets);
             await migrator.createTable(customQuestions);
             await migrator.addColumn(diaryDays, diaryDays.questionSetId);
+          }
+          if (from < 4) {
+            // Create the new QuestionCategories table
+            await migrator.createTable(questionCategories);
+            // Add categoryId column to CustomQuestions (nullable FK)
+            await migrator.addColumn(customQuestions, customQuestions.categoryId);
           }
         },
       );

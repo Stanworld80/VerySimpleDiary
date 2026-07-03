@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/db/local_database.dart';
 import '../controller/diary_controller.dart'; // To reference DiaryQuestion and diaryQuestionsList
 import 'diary_repository.dart';
+import 'category_repository.dart';
 
 class QuestionSetRepository {
   final LocalDatabase _db;
@@ -113,6 +114,7 @@ class QuestionSetRepository {
       id: Value(question.id),
       setId: Value(question.setId),
       number: Value(question.number),
+      categoryId: Value(question.categoryId),
       category: Value(question.category),
       title: Value(question.title),
       description: Value(question.description),
@@ -122,10 +124,12 @@ class QuestionSetRepository {
     await _db.into(_db.customQuestions).insertOnConflictUpdate(companion);
   }
 
+
   // Add question to set
   Future<void> addQuestionToSet({
     required String setId,
-    required String category,
+    String? categoryId,
+    String category = '',
     required String title,
     required String description,
   }) async {
@@ -137,7 +141,8 @@ class QuestionSetRepository {
       id: newId,
       setId: setId,
       number: nextNum,
-      category: category,
+      categoryId: Value(categoryId),
+      category: Value(category),
       title: title,
       description: description,
       createdAt: DateTime.now(),
@@ -171,15 +176,23 @@ class QuestionSetRepository {
 
   // Check if database needs seeding, and seed default set
   Future<void> seedDefaultSetIfEmpty() async {
+    // Ensure categories exist first
+    final catRepo = CategoryRepository(_db);
+    await catRepo.seedDefaultCategoriesIfEmpty();
+
     final countExp = _db.questionSets.id.count();
     final query = _db.selectOnly(_db.questionSets)..addColumns([countExp]);
     final row = await query.getSingle();
     final count = row.read(countExp) ?? 0;
 
     if (count == 0) {
+      // Build a map of category name -> id for linking questions
+      final categories = await catRepo.getAllCategories();
+      final categoryByName = {for (final c in categories) c.name: c.id};
+
       await _db.transaction(() async {
         const defaultSetId = 'default_system_set';
-        
+
         // Insert default question set
         final setCompanion = QuestionSetsCompanion.insert(
           id: defaultSetId,
@@ -191,13 +204,15 @@ class QuestionSetRepository {
         );
         await _db.into(_db.questionSets).insert(setCompanion);
 
-        // Insert default questions
+        // Insert default questions with FK categoryId
         for (final q in diaryQuestionsList) {
+          final catId = categoryByName[q.category];
           final questionCompanion = CustomQuestionsCompanion.insert(
             id: '${defaultSetId}_q_${q.number}',
             setId: defaultSetId,
             number: q.number,
-            category: q.category,
+            categoryId: Value(catId),
+            category: Value(q.category),
             title: q.title,
             description: q.description,
             createdAt: DateTime.now(),

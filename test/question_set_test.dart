@@ -131,7 +131,7 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 50));
 
       // Add a custom question
-      await notifier.addQuestion('default_system_set', 'Humeur', 'Comment ca va ?', 'Description');
+      await notifier.addQuestion('default_system_set', null, 'Humeur', 'Comment ca va ?', 'Description');
       await Future.delayed(const Duration(milliseconds: 50));
 
       var state = container.read(questionSetControllerProvider);

@@ -514,3 +514,35 @@ sequenceDiagram
         App->>App: Ignorer le déclenchement
     end
 ```
+
+---
+
+### US-07 — Gestion des Catégories de Questions
+
+**En tant qu'** utilisateur de Very Simple Diary  
+**Je veux** gérer une liste de catégories indépendante des questionnaires  
+**Afin de** organiser sémantiquement mes questions quel que soit le set auquel elles appartiennent.
+
+#### Critères d'acceptation
+
+- **Liste de catégories** : L'application dispose d'une liste globale de catégories, indépendante des sets. Les 6 catégories thématiques du set par défaut sont pré-insérées automatiquement.
+- **Création** : L'utilisateur peut créer une nouvelle catégorie en lui donnant un nom et en choisissant une couleur parmi une palette de 10 couleurs prédéfinies.
+- **Modification** : L'utilisateur peut renommer une catégorie et en changer la couleur à tout moment.
+- **Suppression protégée** : La suppression d'une catégorie n'est possible que si aucune question (dans aucun set) n'y est associée. Si des questions y sont liées, l'interface affiche la liste des questions bloquantes.
+- **Association question / catégorie** : Lors de la création ou modification d'une question, l'utilisateur choisit la catégorie via un Dropdown. Une question peut rester sans catégorie.
+- **Affichage** : La catégorie d'une question est visible dans l'éditeur de questions du set sous forme de chip coloré.
+
+#### Architecture technique
+
+| Composant | Détail |
+|-----------|--------|
+| Table DB | `QuestionCategories` (`id`, `name`, `color`, `createdAt`, `updatedAt`) |
+| FK | `CustomQuestions.categoryId → QuestionCategories.id` (nullable, `SET NULL` on delete) |
+| Repository | `CategoryRepository` (watchAll, getById, create, update, delete avec guard) |
+| Provider | `categoryListProvider` (StreamProvider) |
+| Migration | `schemaVersion = 4` — crée `QuestionCategories`, ajoute `categoryId` dans `CustomQuestions` |
+| UI | Onglet "Catégories" dans `QuestionSetsScreen` (TabBar Sets / Catégories) |
+
+#### Comportement de migration
+
+Lors de la première ouverture après mise à jour, le seed automatique crée les 6 catégories par défaut, puis associe les questions existantes (champ texte `category`) aux nouvelles entrées par correspondance de nom.

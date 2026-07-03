@@ -4,6 +4,23 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/db/local_database.dart';
 import '../controller/question_set_controller.dart';
 import '../repository/question_set_repository.dart';
+import '../repository/category_repository.dart';
+
+// ---------------------------------------------------------------------------
+// Predefined palette of colours for categories
+// ---------------------------------------------------------------------------
+const List<String> _categoryColorPalette = [
+  '#6C63FF', // violet (default)
+  '#4CAF50', // vert
+  '#FF9800', // orange
+  '#9C27B0', // violet foncé
+  '#2196F3', // bleu
+  '#F44336', // rouge
+  '#E91E63', // rose
+  '#00BCD4', // cyan
+  '#FF5722', // orange foncé
+  '#607D8B', // bleu-gris
+];
 
 class QuestionSetsScreen extends ConsumerStatefulWidget {
   const QuestionSetsScreen({super.key});
@@ -12,15 +29,28 @@ class QuestionSetsScreen extends ConsumerStatefulWidget {
   ConsumerState<QuestionSetsScreen> createState() => _QuestionSetsScreenState();
 }
 
-class _QuestionSetsScreenState extends ConsumerState<QuestionSetsScreen> {
+class _QuestionSetsScreenState extends ConsumerState<QuestionSetsScreen>
+    with SingleTickerProviderStateMixin {
   QuestionSet? _selectedSetForEditing;
   final _setNameController = TextEditingController();
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
 
   @override
   void dispose() {
     _setNameController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
+
+  // -------------------------------------------------------------------------
+  // Set dialogs
+  // -------------------------------------------------------------------------
 
   void _showAddOrEditSetDialog({QuestionSet? setToEdit}) {
     final isEditing = setToEdit != null;
@@ -121,6 +151,7 @@ class _QuestionSetsScreenState extends ConsumerState<QuestionSetsScreen> {
                       // Add one default question so it's not empty
                       await ref.read(questionSetControllerProvider.notifier).addQuestion(
                         newId,
+                        null,
                         '1. Général',
                         'BIEN-ÊTRE GLOBAL',
                         'Ressenti général sur cette période.',
@@ -139,147 +170,327 @@ class _QuestionSetsScreenState extends ConsumerState<QuestionSetsScreen> {
     );
   }
 
+  // -------------------------------------------------------------------------
+  // Question dialog — category is now a dropdown
+  // -------------------------------------------------------------------------
+
   void _showAddQuestionDialog(String setId, {CustomQuestion? questionToEdit}) {
     final isEditing = questionToEdit != null;
     final titleController = TextEditingController(text: isEditing ? questionToEdit.title : '');
     final subtitleController = TextEditingController(text: isEditing ? questionToEdit.description : '');
-    final categoryController = TextEditingController(text: isEditing ? questionToEdit.category : '1. Général');
+
+    // We'll load categories inside the dialog
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return _QuestionDialogWithCategories(
+          isEditing: isEditing,
+          setId: setId,
+          questionToEdit: questionToEdit,
+          titleController: titleController,
+          subtitleController: subtitleController,
+          onSave: (categoryId, categoryText, title, subtitle) async {
+            if (isEditing) {
+              final updated = CustomQuestion(
+                id: questionToEdit.id,
+                setId: questionToEdit.setId,
+                number: questionToEdit.number,
+                categoryId: categoryId,
+                category: categoryText,
+                title: title,
+                description: subtitle,
+                createdAt: questionToEdit.createdAt,
+                updatedAt: DateTime.now(),
+              );
+              await ref.read(questionSetControllerProvider.notifier).editQuestion(updated);
+            } else {
+              await ref.read(questionSetControllerProvider.notifier).addQuestion(
+                setId,
+                categoryId,
+                categoryText,
+                title,
+                subtitle,
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+
+  // -------------------------------------------------------------------------
+  // Category dialogs
+  // -------------------------------------------------------------------------
+
+  void _showAddOrEditCategoryDialog({QuestionCategory? categoryToEdit}) {
+    final isEditing = categoryToEdit != null;
+    final nameController = TextEditingController(text: isEditing ? categoryToEdit.name : '');
+    String selectedColor = isEditing ? categoryToEdit.color : _categoryColorPalette.first;
 
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setDialogState) {
+            return AlertDialog(
+              backgroundColor: AppTheme.darkSurface,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: const BorderSide(color: Color(0xFF2E3047), width: 1.5),
+              ),
+              title: Text(
+                isEditing ? 'Modifier la catégorie' : 'Nouvelle catégorie',
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextField(
+                      controller: nameController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
+                        labelText: 'Nom de la catégorie',
+                        labelStyle: TextStyle(color: AppTheme.textSecondary),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF2E3047)),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: AppTheme.primary),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Couleur :',
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: _categoryColorPalette.map((colorHex) {
+                        final color = _hexToColor(colorHex);
+                        final isSelected = selectedColor == colorHex;
+                        return GestureDetector(
+                          onTap: () => setDialogState(() => selectedColor = colorHex),
+                          child: Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: color,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: isSelected ? Colors.white : Colors.transparent,
+                                width: 2.5,
+                              ),
+                              boxShadow: isSelected
+                                  ? [BoxShadow(color: color.withValues(alpha: 0.6), blurRadius: 8)]
+                                  : [],
+                            ),
+                            child: isSelected
+                                ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
+                                : null,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('ANNULER', style: TextStyle(color: AppTheme.textSecondary)),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    final name = nameController.text.trim();
+                    if (name.isEmpty) return;
+                    final catRepo = ref.read(categoryRepositoryProvider);
+                    if (isEditing) {
+                      await catRepo.updateCategory(categoryToEdit.id, name: name, color: selectedColor);
+                    } else {
+                      await catRepo.createCategory(name, color: selectedColor);
+                    }
+                    if (ctx.mounted) Navigator.pop(ctx);
+                  },
+                  child: const Text('VALIDER', style: TextStyle(color: AppTheme.primaryLight, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _confirmDeleteCategory(QuestionCategory category) async {
+    final catRepo = ref.read(categoryRepositoryProvider);
+    final linked = await catRepo.getQuestionsForCategory(category.id);
+
+    if (!mounted) return;
+
+    if (linked.isNotEmpty) {
+      // Show blocking dialog listing associated questions
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
           backgroundColor: AppTheme.darkSurface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
             side: const BorderSide(color: Color(0xFF2E3047), width: 1.5),
           ),
-          title: Text(
-            isEditing ? 'Modifier la question' : 'Ajouter une question',
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          content: SingleChildScrollView(
+          title: const Text('Suppression impossible', style: TextStyle(color: AppTheme.levelNegatif, fontWeight: FontWeight.bold)),
+          content: SizedBox(
+            width: double.maxFinite,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextField(
-                  controller: titleController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    labelText: 'Titre (ex: SOMMEIL)',
-                    labelStyle: TextStyle(color: AppTheme.textSecondary),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF2E3047)),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppTheme.primary),
-                    ),
-                  ),
+                Text(
+                  '${linked.length} question(s) utilisent cette catégorie. '
+                  'Réassignez-les ou supprimez-les avant de supprimer la catégorie.',
+                  style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
                 ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: subtitleController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    labelText: 'Sous-titre (ex: Qualité de la nuit...)',
-                    labelStyle: TextStyle(color: AppTheme.textSecondary),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF2E3047)),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppTheme.primary),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: categoryController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    labelText: 'Catégorie (ex: 1. Santé)',
-                    labelStyle: TextStyle(color: AppTheme.textSecondary),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF2E3047)),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppTheme.primary),
-                    ),
-                  ),
-                ),
+                const SizedBox(height: 12),
+                ...linked.map((q) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              color: AppTheme.levelNegatif,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              q.title,
+                              style: const TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
               ],
             ),
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('ANNULER', style: TextStyle(color: AppTheme.textSecondary)),
-            ),
-            TextButton(
-              onPressed: () async {
-                final title = titleController.text.trim();
-                final subtitle = subtitleController.text.trim();
-                final category = categoryController.text.trim();
-
-                if (title.isEmpty || subtitle.isEmpty || category.isEmpty) return;
-
-                if (isEditing) {
-                  final updated = CustomQuestion(
-                    id: questionToEdit.id,
-                    setId: questionToEdit.setId,
-                    number: questionToEdit.number,
-                    category: category,
-                    title: title,
-                    description: subtitle,
-                    createdAt: questionToEdit.createdAt,
-                    updatedAt: DateTime.now(),
-                  );
-                  await ref.read(questionSetControllerProvider.notifier).editQuestion(updated);
-                } else {
-                  await ref.read(questionSetControllerProvider.notifier).addQuestion(setId, category, title, subtitle);
-                }
-
-                if (context.mounted) Navigator.pop(context);
-              },
-              child: const Text('VALIDER', style: TextStyle(color: AppTheme.primaryLight, fontWeight: FontWeight.bold)),
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('FERMER', style: TextStyle(color: AppTheme.primaryLight)),
             ),
           ],
-        );
-      },
+        ),
+      );
+      return;
+    }
+
+    // Safe to delete — confirm dialog
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.darkSurface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: Color(0xFF2E3047), width: 1.5),
+        ),
+        title: const Text('Supprimer ?', style: TextStyle(color: Colors.white)),
+        content: Text(
+          'Voulez-vous vraiment supprimer la catégorie "${category.name}" ?',
+          style: const TextStyle(color: AppTheme.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('NON', style: TextStyle(color: AppTheme.textSecondary)),
+          ),
+          TextButton(
+            onPressed: () async {
+              await catRepo.deleteCategory(category.id);
+              if (ctx.mounted) Navigator.pop(ctx);
+            },
+            child: const Text('SUPPRIMER', style: TextStyle(color: AppTheme.levelNegatif, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
     );
   }
+
+  // -------------------------------------------------------------------------
+  // Build
+  // -------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
     final setsState = ref.watch(questionSetControllerProvider);
     final notifier = ref.read(questionSetControllerProvider.notifier);
 
+    // When editing questions of a set, show a back-navigation without tabs
+    if (_selectedSetForEditing != null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(_selectedSetForEditing!.name),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_rounded),
+            onPressed: () => setState(() => _selectedSetForEditing = null),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.edit_rounded),
+              onPressed: () => _showAddOrEditSetDialog(setToEdit: _selectedSetForEditing),
+            ),
+          ],
+        ),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppTheme.darkBg, AppTheme.darkSurface],
+            ),
+          ),
+          child: _buildQuestionsEditor(notifier),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Questionnaires'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () {
-            if (_selectedSetForEditing != null) {
-              setState(() {
-                _selectedSetForEditing = null;
-              });
-            } else {
-              Navigator.pop(context);
-            }
-          },
+          onPressed: () => Navigator.pop(context),
+        ),
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: AppTheme.primaryLight,
+          labelColor: AppTheme.primaryLight,
+          unselectedLabelColor: AppTheme.textSecondary,
+          tabs: const [
+            Tab(icon: Icon(Icons.list_alt_rounded), text: 'Sets'),
+            Tab(icon: Icon(Icons.label_rounded), text: 'Catégories'),
+          ],
         ),
         actions: [
-          if (_selectedSetForEditing == null)
-            IconButton(
-              icon: const Icon(Icons.add_rounded, color: AppTheme.primaryLight),
-              onPressed: () => _showAddOrEditSetDialog(),
-            )
-          else
-            IconButton(
-              icon: const Icon(Icons.edit_rounded),
-              onPressed: () => _showAddOrEditSetDialog(setToEdit: _selectedSetForEditing),
-            ),
+          // FAB-like add button changes based on active tab
+          ListenableBuilder(
+            listenable: _tabController,
+            builder: (_, __) {
+              return IconButton(
+                icon: const Icon(Icons.add_rounded, color: AppTheme.primaryLight),
+                tooltip: _tabController.index == 0 ? 'Nouveau set' : 'Nouvelle catégorie',
+                onPressed: _tabController.index == 0
+                    ? () => _showAddOrEditSetDialog()
+                    : () => _showAddOrEditCategoryDialog(),
+              );
+            },
+          ),
         ],
       ),
       body: Container(
@@ -290,12 +501,20 @@ class _QuestionSetsScreenState extends ConsumerState<QuestionSetsScreen> {
             colors: [AppTheme.darkBg, AppTheme.darkSurface],
           ),
         ),
-        child: _selectedSetForEditing != null
-            ? _buildQuestionsEditor(notifier)
-            : _buildSetsList(setsState, notifier),
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            _buildSetsList(setsState, notifier),
+            _buildCategoriesList(),
+          ],
+        ),
       ),
     );
   }
+
+  // -------------------------------------------------------------------------
+  // Sets tab
+  // -------------------------------------------------------------------------
 
   Widget _buildSetsList(QuestionSetState state, QuestionSetNotifier notifier) {
     if (state.isLoading) {
@@ -418,6 +637,75 @@ class _QuestionSetsScreenState extends ConsumerState<QuestionSetsScreen> {
     );
   }
 
+  // -------------------------------------------------------------------------
+  // Categories tab
+  // -------------------------------------------------------------------------
+
+  Widget _buildCategoriesList() {
+    final categoriesAsync = ref.watch(categoryListProvider);
+
+    return categoriesAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Erreur : $e', style: const TextStyle(color: AppTheme.levelNegatif))),
+      data: (categories) {
+        if (categories.isEmpty) {
+          return const Center(
+            child: Text(
+              'Aucune catégorie. Créez-en une en haut à droite !',
+              style: TextStyle(color: AppTheme.textSecondary),
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: categories.length,
+          itemBuilder: (context, index) {
+            final cat = categories[index];
+            final catColor = _hexToColor(cat.color);
+
+            return Card(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: ListTile(
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: catColor.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: catColor, width: 1.5),
+                  ),
+                  child: Icon(Icons.label_rounded, color: catColor, size: 22),
+                ),
+                title: Text(
+                  cat.name,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined, size: 20, color: AppTheme.textSecondary),
+                      onPressed: () => _showAddOrEditCategoryDialog(categoryToEdit: cat),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline_rounded, size: 20, color: AppTheme.levelNegatif),
+                      onPressed: () => _confirmDeleteCategory(cat),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // -------------------------------------------------------------------------
+  // Questions editor (sub-page for a set)
+  // -------------------------------------------------------------------------
+
   Widget _buildQuestionsEditor(QuestionSetNotifier notifier) {
     final setId = _selectedSetForEditing!.id;
     return StreamBuilder<List<CustomQuestion>>(
@@ -437,7 +725,7 @@ class _QuestionSetsScreenState extends ConsumerState<QuestionSetsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Questions de "${_selectedSetForEditing!.name}"',
+                    '${questions.length} question(s)',
                     style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14),
                   ),
                   ElevatedButton.icon(
@@ -470,10 +758,17 @@ class _QuestionSetsScreenState extends ConsumerState<QuestionSetsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(q.description, style: const TextStyle(color: AppTheme.textSecondary)),
-                          const SizedBox(height: 2),
-                          Text(
-                            q.category,
-                            style: const TextStyle(color: AppTheme.primaryLight, fontSize: 11),
+                          const SizedBox(height: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primary.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              q.category.isNotEmpty ? q.category : 'Sans catégorie',
+                              style: const TextStyle(color: AppTheme.primaryLight, fontSize: 11),
+                            ),
                           ),
                         ],
                       ),
@@ -511,4 +806,187 @@ class _QuestionSetsScreenState extends ConsumerState<QuestionSetsScreen> {
       },
     );
   }
+}
+
+// =============================================================================
+// Question dialog widget (needs Consumer to load categories)
+// =============================================================================
+
+class _QuestionDialogWithCategories extends ConsumerStatefulWidget {
+  final bool isEditing;
+  final String setId;
+  final CustomQuestion? questionToEdit;
+  final TextEditingController titleController;
+  final TextEditingController subtitleController;
+  final Future<void> Function(String? categoryId, String categoryText, String title, String subtitle) onSave;
+
+  const _QuestionDialogWithCategories({
+    required this.isEditing,
+    required this.setId,
+    required this.questionToEdit,
+    required this.titleController,
+    required this.subtitleController,
+    required this.onSave,
+  });
+
+  @override
+  ConsumerState<_QuestionDialogWithCategories> createState() => _QuestionDialogWithCategoriesState();
+}
+
+class _QuestionDialogWithCategoriesState extends ConsumerState<_QuestionDialogWithCategories> {
+  String? _selectedCategoryId;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCategoryId = widget.questionToEdit?.categoryId;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final categoriesAsync = ref.watch(categoryListProvider);
+
+    return AlertDialog(
+      backgroundColor: AppTheme.darkSurface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Color(0xFF2E3047), width: 1.5),
+      ),
+      title: Text(
+        widget.isEditing ? 'Modifier la question' : 'Ajouter une question',
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Title field
+            TextField(
+              controller: widget.titleController,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                labelText: 'Titre (ex: SOMMEIL)',
+                labelStyle: TextStyle(color: AppTheme.textSecondary),
+                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF2E3047))),
+                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppTheme.primary)),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Subtitle field
+            TextField(
+              controller: widget.subtitleController,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                labelText: 'Sous-titre (ex: Qualité de la nuit...)',
+                labelStyle: TextStyle(color: AppTheme.textSecondary),
+                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF2E3047))),
+                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppTheme.primary)),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Category dropdown
+            const Text(
+              'Catégorie :',
+              style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+            ),
+            const SizedBox(height: 6),
+            categoriesAsync.when(
+              loading: () => const LinearProgressIndicator(),
+              error: (e, _) => Text('Erreur : $e', style: const TextStyle(color: AppTheme.levelNegatif)),
+              data: (categories) {
+                // Ensure selected value exists in list
+                final validId = categories.any((c) => c.id == _selectedCategoryId)
+                    ? _selectedCategoryId
+                    : null;
+
+                return DropdownButtonFormField<String?>(
+                  initialValue: validId,
+                  dropdownColor: AppTheme.darkSurface,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF2E3047)),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppTheme.primary),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                  ),
+                  hint: const Text('Choisir une catégorie', style: TextStyle(color: AppTheme.textSecondary)),
+                  items: [
+                    const DropdownMenuItem<String?>(
+                      value: null,
+                      child: Text('Sans catégorie', style: TextStyle(color: AppTheme.textSecondary)),
+                    ),
+                    ...categories.map((cat) {
+                      final catColor = _hexToColor(cat.color);
+                      return DropdownMenuItem<String?>(
+                        value: cat.id,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(color: catColor, shape: BoxShape.circle),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                cat.name,
+                                style: const TextStyle(color: Colors.white, fontSize: 14),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ],
+                  onChanged: (val) => setState(() => _selectedCategoryId = val),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('ANNULER', style: TextStyle(color: AppTheme.textSecondary)),
+        ),
+        TextButton(
+          onPressed: () async {
+            final title = widget.titleController.text.trim();
+            final subtitle = widget.subtitleController.text.trim();
+            if (title.isEmpty || subtitle.isEmpty) return;
+
+            // Resolve category text from id
+            String categoryText = '';
+            if (_selectedCategoryId != null) {
+              final catRepo = ref.read(categoryRepositoryProvider);
+              final cat = await catRepo.getCategoryById(_selectedCategoryId!);
+              categoryText = cat?.name ?? '';
+            }
+
+            await widget.onSave(_selectedCategoryId, categoryText, title, subtitle);
+            if (context.mounted) Navigator.pop(context);
+          },
+          child: const Text('VALIDER', style: TextStyle(color: AppTheme.primaryLight, fontWeight: FontWeight.bold)),
+        ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Utility
+// ---------------------------------------------------------------------------
+
+Color _hexToColor(String hex) {
+  final buffer = StringBuffer();
+  if (hex.length == 7) buffer.write('ff');
+  buffer.write(hex.replaceFirst('#', ''));
+  return Color(int.parse(buffer.toString(), radix: 16));
 }

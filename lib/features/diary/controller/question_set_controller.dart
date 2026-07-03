@@ -107,6 +107,7 @@ class QuestionSetNotifier extends StateNotifier<QuestionSetState> {
         id: '${newSetId}_q_${q.number}',
         setId: newSetId,
         number: q.number,
+        categoryId: q.categoryId,
         category: q.category,
         title: q.title,
         description: q.description,
@@ -155,9 +156,10 @@ class QuestionSetNotifier extends StateNotifier<QuestionSetState> {
     await _repository.deleteQuestionSet(setId);
   }
 
-  Future<void> addQuestion(String setId, String category, String title, String description) async {
+  Future<void> addQuestion(String setId, String? categoryId, String category, String title, String description) async {
     await _repository.addQuestionToSet(
       setId: setId,
+      categoryId: categoryId,
       category: category,
       title: title,
       description: description,
