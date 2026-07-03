@@ -9,11 +9,8 @@ import 'package:verysimplediary/core/db/local_database.dart';
 import 'package:verysimplediary/core/config/settings_provider.dart';
 import 'package:verysimplediary/features/diary/repository/diary_repository.dart';
 import 'package:verysimplediary/features/diary/repository/question_set_repository.dart';
-import 'package:verysimplediary/features/diary/controller/question_set_controller.dart';
-import 'package:verysimplediary/features/diary/controller/diary_controller.dart';
 import 'package:verysimplediary/features/diary/ui/question_sets_screen.dart';
 import 'package:verysimplediary/features/auth/repository/auth_repository.dart';
-import 'package:verysimplediary/core/ui/profile_menu_button.dart';
 
 void main() {
   setUp(() async {

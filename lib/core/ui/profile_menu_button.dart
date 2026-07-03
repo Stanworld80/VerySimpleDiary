@@ -342,77 +342,77 @@ class ProfileMenuButton extends ConsumerWidget {
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        PopupMenuItem<String>(
+        const PopupMenuItem<String>(
           value: 'settings',
           child: Row(
             children: [
-              const Icon(Icons.settings_rounded, size: 20, color: AppTheme.textSecondary),
-              const SizedBox(width: 12),
+              Icon(Icons.settings_rounded, size: 20, color: AppTheme.textSecondary),
+              SizedBox(width: 12),
               Expanded(
                 child: Text(
                   'Paramètres',
-                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                  style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
             ],
           ),
         ),
-        PopupMenuItem<String>(
+        const PopupMenuItem<String>(
           value: 'questionnaires',
           child: Row(
             children: [
-              const Icon(Icons.list_alt_rounded, size: 20, color: AppTheme.textSecondary),
-              const SizedBox(width: 12),
+              Icon(Icons.list_alt_rounded, size: 20, color: AppTheme.textSecondary),
+              SizedBox(width: 12),
               Expanded(
                 child: Text(
                   'Questionnaires',
-                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                  style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
             ],
           ),
         ),
-        PopupMenuItem<String>(
+        const PopupMenuItem<String>(
           value: 'legal',
           child: Row(
             children: [
-              const Icon(Icons.gavel_rounded, size: 20, color: AppTheme.textSecondary),
-              const SizedBox(width: 12),
+              Icon(Icons.gavel_rounded, size: 20, color: AppTheme.textSecondary),
+              SizedBox(width: 12),
               Expanded(
                 child: Text(
                   'Mentions Légales',
-                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                  style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
             ],
           ),
         ),
-        PopupMenuItem<String>(
+        const PopupMenuItem<String>(
           value: 'help',
           child: Row(
             children: [
-              const Icon(Icons.help_outline_rounded, size: 20, color: AppTheme.textSecondary),
-              const SizedBox(width: 12),
+              Icon(Icons.help_outline_rounded, size: 20, color: AppTheme.textSecondary),
+              SizedBox(width: 12),
               Expanded(
                 child: Text(
                   'Aide',
-                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                  style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
             ],
           ),
         ),
         const PopupMenuDivider(height: 1),
-        PopupMenuItem<String>(
+        const PopupMenuItem<String>(
           value: 'logout',
           child: Row(
             children: [
-              const Icon(Icons.logout_rounded, size: 20, color: AppTheme.levelNegatif),
-              const SizedBox(width: 12),
+              Icon(Icons.logout_rounded, size: 20, color: AppTheme.levelNegatif),
+              SizedBox(width: 12),
               Expanded(
                 child: Text(
                   'Déconnexion',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: AppTheme.levelNegatif,
                     fontWeight: FontWeight.bold,

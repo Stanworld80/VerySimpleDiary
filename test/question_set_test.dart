@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,7 +8,6 @@ import 'package:verysimplediary/core/config/settings_provider.dart';
 import 'package:verysimplediary/features/diary/repository/diary_repository.dart';
 import 'package:verysimplediary/features/diary/repository/question_set_repository.dart';
 import 'package:verysimplediary/features/diary/controller/question_set_controller.dart';
-import 'package:verysimplediary/features/diary/controller/diary_controller.dart';
 
 void main() {
   late ProviderContainer container;
@@ -41,7 +39,7 @@ void main() {
   group('QuestionSetRepository & Controller Unit Tests', () {
     test('Default set is seeded if database is empty', () async {
       // Trigger initialization
-      final notifier = container.read(questionSetControllerProvider.notifier);
+      container.read(questionSetControllerProvider.notifier);
       
       // Allow async streams to emit
       await Future.delayed(const Duration(milliseconds: 50));

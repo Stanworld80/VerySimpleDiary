@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart';
 import '../../../core/db/local_database.dart';
 import '../../auth/repository/auth_repository.dart';
-import '../controller/diary_controller.dart';
 import 'diary_repository.dart';
 
 class SyncRepository {

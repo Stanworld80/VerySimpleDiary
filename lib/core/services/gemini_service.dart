@@ -40,9 +40,6 @@ class GeminiService {
         (q) => q?.number == response.questionNumber,
         orElse: () => null,
       );
-      final category = question?.category ?? 'Autre';
-      final title = question?.title ?? 'Question ${response.questionNumber}';
-
       final List<String> periodDetails = [];
 
       void addPeriod(String name, String values, String comment) {
