@@ -112,6 +112,15 @@ class DiaryRepository {
     await (_db.update(_db.diaryDays)..where((tbl) => tbl.id.equals(id))).write(companion);
   }
 
+  // Update diary day question set
+  Future<void> updateDiaryDaySet(String id, String questionSetId) async {
+    final companion = DiaryDaysCompanion(
+      questionSetId: Value(questionSetId),
+      updatedAt: Value(DateTime.now()),
+    );
+    await (_db.update(_db.diaryDays)..where((tbl) => tbl.id.equals(id))).write(companion);
+  }
+
   // Delete diary day by date
   Future<void> deleteDiaryDay(String date) async {
     await (_db.delete(_db.diaryDays)..where((tbl) => tbl.date.equals(date))).go();

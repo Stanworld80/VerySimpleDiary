@@ -3,6 +3,356 @@
 part of 'local_database.dart';
 
 // ignore_for_file: type=lint
+class $QuestionSetsTable extends QuestionSets
+    with TableInfo<$QuestionSetsTable, QuestionSet> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $QuestionSetsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isActiveMeta =
+      const VerificationMeta('isActive');
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+      'is_active', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _selectedPeriodsMeta =
+      const VerificationMeta('selectedPeriods');
+  @override
+  late final GeneratedColumn<String> selectedPeriods = GeneratedColumn<String>(
+      'selected_periods', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('nuit,matin,journee,soir'));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, isActive, selectedPeriods, createdAt, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'question_sets';
+  @override
+  VerificationContext validateIntegrity(Insertable<QuestionSet> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(_isActiveMeta,
+          isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
+    }
+    if (data.containsKey('selected_periods')) {
+      context.handle(
+          _selectedPeriodsMeta,
+          selectedPeriods.isAcceptableOrUnknown(
+              data['selected_periods']!, _selectedPeriodsMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  QuestionSet map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return QuestionSet(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      isActive: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      selectedPeriods: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}selected_periods'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $QuestionSetsTable createAlias(String alias) {
+    return $QuestionSetsTable(attachedDatabase, alias);
+  }
+}
+
+class QuestionSet extends DataClass implements Insertable<QuestionSet> {
+  final String id;
+  final String name;
+  final bool isActive;
+  final String selectedPeriods;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const QuestionSet(
+      {required this.id,
+      required this.name,
+      required this.isActive,
+      required this.selectedPeriods,
+      required this.createdAt,
+      required this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['is_active'] = Variable<bool>(isActive);
+    map['selected_periods'] = Variable<String>(selectedPeriods);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  QuestionSetsCompanion toCompanion(bool nullToAbsent) {
+    return QuestionSetsCompanion(
+      id: Value(id),
+      name: Value(name),
+      isActive: Value(isActive),
+      selectedPeriods: Value(selectedPeriods),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory QuestionSet.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return QuestionSet(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      selectedPeriods: serializer.fromJson<String>(json['selectedPeriods']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'isActive': serializer.toJson<bool>(isActive),
+      'selectedPeriods': serializer.toJson<String>(selectedPeriods),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  QuestionSet copyWith(
+          {String? id,
+          String? name,
+          bool? isActive,
+          String? selectedPeriods,
+          DateTime? createdAt,
+          DateTime? updatedAt}) =>
+      QuestionSet(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        isActive: isActive ?? this.isActive,
+        selectedPeriods: selectedPeriods ?? this.selectedPeriods,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  QuestionSet copyWithCompanion(QuestionSetsCompanion data) {
+    return QuestionSet(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      selectedPeriods: data.selectedPeriods.present
+          ? data.selectedPeriods.value
+          : this.selectedPeriods,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QuestionSet(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('isActive: $isActive, ')
+          ..write('selectedPeriods: $selectedPeriods, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, isActive, selectedPeriods, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is QuestionSet &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.isActive == this.isActive &&
+          other.selectedPeriods == this.selectedPeriods &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class QuestionSetsCompanion extends UpdateCompanion<QuestionSet> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<bool> isActive;
+  final Value<String> selectedPeriods;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const QuestionSetsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.selectedPeriods = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  QuestionSetsCompanion.insert({
+    required String id,
+    required String name,
+    this.isActive = const Value.absent(),
+    this.selectedPeriods = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
+  static Insertable<QuestionSet> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<bool>? isActive,
+    Expression<String>? selectedPeriods,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (isActive != null) 'is_active': isActive,
+      if (selectedPeriods != null) 'selected_periods': selectedPeriods,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  QuestionSetsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<bool>? isActive,
+      Value<String>? selectedPeriods,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<int>? rowid}) {
+    return QuestionSetsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      isActive: isActive ?? this.isActive,
+      selectedPeriods: selectedPeriods ?? this.selectedPeriods,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (selectedPeriods.present) {
+      map['selected_periods'] = Variable<String>(selectedPeriods.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QuestionSetsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('isActive: $isActive, ')
+          ..write('selectedPeriods: $selectedPeriods, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $DiaryDaysTable extends DiaryDays
     with TableInfo<$DiaryDaysTable, DiaryDay> {
   @override
@@ -73,6 +423,15 @@ class $DiaryDaysTable extends DiaryDays
   late final GeneratedColumn<DateTime> syncedAt = GeneratedColumn<DateTime>(
       'synced_at', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _questionSetIdMeta =
+      const VerificationMeta('questionSetId');
+  @override
+  late final GeneratedColumn<String> questionSetId = GeneratedColumn<String>(
+      'question_set_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES question_sets (id) ON DELETE SET NULL'));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -85,7 +444,8 @@ class $DiaryDaysTable extends DiaryDays
         insightText,
         createdAt,
         updatedAt,
-        syncedAt
+        syncedAt,
+        questionSetId
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -164,6 +524,12 @@ class $DiaryDaysTable extends DiaryDays
       context.handle(_syncedAtMeta,
           syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta));
     }
+    if (data.containsKey('question_set_id')) {
+      context.handle(
+          _questionSetIdMeta,
+          questionSetId.isAcceptableOrUnknown(
+              data['question_set_id']!, _questionSetIdMeta));
+    }
     return context;
   }
 
@@ -195,6 +561,8 @@ class $DiaryDaysTable extends DiaryDays
           .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
       syncedAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}synced_at']),
+      questionSetId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}question_set_id']),
     );
   }
 
@@ -216,6 +584,7 @@ class DiaryDay extends DataClass implements Insertable<DiaryDay> {
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? syncedAt;
+  final String? questionSetId;
   const DiaryDay(
       {required this.id,
       required this.date,
@@ -227,7 +596,8 @@ class DiaryDay extends DataClass implements Insertable<DiaryDay> {
       this.insightText,
       required this.createdAt,
       required this.updatedAt,
-      this.syncedAt});
+      this.syncedAt,
+      this.questionSetId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -245,6 +615,9 @@ class DiaryDay extends DataClass implements Insertable<DiaryDay> {
     map['updated_at'] = Variable<DateTime>(updatedAt);
     if (!nullToAbsent || syncedAt != null) {
       map['synced_at'] = Variable<DateTime>(syncedAt);
+    }
+    if (!nullToAbsent || questionSetId != null) {
+      map['question_set_id'] = Variable<String>(questionSetId);
     }
     return map;
   }
@@ -266,6 +639,9 @@ class DiaryDay extends DataClass implements Insertable<DiaryDay> {
       syncedAt: syncedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(syncedAt),
+      questionSetId: questionSetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(questionSetId),
     );
   }
 
@@ -284,6 +660,7 @@ class DiaryDay extends DataClass implements Insertable<DiaryDay> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       syncedAt: serializer.fromJson<DateTime?>(json['syncedAt']),
+      questionSetId: serializer.fromJson<String?>(json['questionSetId']),
     );
   }
   @override
@@ -301,6 +678,7 @@ class DiaryDay extends DataClass implements Insertable<DiaryDay> {
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'syncedAt': serializer.toJson<DateTime?>(syncedAt),
+      'questionSetId': serializer.toJson<String?>(questionSetId),
     };
   }
 
@@ -315,7 +693,8 @@ class DiaryDay extends DataClass implements Insertable<DiaryDay> {
           Value<String?> insightText = const Value.absent(),
           DateTime? createdAt,
           DateTime? updatedAt,
-          Value<DateTime?> syncedAt = const Value.absent()}) =>
+          Value<DateTime?> syncedAt = const Value.absent(),
+          Value<String?> questionSetId = const Value.absent()}) =>
       DiaryDay(
         id: id ?? this.id,
         date: date ?? this.date,
@@ -328,6 +707,8 @@ class DiaryDay extends DataClass implements Insertable<DiaryDay> {
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
         syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
+        questionSetId:
+            questionSetId.present ? questionSetId.value : this.questionSetId,
       );
   DiaryDay copyWithCompanion(DiaryDaysCompanion data) {
     return DiaryDay(
@@ -345,6 +726,9 @@ class DiaryDay extends DataClass implements Insertable<DiaryDay> {
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
+      questionSetId: data.questionSetId.present
+          ? data.questionSetId.value
+          : this.questionSetId,
     );
   }
 
@@ -361,14 +745,26 @@ class DiaryDay extends DataClass implements Insertable<DiaryDay> {
           ..write('insightText: $insightText, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('syncedAt: $syncedAt')
+          ..write('syncedAt: $syncedAt, ')
+          ..write('questionSetId: $questionSetId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, date, status, totalScore, meanScore,
-      medianScore, level, insightText, createdAt, updatedAt, syncedAt);
+  int get hashCode => Object.hash(
+      id,
+      date,
+      status,
+      totalScore,
+      meanScore,
+      medianScore,
+      level,
+      insightText,
+      createdAt,
+      updatedAt,
+      syncedAt,
+      questionSetId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -383,7 +779,8 @@ class DiaryDay extends DataClass implements Insertable<DiaryDay> {
           other.insightText == this.insightText &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
-          other.syncedAt == this.syncedAt);
+          other.syncedAt == this.syncedAt &&
+          other.questionSetId == this.questionSetId);
 }
 
 class DiaryDaysCompanion extends UpdateCompanion<DiaryDay> {
@@ -398,6 +795,7 @@ class DiaryDaysCompanion extends UpdateCompanion<DiaryDay> {
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<DateTime?> syncedAt;
+  final Value<String?> questionSetId;
   final Value<int> rowid;
   const DiaryDaysCompanion({
     this.id = const Value.absent(),
@@ -411,6 +809,7 @@ class DiaryDaysCompanion extends UpdateCompanion<DiaryDay> {
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.syncedAt = const Value.absent(),
+    this.questionSetId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DiaryDaysCompanion.insert({
@@ -425,6 +824,7 @@ class DiaryDaysCompanion extends UpdateCompanion<DiaryDay> {
     required DateTime createdAt,
     required DateTime updatedAt,
     this.syncedAt = const Value.absent(),
+    this.questionSetId = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         date = Value(date),
@@ -447,6 +847,7 @@ class DiaryDaysCompanion extends UpdateCompanion<DiaryDay> {
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<DateTime>? syncedAt,
+    Expression<String>? questionSetId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -461,6 +862,7 @@ class DiaryDaysCompanion extends UpdateCompanion<DiaryDay> {
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (syncedAt != null) 'synced_at': syncedAt,
+      if (questionSetId != null) 'question_set_id': questionSetId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -477,6 +879,7 @@ class DiaryDaysCompanion extends UpdateCompanion<DiaryDay> {
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
       Value<DateTime?>? syncedAt,
+      Value<String?>? questionSetId,
       Value<int>? rowid}) {
     return DiaryDaysCompanion(
       id: id ?? this.id,
@@ -490,6 +893,7 @@ class DiaryDaysCompanion extends UpdateCompanion<DiaryDay> {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       syncedAt: syncedAt ?? this.syncedAt,
+      questionSetId: questionSetId ?? this.questionSetId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -530,6 +934,9 @@ class DiaryDaysCompanion extends UpdateCompanion<DiaryDay> {
     if (syncedAt.present) {
       map['synced_at'] = Variable<DateTime>(syncedAt.value);
     }
+    if (questionSetId.present) {
+      map['question_set_id'] = Variable<String>(questionSetId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -550,6 +957,7 @@ class DiaryDaysCompanion extends UpdateCompanion<DiaryDay> {
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('syncedAt: $syncedAt, ')
+          ..write('questionSetId: $questionSetId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1181,20 +1589,454 @@ class DiaryResponsesCompanion extends UpdateCompanion<DiaryResponse> {
   }
 }
 
+class $CustomQuestionsTable extends CustomQuestions
+    with TableInfo<$CustomQuestionsTable, CustomQuestion> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CustomQuestionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _setIdMeta = const VerificationMeta('setId');
+  @override
+  late final GeneratedColumn<String> setId = GeneratedColumn<String>(
+      'set_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES question_sets (id) ON DELETE CASCADE'));
+  static const VerificationMeta _numberMeta = const VerificationMeta('number');
+  @override
+  late final GeneratedColumn<int> number = GeneratedColumn<int>(
+      'number', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _categoryMeta =
+      const VerificationMeta('category');
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+      'category', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, setId, number, category, title, description, createdAt, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'custom_questions';
+  @override
+  VerificationContext validateIntegrity(Insertable<CustomQuestion> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('set_id')) {
+      context.handle(
+          _setIdMeta, setId.isAcceptableOrUnknown(data['set_id']!, _setIdMeta));
+    } else if (isInserting) {
+      context.missing(_setIdMeta);
+    }
+    if (data.containsKey('number')) {
+      context.handle(_numberMeta,
+          number.isAcceptableOrUnknown(data['number']!, _numberMeta));
+    } else if (isInserting) {
+      context.missing(_numberMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(_categoryMeta,
+          category.isAcceptableOrUnknown(data['category']!, _categoryMeta));
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CustomQuestion map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CustomQuestion(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      setId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}set_id'])!,
+      number: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}number'])!,
+      category: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}category'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $CustomQuestionsTable createAlias(String alias) {
+    return $CustomQuestionsTable(attachedDatabase, alias);
+  }
+}
+
+class CustomQuestion extends DataClass implements Insertable<CustomQuestion> {
+  final String id;
+  final String setId;
+  final int number;
+  final String category;
+  final String title;
+  final String description;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const CustomQuestion(
+      {required this.id,
+      required this.setId,
+      required this.number,
+      required this.category,
+      required this.title,
+      required this.description,
+      required this.createdAt,
+      required this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['set_id'] = Variable<String>(setId);
+    map['number'] = Variable<int>(number);
+    map['category'] = Variable<String>(category);
+    map['title'] = Variable<String>(title);
+    map['description'] = Variable<String>(description);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  CustomQuestionsCompanion toCompanion(bool nullToAbsent) {
+    return CustomQuestionsCompanion(
+      id: Value(id),
+      setId: Value(setId),
+      number: Value(number),
+      category: Value(category),
+      title: Value(title),
+      description: Value(description),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory CustomQuestion.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CustomQuestion(
+      id: serializer.fromJson<String>(json['id']),
+      setId: serializer.fromJson<String>(json['setId']),
+      number: serializer.fromJson<int>(json['number']),
+      category: serializer.fromJson<String>(json['category']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String>(json['description']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'setId': serializer.toJson<String>(setId),
+      'number': serializer.toJson<int>(number),
+      'category': serializer.toJson<String>(category),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String>(description),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  CustomQuestion copyWith(
+          {String? id,
+          String? setId,
+          int? number,
+          String? category,
+          String? title,
+          String? description,
+          DateTime? createdAt,
+          DateTime? updatedAt}) =>
+      CustomQuestion(
+        id: id ?? this.id,
+        setId: setId ?? this.setId,
+        number: number ?? this.number,
+        category: category ?? this.category,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  CustomQuestion copyWithCompanion(CustomQuestionsCompanion data) {
+    return CustomQuestion(
+      id: data.id.present ? data.id.value : this.id,
+      setId: data.setId.present ? data.setId.value : this.setId,
+      number: data.number.present ? data.number.value : this.number,
+      category: data.category.present ? data.category.value : this.category,
+      title: data.title.present ? data.title.value : this.title,
+      description:
+          data.description.present ? data.description.value : this.description,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CustomQuestion(')
+          ..write('id: $id, ')
+          ..write('setId: $setId, ')
+          ..write('number: $number, ')
+          ..write('category: $category, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, setId, number, category, title, description, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CustomQuestion &&
+          other.id == this.id &&
+          other.setId == this.setId &&
+          other.number == this.number &&
+          other.category == this.category &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CustomQuestionsCompanion extends UpdateCompanion<CustomQuestion> {
+  final Value<String> id;
+  final Value<String> setId;
+  final Value<int> number;
+  final Value<String> category;
+  final Value<String> title;
+  final Value<String> description;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const CustomQuestionsCompanion({
+    this.id = const Value.absent(),
+    this.setId = const Value.absent(),
+    this.number = const Value.absent(),
+    this.category = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CustomQuestionsCompanion.insert({
+    required String id,
+    required String setId,
+    required int number,
+    required String category,
+    required String title,
+    required String description,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        setId = Value(setId),
+        number = Value(number),
+        category = Value(category),
+        title = Value(title),
+        description = Value(description),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
+  static Insertable<CustomQuestion> custom({
+    Expression<String>? id,
+    Expression<String>? setId,
+    Expression<int>? number,
+    Expression<String>? category,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (setId != null) 'set_id': setId,
+      if (number != null) 'number': number,
+      if (category != null) 'category': category,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CustomQuestionsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? setId,
+      Value<int>? number,
+      Value<String>? category,
+      Value<String>? title,
+      Value<String>? description,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<int>? rowid}) {
+    return CustomQuestionsCompanion(
+      id: id ?? this.id,
+      setId: setId ?? this.setId,
+      number: number ?? this.number,
+      category: category ?? this.category,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (setId.present) {
+      map['set_id'] = Variable<String>(setId.value);
+    }
+    if (number.present) {
+      map['number'] = Variable<int>(number.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CustomQuestionsCompanion(')
+          ..write('id: $id, ')
+          ..write('setId: $setId, ')
+          ..write('number: $number, ')
+          ..write('category: $category, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
   $LocalDatabaseManager get managers => $LocalDatabaseManager(this);
+  late final $QuestionSetsTable questionSets = $QuestionSetsTable(this);
   late final $DiaryDaysTable diaryDays = $DiaryDaysTable(this);
   late final $DiaryResponsesTable diaryResponses = $DiaryResponsesTable(this);
+  late final $CustomQuestionsTable customQuestions =
+      $CustomQuestionsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [diaryDays, diaryResponses];
+      [questionSets, diaryDays, diaryResponses, customQuestions];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('question_sets',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('diary_days', kind: UpdateKind.update),
+            ],
+          ),
           WritePropagation(
             on: TableUpdateQuery.onTableName('diary_days',
                 limitUpdateKind: UpdateKind.delete),
@@ -1202,8 +2044,186 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
               TableUpdate('diary_responses', kind: UpdateKind.delete),
             ],
           ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('question_sets',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('custom_questions', kind: UpdateKind.delete),
+            ],
+          ),
         ],
       );
+}
+
+typedef $$QuestionSetsTableCreateCompanionBuilder = QuestionSetsCompanion
+    Function({
+  required String id,
+  required String name,
+  Value<bool> isActive,
+  Value<String> selectedPeriods,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<int> rowid,
+});
+typedef $$QuestionSetsTableUpdateCompanionBuilder = QuestionSetsCompanion
+    Function({
+  Value<String> id,
+  Value<String> name,
+  Value<bool> isActive,
+  Value<String> selectedPeriods,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+
+class $$QuestionSetsTableTableManager extends RootTableManager<
+    _$LocalDatabase,
+    $QuestionSetsTable,
+    QuestionSet,
+    $$QuestionSetsTableFilterComposer,
+    $$QuestionSetsTableOrderingComposer,
+    $$QuestionSetsTableCreateCompanionBuilder,
+    $$QuestionSetsTableUpdateCompanionBuilder> {
+  $$QuestionSetsTableTableManager(_$LocalDatabase db, $QuestionSetsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$QuestionSetsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$QuestionSetsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<String> selectedPeriods = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              QuestionSetsCompanion(
+            id: id,
+            name: name,
+            isActive: isActive,
+            selectedPeriods: selectedPeriods,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            Value<bool> isActive = const Value.absent(),
+            Value<String> selectedPeriods = const Value.absent(),
+            required DateTime createdAt,
+            required DateTime updatedAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              QuestionSetsCompanion.insert(
+            id: id,
+            name: name,
+            isActive: isActive,
+            selectedPeriods: selectedPeriods,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$QuestionSetsTableFilterComposer
+    extends FilterComposer<_$LocalDatabase, $QuestionSetsTable> {
+  $$QuestionSetsTableFilterComposer(super.$state);
+  ColumnFilters<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get isActive => $state.composableBuilder(
+      column: $state.table.isActive,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get selectedPeriods => $state.composableBuilder(
+      column: $state.table.selectedPeriods,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ComposableFilter diaryDaysRefs(
+      ComposableFilter Function($$DiaryDaysTableFilterComposer f) f) {
+    final $$DiaryDaysTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $state.db.diaryDays,
+        getReferencedColumn: (t) => t.questionSetId,
+        builder: (joinBuilder, parentComposers) =>
+            $$DiaryDaysTableFilterComposer(ComposerState(
+                $state.db, $state.db.diaryDays, joinBuilder, parentComposers)));
+    return f(composer);
+  }
+
+  ComposableFilter customQuestionsRefs(
+      ComposableFilter Function($$CustomQuestionsTableFilterComposer f) f) {
+    final $$CustomQuestionsTableFilterComposer composer =
+        $state.composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $state.db.customQuestions,
+            getReferencedColumn: (t) => t.setId,
+            builder: (joinBuilder, parentComposers) =>
+                $$CustomQuestionsTableFilterComposer(ComposerState($state.db,
+                    $state.db.customQuestions, joinBuilder, parentComposers)));
+    return f(composer);
+  }
+}
+
+class $$QuestionSetsTableOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, $QuestionSetsTable> {
+  $$QuestionSetsTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get isActive => $state.composableBuilder(
+      column: $state.table.isActive,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get selectedPeriods => $state.composableBuilder(
+      column: $state.table.selectedPeriods,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
 typedef $$DiaryDaysTableCreateCompanionBuilder = DiaryDaysCompanion Function({
@@ -1218,6 +2238,7 @@ typedef $$DiaryDaysTableCreateCompanionBuilder = DiaryDaysCompanion Function({
   required DateTime createdAt,
   required DateTime updatedAt,
   Value<DateTime?> syncedAt,
+  Value<String?> questionSetId,
   Value<int> rowid,
 });
 typedef $$DiaryDaysTableUpdateCompanionBuilder = DiaryDaysCompanion Function({
@@ -1232,6 +2253,7 @@ typedef $$DiaryDaysTableUpdateCompanionBuilder = DiaryDaysCompanion Function({
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
   Value<DateTime?> syncedAt,
+  Value<String?> questionSetId,
   Value<int> rowid,
 });
 
@@ -1263,6 +2285,7 @@ class $$DiaryDaysTableTableManager extends RootTableManager<
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
             Value<DateTime?> syncedAt = const Value.absent(),
+            Value<String?> questionSetId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               DiaryDaysCompanion(
@@ -1277,6 +2300,7 @@ class $$DiaryDaysTableTableManager extends RootTableManager<
             createdAt: createdAt,
             updatedAt: updatedAt,
             syncedAt: syncedAt,
+            questionSetId: questionSetId,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -1291,6 +2315,7 @@ class $$DiaryDaysTableTableManager extends RootTableManager<
             required DateTime createdAt,
             required DateTime updatedAt,
             Value<DateTime?> syncedAt = const Value.absent(),
+            Value<String?> questionSetId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               DiaryDaysCompanion.insert(
@@ -1305,6 +2330,7 @@ class $$DiaryDaysTableTableManager extends RootTableManager<
             createdAt: createdAt,
             updatedAt: updatedAt,
             syncedAt: syncedAt,
+            questionSetId: questionSetId,
             rowid: rowid,
           ),
         ));
@@ -1367,6 +2393,18 @@ class $$DiaryDaysTableFilterComposer
       column: $state.table.syncedAt,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
+
+  $$QuestionSetsTableFilterComposer get questionSetId {
+    final $$QuestionSetsTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.questionSetId,
+        referencedTable: $state.db.questionSets,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) =>
+            $$QuestionSetsTableFilterComposer(ComposerState($state.db,
+                $state.db.questionSets, joinBuilder, parentComposers)));
+    return composer;
+  }
 
   ComposableFilter diaryResponsesRefs(
       ComposableFilter Function($$DiaryResponsesTableFilterComposer f) f) {
@@ -1439,6 +2477,18 @@ class $$DiaryDaysTableOrderingComposer
       column: $state.table.syncedAt,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $$QuestionSetsTableOrderingComposer get questionSetId {
+    final $$QuestionSetsTableOrderingComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.questionSetId,
+        referencedTable: $state.db.questionSets,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) =>
+            $$QuestionSetsTableOrderingComposer(ComposerState($state.db,
+                $state.db.questionSets, joinBuilder, parentComposers)));
+    return composer;
+  }
 }
 
 typedef $$DiaryResponsesTableCreateCompanionBuilder = DiaryResponsesCompanion
@@ -1696,11 +2746,206 @@ class $$DiaryResponsesTableOrderingComposer
   }
 }
 
+typedef $$CustomQuestionsTableCreateCompanionBuilder = CustomQuestionsCompanion
+    Function({
+  required String id,
+  required String setId,
+  required int number,
+  required String category,
+  required String title,
+  required String description,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<int> rowid,
+});
+typedef $$CustomQuestionsTableUpdateCompanionBuilder = CustomQuestionsCompanion
+    Function({
+  Value<String> id,
+  Value<String> setId,
+  Value<int> number,
+  Value<String> category,
+  Value<String> title,
+  Value<String> description,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+
+class $$CustomQuestionsTableTableManager extends RootTableManager<
+    _$LocalDatabase,
+    $CustomQuestionsTable,
+    CustomQuestion,
+    $$CustomQuestionsTableFilterComposer,
+    $$CustomQuestionsTableOrderingComposer,
+    $$CustomQuestionsTableCreateCompanionBuilder,
+    $$CustomQuestionsTableUpdateCompanionBuilder> {
+  $$CustomQuestionsTableTableManager(
+      _$LocalDatabase db, $CustomQuestionsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$CustomQuestionsTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$CustomQuestionsTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> setId = const Value.absent(),
+            Value<int> number = const Value.absent(),
+            Value<String> category = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String> description = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CustomQuestionsCompanion(
+            id: id,
+            setId: setId,
+            number: number,
+            category: category,
+            title: title,
+            description: description,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String setId,
+            required int number,
+            required String category,
+            required String title,
+            required String description,
+            required DateTime createdAt,
+            required DateTime updatedAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CustomQuestionsCompanion.insert(
+            id: id,
+            setId: setId,
+            number: number,
+            category: category,
+            title: title,
+            description: description,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$CustomQuestionsTableFilterComposer
+    extends FilterComposer<_$LocalDatabase, $CustomQuestionsTable> {
+  $$CustomQuestionsTableFilterComposer(super.$state);
+  ColumnFilters<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get number => $state.composableBuilder(
+      column: $state.table.number,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get category => $state.composableBuilder(
+      column: $state.table.category,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get title => $state.composableBuilder(
+      column: $state.table.title,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  $$QuestionSetsTableFilterComposer get setId {
+    final $$QuestionSetsTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.setId,
+        referencedTable: $state.db.questionSets,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) =>
+            $$QuestionSetsTableFilterComposer(ComposerState($state.db,
+                $state.db.questionSets, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $$CustomQuestionsTableOrderingComposer
+    extends OrderingComposer<_$LocalDatabase, $CustomQuestionsTable> {
+  $$CustomQuestionsTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get number => $state.composableBuilder(
+      column: $state.table.number,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get category => $state.composableBuilder(
+      column: $state.table.category,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get title => $state.composableBuilder(
+      column: $state.table.title,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get description => $state.composableBuilder(
+      column: $state.table.description,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $$QuestionSetsTableOrderingComposer get setId {
+    final $$QuestionSetsTableOrderingComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.setId,
+        referencedTable: $state.db.questionSets,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) =>
+            $$QuestionSetsTableOrderingComposer(ComposerState($state.db,
+                $state.db.questionSets, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
 class $LocalDatabaseManager {
   final _$LocalDatabase _db;
   $LocalDatabaseManager(this._db);
+  $$QuestionSetsTableTableManager get questionSets =>
+      $$QuestionSetsTableTableManager(_db, _db.questionSets);
   $$DiaryDaysTableTableManager get diaryDays =>
       $$DiaryDaysTableTableManager(_db, _db.diaryDays);
   $$DiaryResponsesTableTableManager get diaryResponses =>
       $$DiaryResponsesTableTableManager(_db, _db.diaryResponses);
+  $$CustomQuestionsTableTableManager get customQuestions =>
+      $$CustomQuestionsTableTableManager(_db, _db.customQuestions);
 }

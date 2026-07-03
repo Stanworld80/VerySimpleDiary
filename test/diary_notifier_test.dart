@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:drift/native.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:verysimplediary/features/diary/controller/diary_controller.dart';
 import 'package:verysimplediary/features/diary/repository/sync_repository.dart';
@@ -55,9 +56,12 @@ class MockDiaryRepository implements DiaryRepository {
       level: 'Moyen',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
+      questionSetId: null,
     );
     currentDay = day;
-    _dayController.add(day);
+    if (!_dayController.isClosed) {
+      _dayController.add(day);
+    }
     return day;
   }
 
@@ -90,7 +94,9 @@ class MockDiaryRepository implements DiaryRepository {
     );
     currentResponses.removeWhere((r) => r.questionNumber == questionNumber);
     currentResponses.add(resp);
-    _responsesController.add(currentResponses);
+    if (!_responsesController.isClosed) {
+      _responsesController.add(currentResponses);
+    }
   }
 
   @override
@@ -115,9 +121,35 @@ class MockDiaryRepository implements DiaryRepository {
         insightText: insight,
         createdAt: currentDay!.createdAt,
         updatedAt: DateTime.now(),
+        questionSetId: currentDay!.questionSetId,
       );
       currentDay = updated;
-      _dayController.add(updated);
+      if (!_dayController.isClosed) {
+        _dayController.add(updated);
+      }
+    }
+  }
+
+  @override
+  Future<void> updateDiaryDaySet(String id, String questionSetId) async {
+    if (currentDay != null) {
+      final updated = DiaryDay(
+        id: id,
+        date: currentDay!.date,
+        status: currentDay!.status,
+        totalScore: currentDay!.totalScore,
+        meanScore: currentDay!.meanScore,
+        medianScore: currentDay!.medianScore,
+        level: currentDay!.level,
+        insightText: currentDay!.insightText,
+        createdAt: currentDay!.createdAt,
+        updatedAt: DateTime.now(),
+        questionSetId: questionSetId,
+      );
+      currentDay = updated;
+      if (!_dayController.isClosed) {
+        _dayController.add(updated);
+      }
     }
   }
 
@@ -158,9 +190,11 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     FlutterSecureStorage.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
+    final inMemoryDb = LocalDatabase.forTesting(NativeDatabase.memory());
     mockRepository = MockDiaryRepository();
     container = ProviderContainer(
       overrides: [
+        databaseProvider.overrideWithValue(inMemoryDb),
         diaryRepositoryProvider.overrideWithValue(mockRepository),
         syncRepositoryProvider.overrideWithValue(MockSyncRepository()),
         sharedPreferencesProvider.overrideWithValue(prefs),
@@ -257,14 +291,16 @@ void main() {
       expect(mockRepository.currentResponses.first.soirComment, 'tired but happy');
     });
 
-    test('Comment length is limited to 64 characters', () {
+    test('Comment length is limited to 64 characters', () async {
       final notifier = container.read(diaryControllerProvider(testDate).notifier);
+      await Future.delayed(Duration.zero);
       final longComment = 'a' * 100;
       notifier.setComment('nuit', longComment);
 
       final state = container.read(diaryControllerProvider(testDate));
       expect(state.currentComments['nuit']!.length, 64);
       expect(state.currentComments['nuit'], 'a' * 64);
+      await Future.delayed(const Duration(milliseconds: 10));
     });
 
     test('Finalize day updates status to finalized and computes scores', () async {

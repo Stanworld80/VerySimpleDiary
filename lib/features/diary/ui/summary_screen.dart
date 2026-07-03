@@ -152,9 +152,9 @@ class SummaryScreen extends ConsumerWidget {
 
             const SizedBox(height: 24),
 
-            const Text(
-              'RÉPONSES AUX 24 QUESTIONS',
-              style: TextStyle(
+            Text(
+              'RÉPONSES AUX ${diaryState.questions.length} QUESTIONS',
+              style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: AppTheme.textSecondary,
@@ -166,9 +166,9 @@ class SummaryScreen extends ConsumerWidget {
               height: 180,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: diaryQuestionsList.length,
+                itemCount: diaryState.questions.length,
                 itemBuilder: (context, index) {
-                  final question = diaryQuestionsList[index];
+                  final question = diaryState.questions[index];
                   final response = diaryState.responses.cast<DiaryResponse?>().firstWhere(
                     (r) => r?.questionNumber == question.number,
                     orElse: () => null,
@@ -250,7 +250,7 @@ class SummaryScreen extends ConsumerWidget {
                               : ListView(
                                   physics: const NeverScrollableScrollPhysics(),
                                   padding: EdgeInsets.zero,
-                                  children: ['nuit', 'matin', 'journee', 'soir'].map((p) {
+                                  children: diaryState.activePeriods.map((p) {
                                     final ratings = selections[p] ?? [];
                                     final comment = comments[p] ?? '';
                                     if (ratings.isEmpty && comment.isEmpty) return const SizedBox.shrink();

@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/auth/repository/auth_repository.dart';
 import '../theme/app_theme.dart';
 import '../config/settings_provider.dart';
+import '../../features/diary/ui/question_sets_screen.dart';
+import '../../features/diary/controller/question_set_controller.dart';
+import '../services/notification_service.dart';
 
 class ProfileMenuButton extends ConsumerWidget {
   const ProfileMenuButton({super.key});
@@ -47,6 +50,7 @@ class ProfileMenuButton extends ConsumerWidget {
     final proxyUrlController = TextEditingController(text: settings.geminiProxyUrl);
     bool useGemini = settings.useGemini;
     String geminiMode = settings.geminiMode;
+    bool notificationsEnabled = settings.notificationsEnabled;
 
     showDialog(
       context: context,
@@ -204,6 +208,37 @@ class ProfileMenuButton extends ConsumerWidget {
                         ),
                       ],
                     ],
+                    
+                    const Divider(color: Color(0xFF2E3047), height: 32),
+                    
+                    // Notifications Section
+                    const Row(
+                      children: [
+                        Icon(Icons.notifications_rounded, color: AppTheme.primaryLight, size: 18),
+                        SizedBox(width: 8),
+                        Text(
+                          'Rappels et Notifications',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Recevez un rappel de fin de période pour renseigner vos ressentis quotidiens.',
+                      style: TextStyle(color: AppTheme.textSecondary, fontSize: 12, height: 1.3),
+                    ),
+                    const SizedBox(height: 12),
+                    
+                    SwitchListTile(
+                      title: const Text('Rappels de fin de période', style: TextStyle(fontSize: 14, color: Colors.white)),
+                      value: notificationsEnabled,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (val) {
+                        setState(() {
+                          notificationsEnabled = val;
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -229,6 +264,20 @@ class ProfileMenuButton extends ConsumerWidget {
                     } else {
                       await notifier.setGeminiProxyUrl(proxyUrlController.text);
                     }
+                    
+                    final wasEnabled = settings.notificationsEnabled;
+                    await notifier.setNotificationsEnabled(notificationsEnabled);
+                    if (notificationsEnabled) {
+                      await NotificationService.requestPermissions();
+                      final activeSet = ref.read(questionSetControllerProvider).activeSet;
+                      if (activeSet != null) {
+                        final periods = activeSet.selectedPeriods.split(',').map((p) => p.trim()).where((p) => p.isNotEmpty).toList();
+                        await NotificationService.schedulePeriodNotifications(activePeriods: periods);
+                      }
+                    } else if (wasEnabled && !notificationsEnabled) {
+                      await NotificationService.cancelAll();
+                    }
+
                     if (context.mounted) {
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -265,6 +314,12 @@ class ProfileMenuButton extends ConsumerWidget {
           case 'settings':
             _showSettingsDialog(context, ref);
             break;
+          case 'questionnaires':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const QuestionSetsScreen()),
+            );
+            break;
           case 'legal':
             _showDialog(
               context,
@@ -287,49 +342,81 @@ class ProfileMenuButton extends ConsumerWidget {
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        const PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: 'settings',
           child: Row(
             children: [
-              Icon(Icons.settings_rounded, size: 20, color: AppTheme.textSecondary),
-              SizedBox(width: 12),
-              Text('Paramètres', style: TextStyle(fontSize: 14)),
+              const Icon(Icons.settings_rounded, size: 20, color: AppTheme.textSecondary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Paramètres',
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),
-        const PopupMenuItem<String>(
+        PopupMenuItem<String>(
+          value: 'questionnaires',
+          child: Row(
+            children: [
+              const Icon(Icons.list_alt_rounded, size: 20, color: AppTheme.textSecondary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Questionnaires',
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem<String>(
           value: 'legal',
           child: Row(
             children: [
-              Icon(Icons.gavel_rounded, size: 20, color: AppTheme.textSecondary),
-              SizedBox(width: 12),
-              Text('Mentions Légales', style: TextStyle(fontSize: 14)),
+              const Icon(Icons.gavel_rounded, size: 20, color: AppTheme.textSecondary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Mentions Légales',
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),
-        const PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: 'help',
           child: Row(
             children: [
-              Icon(Icons.help_outline_rounded, size: 20, color: AppTheme.textSecondary),
-              SizedBox(width: 12),
-              Text('Aide', style: TextStyle(fontSize: 14)),
+              const Icon(Icons.help_outline_rounded, size: 20, color: AppTheme.textSecondary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Aide',
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),
         const PopupMenuDivider(height: 1),
-        const PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: 'logout',
           child: Row(
             children: [
-              Icon(Icons.logout_rounded, size: 20, color: AppTheme.levelNegatif),
-              SizedBox(width: 12),
-              Text(
-                'Déconnexion',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppTheme.levelNegatif,
-                  fontWeight: FontWeight.bold,
+              const Icon(Icons.logout_rounded, size: 20, color: AppTheme.levelNegatif),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Déconnexion',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppTheme.levelNegatif,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],

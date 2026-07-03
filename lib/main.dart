@@ -17,9 +17,16 @@ import 'features/auth/ui/login_screen.dart';
 import 'features/diary/ui/home_screen.dart';
 import 'features/diary/controller/diary_controller.dart';
 import 'firebase_options.dart';
+import 'core/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  try {
+    await NotificationService.init();
+  } catch (e) {
+    debugPrint("Failed to initialize NotificationService: $e");
+  }
   
   // Load and parse questions list from assets/questions.yaml
   try {

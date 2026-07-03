@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../repository/diary_repository.dart';
 import '../repository/sync_repository.dart';
+import '../repository/question_set_repository.dart';
 import '../score_calculator.dart';
 import '../../../core/db/local_database.dart';
 import '../../../core/config/settings_provider.dart';
@@ -61,6 +62,8 @@ class DiaryState {
   final int currentQuestionIndex;
   final Map<String, List<int>> currentSelection;
   final Map<String, String> currentComments;
+  final List<CustomQuestion> questions;
+  final List<String> activePeriods;
 
   const DiaryState({
     required this.date,
@@ -79,10 +82,27 @@ class DiaryState {
       'journee': '',
       'soir': '',
     },
+    this.questions = const [],
+    this.activePeriods = const ['nuit', 'matin', 'journee', 'soir'],
   });
 
-  DiaryQuestion get currentQuestion => diaryQuestionsList[currentQuestionIndex];
-  double get progressPercentage => ((currentQuestionIndex + 1) / diaryQuestionsList.length) * 100;
+  CustomQuestion get currentQuestion {
+    if (questions.isEmpty) {
+      return CustomQuestion(
+        id: 'dummy',
+        setId: 'dummy',
+        number: 1,
+        category: 'Chargement...',
+        title: 'Chargement...',
+        description: 'Veuillez patienter...',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+    }
+    return questions[currentQuestionIndex];
+  }
+  
+  double get progressPercentage => questions.isEmpty ? 0.0 : ((currentQuestionIndex + 1) / questions.length) * 100;
 
   DiaryState copyWith({
     String? date,
@@ -91,6 +111,8 @@ class DiaryState {
     int? currentQuestionIndex,
     Map<String, List<int>>? currentSelection,
     Map<String, String>? currentComments,
+    List<CustomQuestion>? questions,
+    List<String>? activePeriods,
   }) {
     return DiaryState(
       date: date ?? this.date,
@@ -99,6 +121,8 @@ class DiaryState {
       currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
       currentSelection: currentSelection ?? this.currentSelection,
       currentComments: currentComments ?? this.currentComments,
+      questions: questions ?? this.questions,
+      activePeriods: activePeriods ?? this.activePeriods,
     );
   }
 }
@@ -116,6 +140,26 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
     final day = await _diaryRepository.getOrCreateDiaryDay(state.date);
     state = state.copyWith(diaryDay: day);
     
+    final questionSetRepo = _ref.read(questionSetRepositoryProvider);
+    await questionSetRepo.seedDefaultSetIfEmpty();
+    
+    String? setId = day.questionSetId;
+    if (setId == null) {
+      final activeSet = await questionSetRepo.getActiveQuestionSet();
+      setId = activeSet?.id ?? 'default_system_set';
+      await _diaryRepository.updateDiaryDaySet(day.id, setId);
+    }
+    
+    final qs = await questionSetRepo.getQuestionsForSet(setId);
+    final activeSetObj = await questionSetRepo.getQuestionSetById(setId);
+    final periodsStr = activeSetObj?.selectedPeriods ?? 'nuit,matin,journee,soir';
+    final periods = periodsStr.split(',').map((p) => p.trim()).where((p) => p.isNotEmpty).toList();
+
+    state = state.copyWith(
+      questions: qs,
+      activePeriods: periods,
+    );
+
     // Listen to updates for the day
     _diaryRepository.watchDiaryDay(state.date).listen((day) {
       if (day != null) {
@@ -123,7 +167,7 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
       }
     });
 
-    // Listen to responses
+    // Watch responses for a diary day
     _diaryRepository.watchResponses(day.id).listen((responsesList) {
       state = state.copyWith(responses: responsesList);
       _loadSelectionForCurrentQuestion();
@@ -220,7 +264,7 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
       debugPrint("Background sync error: $e");
     });
 
-    if (state.currentQuestionIndex < diaryQuestionsList.length - 1) {
+    if (state.currentQuestionIndex < state.questions.length - 1) {
       state = state.copyWith(currentQuestionIndex: state.currentQuestionIndex + 1);
       _loadSelectionForCurrentQuestion();
     } else {
@@ -241,10 +285,10 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
 
     final List<int> allValues = [];
     for (final r in state.responses) {
-      allValues.addAll(_parseValues(r.nuitValues));
-      allValues.addAll(_parseValues(r.matinValues));
-      allValues.addAll(_parseValues(r.journeeValues));
-      allValues.addAll(_parseValues(r.soirValues));
+      if (state.activePeriods.contains('nuit')) allValues.addAll(_parseValues(r.nuitValues));
+      if (state.activePeriods.contains('matin')) allValues.addAll(_parseValues(r.matinValues));
+      if (state.activePeriods.contains('journee')) allValues.addAll(_parseValues(r.journeeValues));
+      if (state.activePeriods.contains('soir')) allValues.addAll(_parseValues(r.soirValues));
     }
 
     final scoreResult = ScoreCalculator.calculate(allValues);
@@ -273,6 +317,7 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
           medianScore: scoreResult.median,
           level: scoreResult.level,
           responses: state.responses,
+          questions: state.questions,
         );
       } catch (e) {
         debugPrint("Gemini generation failed, falling back to standard insight: $e");
@@ -336,6 +381,7 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
         medianScore: state.diaryDay!.medianScore,
         level: state.diaryDay!.level,
         responses: state.responses,
+        questions: state.questions,
       );
 
       await _diaryRepository.updateDiaryDay(
@@ -372,10 +418,10 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
     // Calculate final scores first to ensure correctness
     final List<int> allValues = [];
     for (final r in state.responses) {
-      allValues.addAll(_parseValues(r.nuitValues));
-      allValues.addAll(_parseValues(r.matinValues));
-      allValues.addAll(_parseValues(r.journeeValues));
-      allValues.addAll(_parseValues(r.soirValues));
+      if (state.activePeriods.contains('nuit')) allValues.addAll(_parseValues(r.nuitValues));
+      if (state.activePeriods.contains('matin')) allValues.addAll(_parseValues(r.matinValues));
+      if (state.activePeriods.contains('journee')) allValues.addAll(_parseValues(r.journeeValues));
+      if (state.activePeriods.contains('soir')) allValues.addAll(_parseValues(r.soirValues));
     }
 
     final scoreResult = ScoreCalculator.calculate(allValues);
@@ -403,6 +449,7 @@ class DiaryNotifier extends StateNotifier<DiaryState> {
           medianScore: scoreResult.median,
           level: scoreResult.level,
           responses: state.responses,
+          questions: state.questions,
         );
       } catch (e) {
         debugPrint("Gemini generation failed on finalization: $e");

@@ -417,5 +417,100 @@ Le déploiement Firebase nécessite que Cloud Firestore soit activé en mode Nat
 - **Mode de base de données** : Firestore Native (`type=firestore-native`)
 - **Région** : `europe-west9` (Paris, France)
 
-Ces configurations s'appliquent aux environnements de Développement (`stanverysimplediary-dev`) et de Staging (`stanverysimplediary-stg`).
+These configurations s'appliquent aux environnements de Développement (`stanverysimplediary-dev`) et de Staging (`stanverysimplediary-stg`).
 
+---
+
+## 11. Évolutions Futures : Questionnaire Personnalisé & Rappels (User Stories)
+
+Cette section décrit les évolutions fonctionnelles permettant à l'utilisateur de personnaliser ses sets de questions, de configurer ses périodes d'évaluation et de gérer des rappels par notification.
+
+### 11.1 Modèle Conceptuel des Données (Évolution)
+
+```mermaid
+classDiagram
+    class User {
+        +activeSetId: String
+        +notificationsEnabled: Boolean
+    }
+    class QuestionSet {
+        +id: String
+        +name: String
+        +isActive: Boolean
+        +selectedPeriods: List~Period~
+    }
+    class Question {
+        +id: String
+        +title: String
+        +subtitle: String
+    }
+    class Period {
+        <<enumeration>>
+        NUIT
+        MATIN
+        JOURNEE
+        SOIR
+    }
+    User "1" --> "*" QuestionSet : owns
+    QuestionSet "1" --> "*" Question : contains
+    QuestionSet "1" --> "1..4" Period : configures
+```
+
+---
+
+### 11.2 US 01 : Gestion et Personnalisation des Sets de Questions
+
+**En tant qu'** utilisateur de Very Simple Diary  
+**Je veux** pouvoir choisir un set de questions prédéfinies ou créer un nouveau set personnalisé de questions (avec titre et sous-titre)  
+**Afin de** adapter le questionnaire quotidien à mes propres objectifs de suivi et centres d'intérêt.
+
+#### Critères d'acceptation
+- **Bibliothèque de sets** : L'utilisateur accède à une vue de gestion de ses questionnaires où il peut consulter les sets existants (prédéfinis et personnalisés).
+- **Création / Édition** : L'utilisateur peut créer un nouveau set à partir de zéro ou en dupliquant un set existant. Il peut ajouter, ordonner, modifier ou supprimer des questions au sein de ses sets personnalisés.
+- **Définition d'une question** : Chaque question est définie au minimum par un **Titre** (ex: *Sommeil*) et un **Sous-titre** explicatif (ex: *Qualité de la nuit, endormissement, récup...*).
+- **Sélection du set actif** : L'utilisateur peut désigner un unique set comme étant "En cours". Ce set est utilisé par défaut lors de la journalisation quotidienne.
+
+---
+
+### 11.3 US 02 : Personnalisation des Périodes d'Évaluation par Set
+
+**En tant qu'** utilisateur de Very Simple Diary  
+**Je veux** pouvoir configurer, pour chaque set de questions, quelles périodes de la journée (parmi Nuit, Matin, Journée, Soir) je souhaite conserver pour mes évaluations  
+**Afin de** ne pas être obligé d'évaluer des périodes non pertinentes pour un set donné, tout en garantissant la cohérence des questions au sein du même set.
+
+#### Critères d'acceptation
+- **Sélection des périodes** : Lors de la configuration d'un set de questions, l'utilisateur choisit les périodes à activer via des cases à cocher. Au moins une période doit être sélectionnée.
+- **Uniformité** : La liste des périodes actives s'applique de la même manière à l'ensemble des questions du set configuré.
+- **Affichage dynamique** : Lors du remplissage du journal quotidien avec le set actif, l'application présente uniquement les périodes sélectionnées comme options de saisie dans la grille (les lignes correspondant aux périodes inactives sont masquées).
+
+---
+
+### 11.4 US 03 : Rappels et Notifications de Fin de Période
+
+**En tant qu'** utilisateur de Very Simple Diary  
+**Je veux** recevoir une notification de rappel à la fin de chaque période active de mon set en cours, avec un bouton/lien d'accès direct  
+**Afin de** renseigner mes ressentis au moment le plus opportun sans avoir à y penser de moi-même.
+
+#### Critères d'acceptation
+- **Planification intelligente** : L'application planifie des notifications locales à la fin de chaque période (ex: fin de matinée, fin de soirée), uniquement si la période fait partie du set "En cours" de l'utilisateur.
+- **Redirection par Deep Link** : Le clic sur la notification ouvre l'application et redirige directement l'utilisateur sur le formulaire de saisie de la journée, pré-ciblé sur la période concernée.
+- **Contrôle des notifications** : L'utilisateur peut activer ou désactiver globalement ces rappels via un interrupteur dédié dans les paramètres de l'application.
+
+```mermaid
+sequenceDiagram
+    participant OS as OS / Alarm Manager
+    participant App as Very Simple Diary
+    participant UI as Diary Screen
+    
+    Note over OS, App: Fin de la période active (ex: Matin - 11h00)
+    OS->>App: Déclenchement de l'alarme locale
+    App->>App: Vérification : notifications activées dans les paramètres ?
+    alt Notifications ON et Période active dans le set en cours
+        App->>OS: Afficher la notification de rappel
+        Note over OS: L'utilisateur clique sur la notification
+        OS->>App: Ouverture via Deep Link (ex: diary://fill?period=matin)
+        App->>UI: Affiche le formulaire sur la période "Matin"
+    else Notifications OFF ou Période inactive
+        App->>App: Ignorer le déclenchement
+    end
+```

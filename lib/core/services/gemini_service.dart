@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:google_generative_ai/google_generative_ai.dart';
 import '../db/local_database.dart';
-import '../../features/diary/controller/diary_controller.dart'; // to reference diaryQuestionsList
 
 class GeminiService {
   static Future<String> generateInsight({
@@ -14,6 +13,7 @@ class GeminiService {
     required double medianScore,
     required String level,
     required List<DiaryResponse> responses,
+    required List<CustomQuestion> questions,
   }) async {
     if (mode == 'proxy') {
       return _generateInsightViaProxy(
@@ -36,15 +36,12 @@ class GeminiService {
     detailsBuffer.writeln("Détails des ressentis notés (de -2 à +2) par période de la journée :");
 
     for (final response in responses) {
-      final question = diaryQuestionsList.firstWhere(
-        (q) => q.number == response.questionNumber,
-        orElse: () => DiaryQuestion(
-          number: response.questionNumber,
-          category: 'Autre',
-          title: 'Question ${response.questionNumber}',
-          description: '',
-        ),
+      final question = questions.cast<CustomQuestion?>().firstWhere(
+        (q) => q?.number == response.questionNumber,
+        orElse: () => null,
       );
+      final category = question?.category ?? 'Autre';
+      final title = question?.title ?? 'Question ${response.questionNumber}';
 
       final List<String> periodDetails = [];
 
@@ -68,7 +65,7 @@ class GeminiService {
       addPeriod('Soir', response.soirValues, response.soirComment);
 
       if (periodDetails.isNotEmpty) {
-        detailsBuffer.writeln("- Q${question.number} [${question.title}] (${question.description}) :");
+        detailsBuffer.writeln("- Q${question?.number ?? response.questionNumber} [${question?.title ?? ''}] (${question?.description ?? ''}) :");
         for (final detail in periodDetails) {
           detailsBuffer.writeln("    * $detail");
         }

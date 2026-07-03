@@ -16,6 +16,7 @@ class DiaryDays extends Table {
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
   DateTimeColumn get syncedAt => dateTime().nullable()();
+  TextColumn get questionSetId => text().nullable().references(QuestionSets, #id, onDelete: KeyAction.setNull)();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -40,14 +41,42 @@ class DiaryResponses extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [DiaryDays, DiaryResponses])
+@DataClassName('QuestionSet')
+class QuestionSets extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  BoolColumn get isActive => boolean().withDefault(const Constant(false))();
+  TextColumn get selectedPeriods => text().withDefault(const Constant('nuit,matin,journee,soir'))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('CustomQuestion')
+class CustomQuestions extends Table {
+  TextColumn get id => text()();
+  TextColumn get setId => text().references(QuestionSets, #id, onDelete: KeyAction.cascade)();
+  IntColumn get number => integer()();
+  TextColumn get category => text()();
+  TextColumn get title => text()();
+  TextColumn get description => text()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DriftDatabase(tables: [DiaryDays, DiaryResponses, QuestionSets, CustomQuestions])
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(conn.openConnection());
 
   LocalDatabase.forTesting(super.connection);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -57,6 +86,11 @@ class LocalDatabase extends _$LocalDatabase {
             await migrator.addColumn(diaryResponses, diaryResponses.matinComment);
             await migrator.addColumn(diaryResponses, diaryResponses.journeeComment);
             await migrator.addColumn(diaryResponses, diaryResponses.soirComment);
+          }
+          if (from < 3) {
+            await migrator.createTable(questionSets);
+            await migrator.createTable(customQuestions);
+            await migrator.addColumn(diaryDays, diaryDays.questionSetId);
           }
         },
       );

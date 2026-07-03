@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controller/diary_controller.dart';
 import '../repository/diary_repository.dart';
 import '../../../core/db/local_database.dart';
+import '../controller/question_set_controller.dart';
 import 'summary_screen.dart';
 // diary_screen.dart removed since modification is separated
 import '../../../core/theme/app_theme.dart';
@@ -523,9 +524,22 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
           return valStr.split(',').map((e) => int.tryParse(e) ?? 0).toList();
         }
 
+        final activeSetState = ref.watch(questionSetControllerProvider);
+        final questionsList = activeSetState.activeSetQuestions;
+        final listToUse = questionsList.isNotEmpty ? questionsList : diaryQuestionsList.map((q) => CustomQuestion(
+          id: 'default_${q.number}',
+          setId: 'default',
+          number: q.number,
+          category: q.category,
+          title: q.title,
+          description: q.description,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        )).toList();
+
         final Map<int, List<int>> questionValues = {};
-        for (int i = 1; i <= 24; i++) {
-          questionValues[i] = [];
+        for (final q in listToUse) {
+          questionValues[q.number] = [];
         }
 
         for (final resp in inRangeResponses) {
@@ -542,9 +556,9 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
           height: 110,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: diaryQuestionsList.length,
+            itemCount: listToUse.length,
             itemBuilder: (context, index) {
-              final question = diaryQuestionsList[index];
+              final question = listToUse[index];
               final values = questionValues[question.number] ?? [];
               
               String displayVal;
@@ -699,9 +713,9 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
               height: 140,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: diaryQuestionsList.length,
+                itemCount: diaryState.questions.length,
                 itemBuilder: (context, index) {
-                  final question = diaryQuestionsList[index];
+                  final question = diaryState.questions[index];
                   final response = diaryState.responses.cast<DiaryResponse?>().firstWhere(
                     (r) => r?.questionNumber == question.number,
                     orElse: () => null,
@@ -772,7 +786,7 @@ class _ExplorerScreenState extends ConsumerState<ExplorerScreen> {
                               : ListView(
                                   physics: const NeverScrollableScrollPhysics(),
                                   padding: EdgeInsets.zero,
-                                  children: ['nuit', 'matin', 'journee', 'soir'].map((p) {
+                                  children: diaryState.activePeriods.map((p) {
                                     final ratings = selections[p] ?? [];
                                     final comment = comments[p] ?? '';
                                     if (ratings.isEmpty && comment.isEmpty) return const SizedBox.shrink();

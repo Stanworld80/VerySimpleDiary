@@ -234,9 +234,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
               height: 140,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: diaryQuestionsList.length,
+                itemCount: diaryState.questions.length,
                 itemBuilder: (context, index) {
-                  final question = diaryQuestionsList[index];
+                  final question = diaryState.questions[index];
                   final response = diaryState.responses.cast<DiaryResponse?>().firstWhere(
                     (r) => r?.questionNumber == question.number,
                     orElse: () => null,
@@ -307,7 +307,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                               : ListView(
                                   physics: const NeverScrollableScrollPhysics(),
                                   padding: EdgeInsets.zero,
-                                  children: ['nuit', 'matin', 'journee', 'soir'].map((p) {
+                                  children: diaryState.activePeriods.map((p) {
                                     final ratings = selections[p] ?? [];
                                     final comment = comments[p] ?? '';
                                     if (ratings.isEmpty && comment.isEmpty) return const SizedBox.shrink();

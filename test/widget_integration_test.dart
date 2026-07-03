@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:drift/native.dart';
 import 'package:verysimplediary/main.dart';
 import 'package:verysimplediary/core/db/local_database.dart';
 import 'package:verysimplediary/features/auth/repository/auth_repository.dart';
@@ -56,6 +57,7 @@ class MockDiaryRepository implements DiaryRepository {
       level: 'Moyen',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
+      questionSetId: null,
     );
     currentDay = day;
     _dayController.add(day);
@@ -120,6 +122,35 @@ class MockDiaryRepository implements DiaryRepository {
         insightText: insight,
         createdAt: currentDay!.createdAt,
         updatedAt: DateTime.now(),
+        questionSetId: currentDay!.questionSetId,
+      );
+      currentDay = updated;
+      _dayController.add(updated);
+      final idx = allDays.indexWhere((d) => d.id == id);
+      if (idx != -1) {
+        allDays[idx] = updated;
+      } else {
+        allDays.add(updated);
+      }
+      _allDaysController.add(allDays);
+    }
+  }
+
+  @override
+  Future<void> updateDiaryDaySet(String id, String questionSetId) async {
+    if (currentDay != null) {
+      final updated = DiaryDay(
+        id: id,
+        date: currentDay!.date,
+        status: currentDay!.status,
+        totalScore: currentDay!.totalScore,
+        meanScore: currentDay!.meanScore,
+        medianScore: currentDay!.medianScore,
+        level: currentDay!.level,
+        insightText: currentDay!.insightText,
+        createdAt: currentDay!.createdAt,
+        updatedAt: DateTime.now(),
+        questionSetId: questionSetId,
       );
       currentDay = updated;
       _dayController.add(updated);
@@ -174,8 +205,10 @@ void main() {
   testWidgets('Full User Integration Flow (Login, Comments, Explorer Stats)', (WidgetTester tester) async {
     final prefs = await SharedPreferences.getInstance();
     // 1. Initialize container and sign out
+    final inMemoryDb = LocalDatabase.forTesting(NativeDatabase.memory());
     final container = ProviderContainer(
       overrides: [
+        databaseProvider.overrideWithValue(inMemoryDb),
         diaryRepositoryProvider.overrideWithValue(mockDiaryRepository),
         syncRepositoryProvider.overrideWithValue(mockSyncRepository),
         sharedPreferencesProvider.overrideWithValue(prefs),

@@ -98,7 +98,7 @@ class DiaryScreen extends ConsumerWidget {
 
     final currentQuestion = diaryState.currentQuestion;
 
-    final List<String> periods = ['nuit', 'matin', 'journee', 'soir'];
+    final List<String> periods = diaryState.activePeriods;
     final Map<String, String> periodLabels = {
       'nuit': 'Nuit (00h-05h)',
       'matin': 'Matin (05h-11h)',
@@ -119,7 +119,7 @@ class DiaryScreen extends ConsumerWidget {
         actions: [
           Center(
             child: Text(
-              'Q ${currentQuestion.number} / ${diaryQuestionsList.length}',
+              'Q ${currentQuestion.number} / ${diaryState.questions.length}',
               style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
             ),
           ),
@@ -133,7 +133,7 @@ class DiaryScreen extends ConsumerWidget {
           if (details.primaryVelocity! < -300) {
             // Swipe left -> Next question
             await notifier.nextQuestion();
-            if (context.mounted && currentQuestion.number == diaryQuestionsList.length) {
+            if (context.mounted && currentQuestion.number == diaryState.questions.length) {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) => SummaryScreen(date: selectedDate),
@@ -361,8 +361,8 @@ class DiaryScreen extends ConsumerWidget {
                   final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
                   final hasPrev = diaryState.currentQuestionIndex > 0;
 
-                  final nextLabel = currentQuestion.number < diaryQuestionsList.length ? 'SUIVANT' : 'RÉCAPITULATIF';
-                  final nextIcon = currentQuestion.number < diaryQuestionsList.length 
+                  final nextLabel = currentQuestion.number < diaryState.questions.length ? 'SUIVANT' : 'RÉCAPITULATIF';
+                  final nextIcon = currentQuestion.number < diaryState.questions.length 
                       ? Icons.arrow_forward_ios_rounded 
                       : Icons.check_circle_outline_rounded;
 
@@ -376,7 +376,7 @@ class DiaryScreen extends ConsumerWidget {
                         : (isPortrait ? constraints.maxWidth : (constraints.maxWidth - 12) / 2),
                     onPressed: () async {
                       await notifier.nextQuestion();
-                      if (context.mounted && currentQuestion.number == diaryQuestionsList.length) {
+                      if (context.mounted && currentQuestion.number == diaryState.questions.length) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) => SummaryScreen(date: selectedDate),

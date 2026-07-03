@@ -15,12 +15,14 @@ class SettingsState {
   final bool useGemini;
   final String geminiMode;
   final String geminiProxyUrl;
+  final bool notificationsEnabled;
 
   const SettingsState({
     required this.geminiApiKey,
     required this.useGemini,
     this.geminiMode = 'proxy',
     this.geminiProxyUrl = 'https://getgeminiinsight-fxdhdnouoa-uc.a.run.app',
+    this.notificationsEnabled = false,
   });
 
   SettingsState copyWith({
@@ -28,12 +30,14 @@ class SettingsState {
     bool? useGemini,
     String? geminiMode,
     String? geminiProxyUrl,
+    bool? notificationsEnabled,
   }) {
     return SettingsState(
       geminiApiKey: geminiApiKey ?? this.geminiApiKey,
       useGemini: useGemini ?? this.useGemini,
       geminiMode: geminiMode ?? this.geminiMode,
       geminiProxyUrl: geminiProxyUrl ?? this.geminiProxyUrl,
+      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
     );
   }
 }
@@ -49,6 +53,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           geminiMode: _prefs.getString('gemini_mode') ?? 'proxy',
           geminiProxyUrl: _prefs.getString('gemini_proxy_url') ??
               'https://getgeminiinsight-fxdhdnouoa-uc.a.run.app',
+          notificationsEnabled: _prefs.getBool('notifications_enabled') ?? false,
         )) {
     _loadSecureKey();
   }
@@ -94,6 +99,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   Future<void> setGeminiProxyUrl(String url) async {
     await _prefs.setString('gemini_proxy_url', url);
     state = state.copyWith(geminiProxyUrl: url);
+  }
+
+  Future<void> setNotificationsEnabled(bool enabled) async {
+    await _prefs.setBool('notifications_enabled', enabled);
+    state = state.copyWith(notificationsEnabled: enabled);
   }
 }
 

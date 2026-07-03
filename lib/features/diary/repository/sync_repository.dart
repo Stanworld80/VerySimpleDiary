@@ -33,20 +33,22 @@ class SyncRepository {
     return valStr.split(',').map((e) => int.tryParse(e) ?? 0).toList();
   }
 
-  Map<String, dynamic> _serializeResponses(List<DiaryResponse> responses) {
+  Future<Map<String, dynamic>> _serializeResponses(String diaryDayId, List<DiaryResponse> responses) async {
     final Map<String, dynamic> result = {};
+    
+    final day = await (_db.select(_db.diaryDays)..where((tbl) => tbl.id.equals(diaryDayId))).getSingleOrNull();
+    final setId = day?.questionSetId ?? 'default_system_set';
+    
+    final questions = await (_db.select(_db.customQuestions)..where((tbl) => tbl.setId.equals(setId))).get();
+    
     for (final r in responses) {
-      final question = diaryQuestionsList.firstWhere(
-        (q) => q.number == r.questionNumber,
-        orElse: () => DiaryQuestion(
-          number: r.questionNumber,
-          category: '',
-          title: 'q${r.questionNumber}',
-          description: '',
-        ),
+      final question = questions.cast<CustomQuestion?>().firstWhere(
+        (q) => q?.number == r.questionNumber,
+        orElse: () => null,
       );
 
-      final key = _getQuestionKey(r.questionNumber, question.title);
+      final title = question?.title ?? 'q${r.questionNumber}';
+      final key = _getQuestionKey(r.questionNumber, title);
       result[key] = {
         'nuit': _parseValues(r.nuitValues),
         'nuit_comment': r.nuitComment,
@@ -211,7 +213,7 @@ class SyncRepository {
         'level': localDay.level,
       },
       'insight_text': localDay.insightText,
-      'responses': _serializeResponses(responses),
+      'responses': await _serializeResponses(localDay.id, responses),
       'created_at': Timestamp.fromDate(localDay.createdAt),
       'updated_at': Timestamp.fromDate(localDay.updatedAt),
     };
