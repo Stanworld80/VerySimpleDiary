@@ -1,0 +1,3 @@
+## 2024-05-15 - Indexing Drift Foreign Keys
+**Learning:** Drift SQLite does not automatically index foreign key columns, which can lead to full table scans during joins and cascade operations. The `.g.dart` generated files expose index objects (like `diaryResponsesDiaryDayIdIdx`) after using `@TableIndex` and bumping the schema version, which makes migrations safer than passing raw SQL index names.
+**Action:** Always check foreign key columns in Drift tables. If frequently queried or joined, add a `@TableIndex`, bump `schemaVersion`, and execute `await migrator.createIndex([indexName])` within the `MigrationStrategy` `onUpgrade` step.
