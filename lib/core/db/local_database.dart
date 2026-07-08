@@ -22,6 +22,13 @@ class DiaryDays extends Table {
 }
 
 @DataClassName('DiaryResponse')
+// ⚡ Bolt: Performance Improvement
+// What: Added an index on the diaryDayId foreign key.
+// Why: Drift does not automatically index foreign keys. Without this, queries joining
+// DiaryResponses to DiaryDays or filtering by diaryDayId would require a full table scan.
+// Impact: Changes O(N) full table scan to O(log N) lookup for foreign key queries.
+// Measurement: Reduces database query time significantly as the diary grows in size.
+@TableIndex(name: 'diary_responses_diary_day_id_idx', columns: {#diaryDayId})
 class DiaryResponses extends Table {
   TextColumn get id => text()();
   TextColumn get diaryDayId => text().references(DiaryDays, #id, onDelete: KeyAction.cascade)();
@@ -47,7 +54,7 @@ class LocalDatabase extends _$LocalDatabase {
   LocalDatabase.forTesting(super.connection);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -57,6 +64,9 @@ class LocalDatabase extends _$LocalDatabase {
             await migrator.addColumn(diaryResponses, diaryResponses.matinComment);
             await migrator.addColumn(diaryResponses, diaryResponses.journeeComment);
             await migrator.addColumn(diaryResponses, diaryResponses.soirComment);
+          }
+          if (from < 3) {
+            await migrator.createIndex(diaryResponsesDiaryDayIdIdx);
           }
         },
       );
